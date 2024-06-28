@@ -1,6 +1,6 @@
 from allauth.account.forms import SignupForm, LoginForm
 from django import forms
-from prms.models import User, NeedsAssessment, PopulationProjection
+from pnms.models import User, NeedsAssessment, PopulationProjection
 from allauth.account.utils import perform_login
 
 

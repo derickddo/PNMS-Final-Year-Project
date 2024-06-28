@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django_components',
     'django_components.safer_staticfiles',  # Add the safer_staticfiles app
 
-    'prms', # Add the prms app to the installed apps
+    'pnms', # Add the prms app to the installed apps
     'tailwind', # Add the tailwind app to the installed apps
     'theme', # Add the theme app to the installed apps
 
@@ -94,7 +94,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 ACCOUNT_FORMS = {
-    'signup': 'prms.forms.CustomSignupForm',
+    'signup': 'pnms.forms.CustomSignupForm',
 }
 
 
