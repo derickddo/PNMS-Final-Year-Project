@@ -39,7 +39,7 @@ PNMS is a comprehensive platform designed to aid development planners in Ghana w
     pipenv shell
     ```
     ```bash
-    pipenv install -r requirement.txt
+    pipenv install -r requirements.txt
     ```
 
 
