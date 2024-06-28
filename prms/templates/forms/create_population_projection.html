@@ -1,0 +1,188 @@
+
+<form id="projectionForm" class="w-full rounded-lg" data-value="">
+    <div class="form-control mb-4">
+        <label class="label font-medium mb-2">Title</label>
+        <input type="text" id="title" 
+             name="title" 
+             {% if id %}
+                value="{{ title }}"
+             {% endif %}
+                 class="input input-bordered w-full" placeholder="Population Projection for ...">
+    </div>
+    <div class="form-control mb-4">
+        <label class="label font-medium mb-2">Description</label>
+        <textarea 
+        {% if id %}
+            value = "{{ description }}"
+        {% endif %}
+             name="description" id="description" class="textarea textarea-bordered border border-gray-600" placeholder="Description ..."></textarea>
+    </div>
+    <div class="form-control mb-4">
+        <label class="label font-medium mb-2">Select Area Type:</label>
+        <div class="flex items-center gap-4 mb-2">
+            <div class="flex items-center">
+                <input  type="radio" id="region" name="areaType" value="region" checked
+                 
+                {% if id and area_type == 'region' %}
+                    checked
+                {% endif %}
+                {% if id %}
+                    disabled
+                {% endif %}
+            
+                      class="radio mr-2">
+                <label for="region" class="mr-4">Region</label>
+            </div>
+            <div class="flex items-center">
+                <input type="radio" id="district" name="areaType" value="district" class="radio mr-2"  
+            {% if id and area_type == 'district' %}
+                checked 
+            {% endif %}
+            
+            {% if id %}
+                disabled
+            {% endif %}
+            >
+                <label for="district" class="mr-4">District</label>
+            </div>
+            <div class="flex items-center">
+                <input type="radio" id="town" name="areaType" value="town" class="radio mr-2"
+                {% if id and area_type == 'town' %}
+                    checked disabled
+                {% endif %}
+                {% if id %}
+                    disabled
+                {% endif %}
+                >
+                <label for="town">Town</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-control mb-4 hidden" id="regionSelectContainer">
+        <label for="regionSelect" class="label font-medium mb-2">Choose Region</label>
+        <div class="relative">
+            <input  
+            {% if id %}
+                value="{{ region }}"
+                data-value="{{ region }}"
+                disabled
+                   
+            {% endif %} 
+            type="text" id="regionSelect" name="region" placeholder="Search Region..." class="input input-bordered w-full block 
+            ">
+            <div id="regionDropdown" class="absolute top-full left-0 w-full mt-1 bg-base-100 border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto hidden z-50">
+                <ul id="regionDropdownList" class="menu  menu-compact">
+                    
+                        
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-control mb-4 hidden" id="districtSelectContainer">
+        <label for="districtSelect" class="label font-medium mb-2">Choose District:</label>
+        <div class="relative">
+            <input
+
+            {% if id %}
+                value="{{ district }}"
+                disabled 
+            {% endif %} 
+            type="text" id="districtSelect" name="district" placeholder="Search District..." class="input input-bordered w-full">
+            <div id="districtDropdown" class="absolute top-full left-0 w-full mt-1 bg-base-100 border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto hidden">
+                <ul id="districtDropdownList" class="menu menu-compact"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-control mb-4 hidden" id="townSelectContainer">
+        <label for="townSelect" class="label font-medium mb-2">Choose Town</label>
+        <div class="relative">
+            <input
+
+            {% if id  %}
+                value="{{ town }}"
+                disabled 
+            {% endif %} 
+            type="text" id="townSelect" name="town" placeholder="Search or type a town..." class="input input-bordered w-full">
+            <div id="townDropdown" class="absolute top-full left-0 w-full mt-1 bg-base-100 border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto hidden">
+                <ul id="townDropdownList" class="menu menu-compact z-50"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class=" mb-4 flex justify-between">
+        <div class="w-1/2 pr-2">
+            <label for="baseYear" class="label font-medium mb-2">Base Year</label>
+            <select 
+                 id="baseYear" name="baseYear" class="select select-bordered w-full max-w-xs">
+                
+                {% if id %}
+                    <option value="{{ base_year }}">{{ base_year }}</option>
+                {% endif %}
+                    
+            </select>
+        </div>
+        <div class="w-1/2 pl-2">
+            <label for="projectYear" class="label font-medium mb-2">Projecting Year</label>
+            <select
+             id="projectYear" name="projectYear"  class="select select-bordered w-full max-w-xs">
+                
+                {% if id %}
+                   <option value="{{ projecting_year }}">{{ projecting_year }}</option> 
+                {% endif %}
+                    
+            </select>
+        </div>
+    </div>
+    <div class="form-control mb-4">
+        <label for="baseYearPopulation" class="label font-medium mb-2">Base Year Population</label>
+        <input 
+        {% if id %}
+            value="{{ base_population }}"
+        {% endif %}
+             type="number" id="baseYearPopulation" name="baseYearPopulation" step="0.01" class="input input-bordered w-full" min="0">
+    </div>
+    <!--Choose weather the user already has growth rate value-->
+    <div class="form-control mb-4">
+        <label for="growthRateType" class="label font-medium mb-2">Growth Rate Type</label>
+        <select id="growthRateType" name="growthRateType" class="select select-bordered w-full">
+            <option value="manual">Manual</option>
+            <option value="auto">Auto</option>
+        </select>
+        <!--Help text-->
+        <p class="text-sm text-gray-500 mt-1">Choose manual if you have the growth rate value or auto to calculate it.</p>
+    </div>
+
+    <div id="growthRateContainer"  class="form-control mb-4">
+        <label for="growthRate" class="label font-medium mb-2">Growth Rate (%)</label>
+        <input 
+        {% if id %}
+            value="{{ growth_rate }}"
+        {% endif %}
+             type="number" id="growthRate" name="growthRate" step="0.01" class="input input-bordered w-full" min="0" >
+    </div>
+
+    <span id="tippy">
+        <button type="submit" id="projectButton" class="btn btn-primary w-full disabled:btn-disabled disabled:cursor-not-allowed" disabled>
+           
+            {% if id %}
+                Update
+                {% else %}
+                Project
+            {% endif %}
+                
+            
+        </button>
+    </span>
+
+    
+
+    <input 
+    {% if id %}
+        value="{{ id }}"
+    {% endif %}
+         type="hidden" name="hidden" id="hidden">
+</form>
+

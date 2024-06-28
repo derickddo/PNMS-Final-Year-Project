@@ -1,0 +1,49 @@
+<!--generate report html-->
+
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block title %}Generate Report{% endblock title %}
+{% block content %}
+<div>
+    <h1 class="text-2xl font-bold">{{population_projection.title}}</h1>
+    
+    {% if population_projection.description %}
+      <p class="mt-2">{{population_projection.description}}</p>
+    {% endif %}
+    <p class="mt-2">Projecting from {{base_years.0}} to {{projection_years.last}}</p>
+  </div>
+    
+    <div class="">
+      Area Type: {{ population_projection.area_type }}
+      <!--Generate report button-->
+      <a href="{% url 'generate_report' population_projection.slug %}" class="btn btn-primary">Generate Report</a>
+    </div>
+
+    </div>
+    <div class="overflow-x-auto mt-8">
+        <table class="table table-lg">
+          <!-- head -->
+          <thead>
+            <tr>
+              <th class="text-lg">Base Year</th>
+              <th class="text-lg">Projecting Year</th>
+              <th class="text-lg">Base Population</th>
+              <th class="text-lg">Projected Population</th>
+              <th class="text-lg">Growth Rate (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in range %}
+              <tr class="{% cycle 'bg-base-200' '' %}">
+                  <td class="">{{ base_years|index:i }}</td>
+                  <td class="">{{ projection_years|index:i }}</td>
+                  <td class="">{{ base_populations|index:i }}</td>
+                  <td class="">{{ projected_populations|index:i }}</td>
+                  <td class="">{{ growth_rate }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock title %}
+
+
+{% block content %}
+
+<!--Topbar-->
+{% include 'partials/topbar.html' %}
+
+<!--Sidebar-->
+{% include 'partials/sidebar.html' %}
+
+<!--Main-->
+<main id="main" class="md:ml-64">
+  <!--alert-->
+  <div id="alert" class="alert alert-error z-50 absolute top-3 w-[23rem] right-3 justify-between hidden">
+    <span id="alert-message">hello</span>
+    <button id="alert-close" class="btn btn-sm btn-circle btn-ghost">✕</button>
+  </div>
+  {% if child_template %}
+    {{ child_template }}
+    {% else %}
+    <!--center of dashbaord-->      
+      {% include 'partials/dashboard_main.html' %}
+  {% endif %}
+</main>
+<!--End of main-->
+
+<!--modal componenet-->
+<dialog id="my_modal_3" class="modal">
+    <div class="modal-box">
+      <form method="dialog">
+        <button id="close-modal" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+      </form>
+      <h3 id="form-header" class="font-bold text-lg"></h3>
+      <div id="modal-content">
+           
+      </div> 
+    </div>
+</dialog>
+<!--End of modal component-->
+
+{% endblock content %}
+
+
+{% block script %}
+
+<script type="module" src="{% static 'js/graph.js' %}"></script>
+<script type="module" src="{% static 'js/form.js' %}"></script>
+<script type="module" src="{% static 'js/needs_assessment.js' %}"></script>
+{% endblock script %}
+  
+  

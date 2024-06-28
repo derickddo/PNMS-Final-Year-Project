@@ -1,0 +1,106 @@
+{% extends "base.html" %} 
+
+{% block content %}
+<!-- Main navigation container -->
+<nav class="bg-base-200 p-4">
+  <div class="container mx-auto flex justify-between items-center">
+      <a href="#" class="text-lg font-bold">PRMS</a>
+      <div class="flex md:hidden">
+          <button id="menu-button" class="btn btn-square btn-ghost">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+          </button>
+      </div>
+      <div id="menu" class="hidden md:flex md:items-center space-x-4">
+          <a href="#" class="btn btn-ghost btn-sm rounded-btn">Home</a>
+          <a href="#" class="btn btn-ghost btn-sm rounded-btn">About</a>
+          <a href="#" class="btn btn-ghost btn-sm rounded-btn">Services</a>
+          <a href="{% url 'account_login' %}" class="btn btn-outline  btn-primary btn-md rounded-btn text-white">Sign up</a>
+      </div>
+  </div>
+</nav>
+
+<div id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-base-200 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 md:hidden">
+  <div class="flex justify-end p-4">
+      <button id="close-button" class="btn btn-square btn-ghost">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+  </div>
+  <nav class="flex flex-col space-y-2 p-4 justify-start">
+      <a href="#" class="btn btn-ghost btn-sm py-2.5 rounded-btn transition duration-200 hover:bg-gray-700 hover:text-white text-left">Home</a>
+      <a href="#" class="btn btn-ghost btn-sm rounded-btn">About</a>
+      <a href="#" class="btn btn-ghost btn-sm rounded-btn">Services</a>
+      <a href="{% url 'account_login' %}" class="btn  btn-outline rounded-btn text-white">Sign up</a>
+  </nav>
+</div>
+
+<script>
+  document.getElementById('menu-button').addEventListener('click', function() {
+      var sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('-translate-x-full');
+  });
+
+  document.getElementById('close-button').addEventListener('click', function() {
+      var sidebar = document.getElementById('sidebar');
+      sidebar.classList.add('-translate-x-full');
+  });
+</script>
+<!-- Main navigation container ends -->
+
+<!--Hero Section-->
+<section class="bg-zinc-50 dark:bg-neutral-800">
+  <div class="container mx-auto px-4 py-12 lg:py-20">
+    <div class="flex flex-col items-center justify-center text-center">
+      <h1 class="text-4xl font-bold text-black dark:text-white lg:text-5xl">
+        Welcome to PRMS
+      </h1>
+      <p class="mt-4 text-lg text-black dark:text-white lg:text-xl">
+        A Population Projection, Resource Allocation and Map Prediction System
+      </p>
+      <div class="mt-8">
+        <a href="{% url 'account_login' %}"
+          type="button"
+          data-twe-ripple-init
+          data-twe-ripple-color="light"
+          class="inline-block rounded bg-primary px-6 py-3 text-lg font-medium leading-normal text-white shadow-primary-3 transition duration-150 ease-in-out hover:bg-primary-accent-300 hover:shadow-primary-2 focus:bg-primary-accent-300 focus:shadow-primary-2 focus:outline-none focus:ring-0 active:bg-primary-600 active:shadow-primary-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong">
+          Get Started
+      </a>
+      </div>
+    </div>
+  </div>
+</section>
+<!--Hero Section ends-->
+
+<!-- Features Section -->
+<section class="bg-white dark:bg-neutral-900">
+  <div class="container mx-auto px-4 py-12 lg:py-20">
+    <div class="flex flex-col items-center justify-center text-center">
+      <h2 class="text-3xl font-bold text-black dark:text-white lg:text-4xl">
+        Features
+      </h2>
+      <p class="mt-4 text-lg text-black dark:text-white lg:text-xl">
+        Some of the features of PRMS
+      </p>
+      <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div class="flex flex-col items-center justify-center">
+          <div class="bg-primary rounded-full p-4">
+            <span class="[&>svg]:w-8 text-white">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118"
+                  clip-rule="evenodd" />
+              </svg>
+            </span>
+          </div>
+          <h3 class="mt-4 text-xl font-semibold text-black dark:text-white lg:text-2xl">
+            Population Projection
+          </h3>
+          <p class="mt-2 text-base text-black dark:text-white lg:text-lg">
+            Predict the population of a region in the future
+          </p>
+        </div>
+        
+
+{% endblock %}

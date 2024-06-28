@@ -1,0 +1,10 @@
+<!--Delete alert-->
+<form id="delete-form" class="flex  flex-col justify-center" hx-post="{% url 'delete_population_projection' id %}" hx-target="#main">
+    <div class="flex justify-center">
+        <i class="fa-solid fa-triangle-exclamation text-[5rem] text-red-600"></i>
+    </div>
+    <span  class="text-center mt-4">Are you sure you want to delete this projection?</span>
+    <div class="flex justify-end mt-4">
+        <button type="submit" class="btn btn-primary mr-2" id="delete">Delete</button>
+    </div>
+</div>

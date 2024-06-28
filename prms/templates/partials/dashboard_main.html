@@ -1,0 +1,95 @@
+{% load custom_filters %}
+<div class="container mx-auto px-4">
+    <div class="flex justify-between ">
+      <div>
+        <h1 class="text-2xl font-bold">Dashboard</h1>
+        <p class="mt-2">Welcome to the dashboard</p>
+      </div>
+      
+      <div class="text-sm breadcrumbs">
+        <ul>
+          <li><a href="#populationProjection">Population Projection</a></li> 
+          <li><a href="#needsAssessment">Needs Assessment</a></li> 
+          <li>Add Document</li>
+        </ul>
+      </div>
+    </div>
+    
+    {% if population_projections %}
+    <div id="populationProjection" class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3 h-fit">
+      {% for population_projection in population_projections %}
+          <!--Graph card-->
+          <div class="card-borderd border border-gray-600 rounded-md shadow-md relative card-item">
+              <div class="dropdown dropdown-end absolute right-3 top-3">
+                  <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md">
+                      <i class="fa-solid fas fa-ellipsis-h"></i>
+                  </div>
+                  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <li>
+                          <a class="edit" hx-trigger="click" hx-target="#modal-content" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" hx-get="{% url 'crud' %}?mode=update&id={{ population_projection.pk }}">Edit</a>
+                      </li>
+                      <li>
+                          <a hx-target="#modal-content" hx-swap="innerHTML" hx-get="{% url 'crud' %}?mode=delete&id={{ population_projection.pk }}" class="delete" data-value="{{ population_projection.slug }}" hx-on="htmx:afterOnLoad:my_modal_3.showModal()">Delete</a>
+                      </li>
+                  </ul>
+              </div>
+              <div class="card-body p-5">
+                  <h2 class="card-title text-xl font-bold mb-1">{{ population_projection.title|truncatewords:3 }}</h2>
+                  {% if population_projection.description %}
+                      <p class="mb-2">{{ population_projection.description }}</p>
+                  {% else %}
+                      <p class="mb-2">Population Projection from {{ population_projection.projections.all.0.base_year }} to {{ population_projection.projections.all.last.projecting_year }}</p>
+                  {% endif %}
+                  <div>
+                      {% with projections=population_projection.projections.all %}
+                          {% with base_years=projections|get_base_years projected_population=projections|get_projected_population %}
+                              <canvas class="populationProjectionChart" data-labels='{{ base_years }}' class="w-full" height="250" data-values='{{ projected_population }}'></canvas>
+                          {% endwith %}
+                      {% endwith %}
+                  </div>
+                  <a href="{% url 'population_projection' population_projection.slug %}" hx-get="{% url 'population_projection' population_projection.slug %}" class="btn btn-primary" hx-push-url="true" hx-target="#main" hx-swap="innerHTML">Go</a>
+              </div>
+          </div>
+      {% endfor %}
+  </div>
+  
+
+      {% else %}
+      <div class="flex justify-center items-center h-[20rem]">
+        <button hx-trigger="click" hx-get="{% url 'crud' %}?mode=create" hx-target="#modal-content" hx-swap="innerHTML" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" class="btn btn-primary">
+          + new projection
+        </button>
+      </div>
+    {% endif %}
+
+    <!--Needs Assessment-->
+    <div class="mt-[4rem]" id="needsAssessment">
+      <h2 class="text-xl font-bold mt-8">Needs Assessment</h2>
+      <p class="mt-2 w-[30rem]">A systematic process for determining and addressing needs between current conditions and desired conditions </p>
+
+      <div class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3 h-fit">
+        <div class="card-bordered rounded-md  shadow-md">
+          <div class="card-body">
+            <h2 class="card-title text-xl font-bold mb-2">Health Needs Assessment</h2>
+            <p class="mb-4">Health needs assessment is a systematic method for reviewing the health issues facing a population, leading to agreed priorities and resource allocation that will improve health and reduce inequalities.</p>
+            <a href="#" class="btn btn-primary">Go</a>
+          </div>
+        </div>
+        <div class="card-bordered rounded-md  shadow-md">
+          <div class="card-body">
+            <h2 class="card-title text-xl font-bold mb-2">Education Needs Assessment</h2>
+            <p class="mb-4">Education needs assessment is a systematic method for reviewing the education issues facing a population, leading to agreed priorities and resource allocation that will improve education and reduce inequalities.</p>
+            <a href="#" class="btn btn-primary">Go</a>
+          </div>
+        </div>
+        <div class="card-bordered rounded-md  shadow-md">
+          <div class="card-body">
+            <h2 class="card-title text-xl font-bold mb-2">Infrastructure Needs Assessment</h2>
+            <p class="mb-4">Infrastructure needs assessment is a systematic method for reviewing the infrastructure issues facing a population, leading to agreed priorities and resource allocation that will improve infrastructure and reduce inequalities.</p>
+            <a href="#" class="btn btn-primary">Go</a>
+          </div>
+        </div>
+    </div>
+
+  </div>
+

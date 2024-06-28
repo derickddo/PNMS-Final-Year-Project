@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+django-htmx = "*"
+django-extensions = "*"
+panda = "*"
+python-dotenv = "*"
+django-compressor = "*"
+django-components = "*"
+django-tailwind = {extras = ["reload"], version = "*"}
+django-allauth = {extras = ["socialaccount"], version = "*"}
+pillow = "*"
+django-widget-tweaks = "*"
+pytest = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

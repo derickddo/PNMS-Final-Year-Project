@@ -1,0 +1,1892 @@
+{
+  "Ahafo": {
+    "districts": [
+      {
+        "name": "Asunafo North Municipal",
+        "Population 2010": "124,685",
+        "Population 2021": "150,198",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ahafo+Asunafo North Municipal"
+      },
+      {
+        "name": "Asunafo South",
+        "Population 2010": "95,580",
+        "Population 2021": "91,693",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ahafo+Asunafo South"
+      },
+      {
+        "name": "Asutifi North",
+        "Population 2010": "52,259",
+        "Population 2021": "73,556",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ahafo+Asutifi North"
+      },
+      {
+        "name": "Asutifi South",
+        "Population 2010": "53,584",
+        "Population 2021": "68,394",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ahafo+Asutifi South"
+      },
+      {
+        "name": "Tano North Municipal",
+        "Population 2010": "79,973",
+        "Population 2021": "93,608",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ahafo+Tano North Municipal"
+      },
+      {
+        "name": "Tano South Municipal",
+        "Population 2010": "78,129",
+        "Population 2021": "87,219",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ahafo+Tano South Municipal"
+      }
+    ],
+    "Population 2010": "484,210",
+    "Population 2021": "564,668",
+    "map_url": "https://google.com/maps?q=ghana+Ahafo"
+  },
+  "Ashanti": {
+    "districts": [
+      {
+        "name": "Adansi Asokwa",
+        "Population 2010": "67,133",
+        "Population 2021": "71,844",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Adansi Asokwa "
+      },
+      {
+        "name": "Adansi North",
+        "Population 2010": "39,958",
+        "Population 2021": "54,155",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Adansi North"
+      },
+      {
+        "name": "Adansi South",
+        "Population 2010": "40,523",
+        "Population 2021": "85,200",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Adansi South"
+      },
+      {
+        "name": "Afigya Kwabre North",
+        "Population 2010": "41,593",
+        "Population 2021": "73,330",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Afigya Kwabre North"
+      },
+      {
+        "name": "Afigya Kwabre South",
+        "Population 2010": "94,547",
+        "Population 2021": "234,667",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Afigya Kwabre South"
+      },
+      {
+        "name": "Ahafo Ano North Municipal",
+        "Population 2010": "94,285",
+        "Population 2021": "92,742",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Ahafo Ano North Municipal"
+      },
+      {
+        "name": "Ahafo Ano South East",
+        "Population 2010": "58,962",
+        "Population 2021": "63,468",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Ahafo Ano South East"
+      },
+      {
+        "name": "Ahafo Ano South West",
+        "Population 2010": "62,697",
+        "Population 2021": "65,770",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Ahafo Ano South West"
+      },
+      {
+        "name": "Akrofuom",
+        "Population 2010": "74,855",
+        "Population 2021": "49,291",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Akrofuom "
+      },
+      {
+        "name": "Amansie Central",
+        "Population 2010": "90,741",
+        "Population 2021": "93,052",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Amansie Central"
+      },
+      {
+        "name": "Amansie South",
+        "Population 2010": "60,227",
+        "Population 2021": "116,366",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Amansie South "
+      },
+      {
+        "name": "Amansie West",
+        "Population 2010": "74,104",
+        "Population 2021": "109,416",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Amansie West"
+      },
+      {
+        "name": "Asante Akim Central Municipal",
+        "Population 2010": "71,508",
+        "Population 2021": "91,673",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Asante Akim Central Municipal"
+      },
+      {
+        "name": "Asante Akim North",
+        "Population 2010": "69,186",
+        "Population 2021": "85,788",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Asante Akim North"
+      },
+      {
+        "name": "Asante Akim South Municipal",
+        "Population 2010": "117,245",
+        "Population 2021": "123,633",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Asante Akim South Municipal"
+      },
+      {
+        "name": "Asokore Mampong Municipal",
+        "Population 2010": "304,815",
+        "Population 2021": "191,402",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Asokore Mampong Municipal"
+      },
+      {
+        "name": "Asokwa Municipal",
+        "Population 2010": "140,161",
+        "Population 2021": "125,642",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Asokwa Municipal"
+      },
+      {
+        "name": "Atwima Kwanwoma",
+        "Population 2010": "90,634",
+        "Population 2021": "234,846",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Atwima Kwanwoma"
+      },
+      {
+        "name": "Atwima Mponua",
+        "Population 2010": "119,180",
+        "Population 2021": "155,254",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Atwima Mponua"
+      },
+      {
+        "name": "Atwima Nwabiagya Municipal",
+        "Population 2010": "85,994",
+        "Population 2021": "161,893",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Atwima Nwabiagya Municipal"
+      },
+      {
+        "name": "Atwima Nwabiagya North",
+        "Population 2010": "63,031",
+        "Population 2021": "155,025",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Atwima Nwabiagya North "
+      },
+      {
+        "name": "Bekwai Municipal",
+        "Population 2010": "118,024",
+        "Population 2021": "137,967",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Bekwai Municipal"
+      },
+      {
+        "name": "Bosome Freho",
+        "Population 2010": "60,397",
+        "Population 2021": "62,259",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Bosome Freho"
+      },
+      {
+        "name": "Bosomtwe",
+        "Population 2010": "93,910",
+        "Population 2021": "165,180",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Bosomtwe"
+      },
+      {
+        "name": "Ejisu Municipal",
+        "Population 2010": "95,424",
+        "Population 2021": "180,723",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Ejisu Municipal"
+      },
+      {
+        "name": "Ejura-Sekyedumase Municipal",
+        "Population 2010": "85,446",
+        "Population 2021": "137,672",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Ejura-Sekyedumase Municipal"
+      },
+      {
+        "name": "Juaben Municipal",
+        "Population 2010": "48,338",
+        "Population 2021": "63,929",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Juaben Municipal"
+      },
+      {
+        "name": "Kwabre East",
+        "Population 2010": "115,556",
+        "Population 2021": "296,814",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Kwabre East"
+      },
+      {
+        "name": "Kwadaso Municipal ",
+        "Population 2010": "251,215",
+        "Population 2021": "154,526",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Kwadaso Municipal "
+      },
+      {
+        "name": "Mampong Municipal",
+        "Population 2010": "88,051",
+        "Population 2021": "116,632",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Mampong Municipal"
+      },
+      {
+        "name": "Obuasi East",
+        "Population 2010": "76,004",
+        "Population 2021": "92,401",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Obuasi East "
+      },
+      {
+        "name": "Obuasi Municipal",
+        "Population 2010": "92,637",
+        "Population 2021": "104,297",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Obuasi Municipal"
+      },
+      {
+        "name": "Offinso Municipal",
+        "Population 2010": "76,895",
+        "Population 2021": "137,272",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Offinso Municipal"
+      },
+      {
+        "name": "Offinso North",
+        "Population 2010": "56,881",
+        "Population 2021": "83,440",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Offinso North"
+      },
+      {
+        "name": "Oforikrom Municipal",
+        "Population 2010": "303,016",
+        "Population 2021": "213,126",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Oforikrom Municipal "
+      },
+      {
+        "name": "Old Tafo Municipal",
+        "Population 2010": "146,024",
+        "Population 2021": "114,368",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Old Tafo Municipal "
+      },
+      {
+        "name": "Sekyere Afram Plains",
+        "Population 2010": "28,535",
+        "Population 2021": "32,640",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Sekyere Afram Plains"
+      },
+      {
+        "name": "Sekyere Central",
+        "Population 2010": "71,232",
+        "Population 2021": "73,228",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Sekyere Central"
+      },
+      {
+        "name": "Sekyere East",
+        "Population 2010": "62,172",
+        "Population 2021": "74,789",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Sekyere East"
+      },
+      {
+        "name": "Sekyere Kumawu",
+        "Population 2010": "65,402",
+        "Population 2021": "64,396",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Sekyere Kumawu"
+      },
+      {
+        "name": "Sekyere South",
+        "Population 2010": "94,009",
+        "Population 2021": "120,076",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Sekyere South"
+      },
+      {
+        "name": "Suame Municipal ",
+        "Population 2010": "161,199",
+        "Population 2021": "136,290",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Ashanti+Suame Municipal "
+      }
+    ],
+    "Population 2010": "4,780,380",
+    "Population 2021": "5,440,463",
+    "map_url": "https://google.com/maps?q=ghana+Ashanti"
+  },
+  "Bono": {
+    "districts": [
+      {
+        "name": "Banda",
+        "Population 2010": "20,282",
+        "Population 2021": "28,179",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono +Banda"
+      },
+      {
+        "name": "Berekum East Municipal",
+        "Population 2010": "92,847",
+        "Population 2021": "106,252",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Bono +Berekum East Municipal"
+      },
+      {
+        "name": "Berekum West",
+        "Population 2010": "36,781",
+        "Population 2021": "49,464",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono +Berekum West"
+      },
+      {
+        "name": "Dormaa Central Municipal",
+        "Population 2010": "112,111",
+        "Population 2021": "112,702",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Bono +Dormaa Central Municipal"
+      },
+      {
+        "name": "Dormaa East",
+        "Population 2010": "50,871",
+        "Population 2021": "67,899",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono +Dormaa East"
+      },
+      {
+        "name": "Dormaa West",
+        "Population 2010": "47,678",
+        "Population 2021": "47,913",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono +Dormaa West"
+      },
+      {
+        "name": "Jaman North",
+        "Population 2010": "83,059",
+        "Population 2021": "117,909",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono +Jaman North"
+      },
+      {
+        "name": "Jaman South Municipal",
+        "Population 2010": "92,649",
+        "Population 2021": "108,388",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Bono +Jaman South Municipal"
+      },
+      {
+        "name": "Sunyani Municipal",
+        "Population 2010": "123,224",
+        "Population 2021": "193,595",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Bono +Sunyani Municipal"
+      },
+      {
+        "name": "Sunyani West",
+        "Population 2010": "85,272",
+        "Population 2021": "136,022",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono +Sunyani West"
+      },
+      {
+        "name": "Tain",
+        "Population 2010": "88,104",
+        "Population 2021": "115,568",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono +Tain"
+      },
+      {
+        "name": "Wenchi Municipal",
+        "Population 2010": "89,739",
+        "Population 2021": "124,758",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Bono +Wenchi Municipal"
+      }
+    ],
+    "Population 2010": "922,617",
+    "Population 2021": "1,208,649",
+    "map_url": "https://google.com/maps?q=ghana+Bono "
+  },
+  "Bono East": {
+    "districts": [
+      {
+        "name": "Atebubu-Amantin Municipal",
+        "Population 2010": "105,938",
+        "Population 2021": "144,947",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Bono East +Atebubu-Amantin Municipal"
+      },
+      {
+        "name": "Kintampo North Municipal",
+        "Population 2010": "95,480",
+        "Population 2021": "139,508",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Bono East +Kintampo North Municipal"
+      },
+      {
+        "name": "Kintampo South",
+        "Population 2010": "81,000",
+        "Population 2021": "89,126",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono East +Kintampo South"
+      },
+      {
+        "name": "Nkoranza North",
+        "Population 2010": "65,895",
+        "Population 2021": "56,468",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono East +Nkoranza North"
+      },
+      {
+        "name": "Nkoranza South Municipal",
+        "Population 2010": "100,929",
+        "Population 2021": "114,642",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Bono East +Nkoranza South Municipal"
+      },
+      {
+        "name": "Pru East",
+        "Population 2010": "72,799",
+        "Population 2021": "101,545",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono East +Pru East"
+      },
+      {
+        "name": "Pru West",
+        "Population 2010": "56,449",
+        "Population 2021": "69,383",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono East +Pru West"
+      },
+      {
+        "name": "Sene East",
+        "Population 2010": "61,076",
+        "Population 2021": "72,081",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono East +Sene East"
+      },
+      {
+        "name": "Sene West",
+        "Population 2010": "57,734",
+        "Population 2021": "69,836",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono East +Sene West"
+      },
+      {
+        "name": "Techiman Municipal",
+        "Population 2010": "147,788",
+        "Population 2021": "243,335",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Bono East +Techiman Municipal"
+      },
+      {
+        "name": "Techiman North",
+        "Population 2010": "59,068",
+        "Population 2021": "102,529",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Bono East +Techiman North"
+      }
+    ],
+    "Population 2010": "904,156",
+    "Population 2021": "1,203,400",
+    "map_url": "https://google.com/maps?q=ghana+Bono East "
+  },
+  "Central": {
+    "districts": [
+      {
+        "name": "Abura-Asebu-Kwamankese",
+        "Population 2010": "117,185",
+        "Population 2021": "124,465",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Abura-Asebu-Kwamankese"
+      },
+      {
+        "name": "Agona East",
+        "Population 2010": "85,920",
+        "Population 2021": "98,324",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Agona East"
+      },
+      {
+        "name": "Agona West Municipal",
+        "Population 2010": "115,358",
+        "Population 2021": "136,882",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Agona West Municipal"
+      },
+      {
+        "name": "Ajumako-Enyan-Essiam",
+        "Population 2010": "138,046",
+        "Population 2021": "120,586",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Ajumako-Enyan-Essiam"
+      },
+      {
+        "name": "Asikuma-Odoben-Brakwa",
+        "Population 2010": "129,580",
+        "Population 2021": "126,993",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Asikuma-Odoben-Brakwa"
+      },
+      {
+        "name": "Assin Central Municipal ",
+        "Population 2010": "76,525",
+        "Population 2021": "88,753",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Assin Central Municipal "
+      },
+      {
+        "name": "Assin North ",
+        "Population 2010": "67,942",
+        "Population 2021": "80,539",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Assin North "
+      },
+      {
+        "name": "Assin South",
+        "Population 2010": "104,244",
+        "Population 2021": "105,995",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Assin South"
+      },
+      {
+        "name": "Awutu Senya East Municipal",
+        "Population 2010": "108,422",
+        "Population 2021": "236,527",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Awutu Senya East Municipal"
+      },
+      {
+        "name": "Awutu Senya West",
+        "Population 2010": "86,884",
+        "Population 2021": "161,460",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Awutu Senya West"
+      },
+      {
+        "name": "Effutu Municipal",
+        "Population 2010": "68,597",
+        "Population 2021": "107,798",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Effutu Municipal"
+      },
+      {
+        "name": "Ekumfi",
+        "Population 2010": "52,231",
+        "Population 2021": "56,741",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Ekumfi"
+      },
+      {
+        "name": "Gomoa Central",
+        "Population 2010": "138,790",
+        "Population 2021": "83,610",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Gomoa Central"
+      },
+      {
+        "name": "Gomoa East",
+        "Population 2010": "68,281",
+        "Population 2021": "308,697",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Gomoa East"
+      },
+      {
+        "name": "Gomoa West",
+        "Population 2010": "135,189",
+        "Population 2021": "129,512",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Gomoa West"
+      },
+      {
+        "name": "Komenda-Edina-Eguafo-Abirem Municipal",
+        "Population 2010": "144,705",
+        "Population 2021": "166,017",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Komenda-Edina-Eguafo-Abirem Municipal"
+      },
+      {
+        "name": "Mfantsiman Municipal",
+        "Population 2010": "144,332",
+        "Population 2021": "168,905",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Mfantsiman Municipal"
+      },
+      {
+        "name": "Twifo-Ati Morkwa",
+        "Population 2010": "61,743",
+        "Population 2021": "100,851",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Twifo-Ati Morkwa"
+      },
+      {
+        "name": "Twifo-Heman-Lower Denkyira",
+        "Population 2010": "55,131",
+        "Population 2021": "66,075",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Twifo-Heman-Lower Denkyira"
+      },
+      {
+        "name": "Upper Denkyira East Municipal",
+        "Population 2010": "72,810",
+        "Population 2021": "110,141",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Upper Denkyira East Municipal"
+      },
+      {
+        "name": "Upper Denkyira West",
+        "Population 2010": "60,054",
+        "Population 2021": "91,025",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Central+Upper Denkyira West"
+      }
+    ],
+    "Population 2010": "2,201,863",
+    "Population 2021": "2,859,821",
+    "map_url": "https://google.com/maps?q=ghana+Central"
+  },
+  "Eastern": {
+    "districts": [
+      {
+        "name": "Abuakwa South Municipal ",
+        "Population 2010": "78,348",
+        "Population 2021": "73,949",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Abuakwa South Municipal "
+      },
+      {
+        "name": "Achiase ",
+        "Population 2010": "73,216",
+        "Population 2021": "56,348",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Achiase "
+      },
+      {
+        "name": "Akuapim North Municipal",
+        "Population 2010": "75,771",
+        "Population 2021": "105,315",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Akuapim North Municipal"
+      },
+      {
+        "name": "Akwapim South",
+        "Population 2010": "37,501",
+        "Population 2021": "76,922",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Akwapim South"
+      },
+      {
+        "name": "Akyemansa",
+        "Population 2010": "97,374",
+        "Population 2021": "91,038",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Akyemansa"
+      },
+      {
+        "name": "Asene Manso-Akroso",
+        "Population 2010": "76,876",
+        "Population 2021": "77,498",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Asene Manso-Akroso"
+      },
+      {
+        "name": "Asuogyaman",
+        "Population 2010": "98,046",
+        "Population 2021": "101,256",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Asuogyaman"
+      },
+      {
+        "name": "Atiwa East",
+        "Population 2010": "49,636",
+        "Population 2021": "64,647",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Atiwa East"
+      },
+      {
+        "name": "Atiwa West",
+        "Population 2010": "60,986",
+        "Population 2021": "61,219",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Atiwa West"
+      },
+      {
+        "name": "Ayensuano",
+        "Population 2010": "77,193",
+        "Population 2021": "94,594",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Ayensuano"
+      },
+      {
+        "name": "Birim Central Municipal",
+        "Population 2010": "67,993",
+        "Population 2021": "76,302",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Birim Central Municipal"
+      },
+      {
+        "name": "Birim North",
+        "Population 2010": "78,907",
+        "Population 2021": "82,669",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Birim North"
+      },
+      {
+        "name": "Birim South",
+        "Population 2010": "46,551",
+        "Population 2021": "35,654",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Birim South"
+      },
+      {
+        "name": "Denkyembour",
+        "Population 2010": "78,841",
+        "Population 2021": "77,029",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Denkyembour"
+      },
+      {
+        "name": "Fanteakwa North",
+        "Population 2010": "59,430",
+        "Population 2021": "56,987",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Fanteakwa North"
+      },
+      {
+        "name": "Fanteakwa South",
+        "Population 2010": "49,184",
+        "Population 2021": "54,634",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Fanteakwa South"
+      },
+      {
+        "name": "Kwaebibirem Municipal",
+        "Population 2010": "113,721",
+        "Population 2021": "121,698",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Kwaebibirem Municipal"
+      },
+      {
+        "name": "Kwahu Afram Plains North",
+        "Population 2010": "102,423",
+        "Population 2021": "66,555",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Kwahu Afram Plains North"
+      },
+      {
+        "name": "Kwahu Afram Plains South",
+        "Population 2010": "115,812",
+        "Population 2021": "74,002",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Kwahu Afram Plains South"
+      },
+      {
+        "name": "Kwahu East",
+        "Population 2010": "77,125",
+        "Population 2021": "79,726",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Kwahu East"
+      },
+      {
+        "name": "Kwahu South",
+        "Population 2010": "69,757",
+        "Population 2021": "80,358",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Kwahu South"
+      },
+      {
+        "name": "Kwahu West Municipal",
+        "Population 2010": "93,584",
+        "Population 2021": "145,429",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Kwahu West Municipal"
+      },
+      {
+        "name": "Lower Manya Krobo Municipal",
+        "Population 2010": "89,246",
+        "Population 2021": "121,478",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Lower Manya Krobo Municipal"
+      },
+      {
+        "name": "New Juaben North Municipal",
+        "Population 2010": "58,735",
+        "Population 2021": "93,201",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+New Juaben North Municipal"
+      },
+      {
+        "name": "New Juaben South Municipal",
+        "Population 2010": "124,992",
+        "Population 2021": "125,256",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+New Juaben South Municipal"
+      },
+      {
+        "name": "Nsawam Adoagyiri Municipal",
+        "Population 2010": "86,000",
+        "Population 2021": "155,597",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Nsawam Adoagyiri Municipal"
+      },
+      {
+        "name": "Okere ",
+        "Population 2010": "60,712",
+        "Population 2021": "51,675",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Okere "
+      },
+      {
+        "name": "Suhum Municipal",
+        "Population 2010": "90,358",
+        "Population 2021": "126,403",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Suhum Municipal"
+      },
+      {
+        "name": "Upper Manya Krobo",
+        "Population 2010": "72,092",
+        "Population 2021": "70,676",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Upper Manya Krobo"
+      },
+      {
+        "name": "Upper West Akim",
+        "Population 2010": "87,051",
+        "Population 2021": "93,391",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Upper West Akim"
+      },
+      {
+        "name": "West Akim Municipal",
+        "Population 2010": "108,298",
+        "Population 2021": "120,145",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+West Akim Municipal"
+      },
+      {
+        "name": "Yilo Krobo Municipal",
+        "Population 2010": "87,847",
+        "Population 2021": "122,705",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Eastern+Yilo Krobo Municipal"
+      }
+    ],
+    "Population 2010": "2,633,154",
+    "Population 2021": "2,925,653",
+    "map_url": "https://google.com/maps?q=ghana+Eastern"
+  },
+  "Greater Accra": {
+    "districts": [
+      {
+        "name": "Ablekuma Central Municipal ",
+        "Population 2010": "233,220",
+        "Population 2021": "169,145",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ablekuma Central Municipal "
+      },
+      {
+        "name": "Ablekuma North Municipal",
+        "Population 2010": "184,731",
+        "Population 2021": "159,208",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ablekuma North Municipal"
+      },
+      {
+        "name": "Ablekuma West Municipal ",
+        "Population 2010": "59,708",
+        "Population 2021": "153,490",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ablekuma West Municipal "
+      },
+      {
+        "name": "Ada East",
+        "Population 2010": "71,671",
+        "Population 2021": "76,411",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ada East"
+      },
+      {
+        "name": "Ada West",
+        "Population 2010": "59,124",
+        "Population 2021": "76,087",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ada West"
+      },
+      {
+        "name": "Adenta Municipal",
+        "Population 2010": "78,215",
+        "Population 2021": "237,546",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Adenta Municipal"
+      },
+      {
+        "name": "Ashaiman Municipal",
+        "Population 2010": "190,972",
+        "Population 2021": "208,060",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ashaiman Municipal"
+      },
+      {
+        "name": "Ayawaso Central Municipal ",
+        "Population 2010": "142,322",
+        "Population 2021": "94,831",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ayawaso Central Municipal "
+      },
+      {
+        "name": "Ayawaso East Municipal",
+        "Population 2010": "83,721",
+        "Population 2021": "53,004",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ayawaso East Municipal"
+      },
+      {
+        "name": "Ayawaso North Municipal",
+        "Population 2010": "99,777",
+        "Population 2021": "63,386",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ayawaso North Municipal"
+      },
+      {
+        "name": "Ayawaso West Municipal",
+        "Population 2010": "70,667",
+        "Population 2021": "75,303",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ayawaso West Municipal"
+      },
+      {
+        "name": "Ga Central Municipal",
+        "Population 2010": "117,220",
+        "Population 2021": "332,232",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ga Central Municipal"
+      },
+      {
+        "name": "Ga East Municipal",
+        "Population 2010": "147,742",
+        "Population 2021": "283,379",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ga East Municipal"
+      },
+      {
+        "name": "Ga North Municipal",
+        "Population 2010": "103,965",
+        "Population 2021": "235,292",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ga North Municipal"
+      },
+      {
+        "name": "Ga South Municipal",
+        "Population 2010": "234,191",
+        "Population 2021": "350,121",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ga South Municipal"
+      },
+      {
+        "name": "Ga West Municipal",
+        "Population 2010": "101,386",
+        "Population 2021": "314,299",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ga West Municipal"
+      },
+      {
+        "name": "Korle-Klottey Municipal",
+        "Population 2010": "121,723",
+        "Population 2021": "68,633",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Korle-Klottey Municipal"
+      },
+      {
+        "name": "Kpone Katamanso Municipal",
+        "Population 2010": "109,864",
+        "Population 2021": "417,334",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Kpone Katamanso Municipal"
+      },
+      {
+        "name": "Krowor Municipal",
+        "Population 2010": "102,059",
+        "Population 2021": "143,012",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Krowor Municipal"
+      },
+      {
+        "name": "La Dade-Kotopon Municipal",
+        "Population 2010": "183,528",
+        "Population 2021": "140,264",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+La Dade-Kotopon Municipal"
+      },
+      {
+        "name": "La Nkwantanang Madina Municipal",
+        "Population 2010": "111,926",
+        "Population 2021": "244,676",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+La Nkwantanang Madina Municipal"
+      },
+      {
+        "name": "Ledzokuku Municipal",
+        "Population 2010": "125,873",
+        "Population 2021": "217,304",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ledzokuku Municipal"
+      },
+      {
+        "name": "Ningo Prampram",
+        "Population 2010": "70,923",
+        "Population 2021": "204,673",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Ningo Prampram"
+      },
+      {
+        "name": "Okaikwei North Municipal ",
+        "Population 2010": "228,271",
+        "Population 2021": "160,446",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Okaikwei North Municipal "
+      },
+      {
+        "name": "Shai Osudoku",
+        "Population 2010": "51,913",
+        "Population 2021": "105,610",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Shai Osudoku"
+      },
+      {
+        "name": "Tema West Municipal ",
+        "Population 2010": "123,841",
+        "Population 2021": "196,224",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Tema West Municipal "
+      },
+      {
+        "name": "Weija-Gbawe Municipal",
+        "Population 2010": "191,623",
+        "Population 2021": "213,674",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Greater Accra+Weija-Gbawe Municipal"
+      }
+    ],
+    "Population 2010": "4,010,054",
+    "Population 2021": "5,455,692",
+    "map_url": "https://google.com/maps?q=ghana+Greater Accra"
+  },
+  "North East": {
+    "districts": [
+      {
+        "name": "Bunkpurugu-Nyakpanduri",
+        "Population 2010": "69,786",
+        "Population 2021": "82,384",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+North East +Bunkpurugu-Nyakpanduri"
+      },
+      {
+        "name": "Chereponi",
+        "Population 2010": "53,394",
+        "Population 2021": "87,176",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+North East +Chereponi"
+      },
+      {
+        "name": "East Mamprusi Municipal",
+        "Population 2010": "121,009",
+        "Population 2021": "188,006",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+North East +East Mamprusi Municipal"
+      },
+      {
+        "name": "Mamprugu Moagduri",
+        "Population 2010": "46,894",
+        "Population 2021": "68,746",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+North East +Mamprugu Moagduri"
+      },
+      {
+        "name": "West Mamprusi Municipal",
+        "Population 2010": "121,117",
+        "Population 2021": "175,755",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+North East +West Mamprusi Municipal"
+      },
+      {
+        "name": "Yunyoo-Nasuan",
+        "Population 2010": "52,805",
+        "Population 2021": "56,879",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+North East +Yunyoo-Nasuan"
+      }
+    ],
+    "Population 2010": "465,005",
+    "Population 2021": "658,946",
+    "map_url": "https://google.com/maps?q=ghana+North East "
+  },
+  "Northern": {
+    "districts": [
+      {
+        "name": "Gushiegu Municipal",
+        "Population 2010": "111,259",
+        "Population 2021": "153,965",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Gushiegu Municipal"
+      },
+      {
+        "name": "Karaga",
+        "Population 2010": "77,706",
+        "Population 2021": "114,225",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Karaga"
+      },
+      {
+        "name": "Kpandai",
+        "Population 2010": "108,816",
+        "Population 2021": "126,213",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Kpandai"
+      },
+      {
+        "name": "Kumbungu",
+        "Population 2010": "39,341",
+        "Population 2021": "110,586",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Kumbungu"
+      },
+      {
+        "name": "Mion",
+        "Population 2010": "81,812",
+        "Population 2021": "94,930",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Mion"
+      },
+      {
+        "name": "Nanton",
+        "Population 2010": "46,566",
+        "Population 2021": "50,767",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Nanton"
+      },
+      {
+        "name": "Nanumba North Municipal",
+        "Population 2010": "141,584",
+        "Population 2021": "188,680",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Nanumba North Municipal"
+      },
+      {
+        "name": "Nanumba South",
+        "Population 2010": "93,464",
+        "Population 2021": "106,374",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Nanumba South"
+      },
+      {
+        "name": "Saboba",
+        "Population 2010": "65,706",
+        "Population 2021": "95,683",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Saboba"
+      },
+      {
+        "name": "Sagnarigu Municipal",
+        "Population 2010": "148,099",
+        "Population 2021": "341,711",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Sagnarigu Municipal"
+      },
+      {
+        "name": "Savelugu Municipal",
+        "Population 2010": "92,717",
+        "Population 2021": "122,888",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Savelugu Municipal"
+      },
+      {
+        "name": "Tatale-Sangule",
+        "Population 2010": "60,039",
+        "Population 2021": "74,805",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Tatale-Sangule"
+      },
+      {
+        "name": "Tolon",
+        "Population 2010": "72,990",
+        "Population 2021": "118,101",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Tolon"
+      },
+      {
+        "name": "Yendi Municipal",
+        "Population 2010": "117,780",
+        "Population 2021": "154,421",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Yendi Municipal"
+      },
+      {
+        "name": "Zabzugu",
+        "Population 2010": "63,815",
+        "Population 2021": "82,846",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Northern+Zabzugu"
+      }
+    ],
+    "Population 2010": "1,544,946",
+    "Population 2021": "2,310,939",
+    "map_url": "https://google.com/maps?q=ghana+Northern"
+  },
+  "Oti": {
+    "districts": [
+      {
+        "name": "Biakoye",
+        "Population 2010": "65,901",
+        "Population 2021": "71,827",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Oti +Biakoye"
+      },
+      {
+        "name": "Guan ",
+        "Population 2010": "...",
+        "Population 2021": "28,238",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Oti +Guan "
+      },
+      {
+        "name": "Jasikan",
+        "Population 2010": "...",
+        "Population 2021": "59,695",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Oti +Jasikan"
+      },
+      {
+        "name": "Kadjebi",
+        "Population 2010": "59,303",
+        "Population 2021": "73,959",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Oti +Kadjebi"
+      },
+      {
+        "name": "Krachi East Municipal",
+        "Population 2010": "116,804",
+        "Population 2021": "110,435",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Oti +Krachi East Municipal"
+      },
+      {
+        "name": "Krachi Nchumuru",
+        "Population 2010": "72,688",
+        "Population 2021": "79,934",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Oti +Krachi Nchumuru"
+      },
+      {
+        "name": "Krachi West",
+        "Population 2010": "49,417",
+        "Population 2021": "61,128",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Oti +Krachi West"
+      },
+      {
+        "name": "Nkwanta North",
+        "Population 2010": "64,553",
+        "Population 2021": "126,096",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Oti +Nkwanta North"
+      },
+      {
+        "name": "Nkwanta South Municipal",
+        "Population 2010": "117,878",
+        "Population 2021": "135,936",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Oti +Nkwanta South Municipal"
+      }
+    ],
+    "Population 2010": "636,889",
+    "Population 2021": "747,248",
+    "map_url": "https://google.com/maps?q=ghana+Oti "
+  },
+  "Savannah": {
+    "districts": [
+      {
+        "name": "Bole",
+        "Population 2010": "61,593",
+        "Population 2021": "115,800",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Savannah+Bole"
+      },
+      {
+        "name": "Central Gonja",
+        "Population 2010": "87,877",
+        "Population 2021": "142,762",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Savannah+Central Gonja"
+      },
+      {
+        "name": "East Gonja Municipal",
+        "Population 2010": "105,702",
+        "Population 2021": "117,755",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Savannah+East Gonja Municipal"
+      },
+      {
+        "name": "North East Gonja ",
+        "Population 2010": "29,748",
+        "Population 2021": "39,404",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Savannah+North East Gonja "
+      },
+      {
+        "name": "North Gonja",
+        "Population 2010": "43,547",
+        "Population 2021": "61,432",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Savannah+North Gonja"
+      },
+      {
+        "name": "Sawla-Tuna-Kalba",
+        "Population 2010": "99,863",
+        "Population 2021": "112,664",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Savannah+Sawla-Tuna-Kalba"
+      },
+      {
+        "name": "West Gonja",
+        "Population 2010": "41,180",
+        "Population 2021": "63,449",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Savannah+West Gonja"
+      }
+    ],
+    "Population 2010": "469,510",
+    "Population 2021": "653,266",
+    "map_url": "https://google.com/maps?q=ghana+Savannah"
+  },
+  "Upper East": {
+    "districts": [
+      {
+        "name": "Bawku Municipal",
+        "Population 2010": "98,538",
+        "Population 2021": "119,458",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Bawku Municipal"
+      },
+      {
+        "name": "Bawku West",
+        "Population 2010": "94,034",
+        "Population 2021": "144,189",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Bawku West"
+      },
+      {
+        "name": "Binduri",
+        "Population 2010": "61,576",
+        "Population 2021": "76,679",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Binduri"
+      },
+      {
+        "name": "Bolgatanga East",
+        "Population 2010": "28,254",
+        "Population 2021": "38,824",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Bolgatanga East"
+      },
+      {
+        "name": "Bolgatanga Municipal",
+        "Population 2010": "103,296",
+        "Population 2021": "139,864",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Bolgatanga Municipal"
+      },
+      {
+        "name": "Bongo",
+        "Population 2010": "84,545",
+        "Population 2021": "120,254",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Bongo"
+      },
+      {
+        "name": "Builsa North Municipal",
+        "Population 2010": "56,477",
+        "Population 2021": "56,571",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Builsa North Municipal"
+      },
+      {
+        "name": "Builsa South",
+        "Population 2010": "36,514",
+        "Population 2021": "36,575",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Builsa South"
+      },
+      {
+        "name": "Garu",
+        "Population 2010": "58,362",
+        "Population 2021": "71,774",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Garu"
+      },
+      {
+        "name": "Kassena Nankana Municipal",
+        "Population 2010": "109,944",
+        "Population 2021": "99,895",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Kassena Nankana Municipal"
+      },
+      {
+        "name": "Kassena Nankana West",
+        "Population 2010": "70,667",
+        "Population 2021": "90,735",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Kassena Nankana West"
+      },
+      {
+        "name": "Nabdam",
+        "Population 2010": "33,826",
+        "Population 2021": "51,861",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Nabdam"
+      },
+      {
+        "name": "Pusiga",
+        "Population 2010": "57,677",
+        "Population 2021": "80,533",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Pusiga"
+      },
+      {
+        "name": "Talensi",
+        "Population 2010": "81,194",
+        "Population 2021": "87,021",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Talensi"
+      },
+      {
+        "name": "Tempane",
+        "Population 2010": "71,641",
+        "Population 2021": "86,993",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper East+Tempane"
+      }
+    ],
+    "Population 2010": "1,046,545",
+    "Population 2021": "1,301,226",
+    "map_url": "https://google.com/maps?q=ghana+Upper East"
+  },
+  "Upper West": {
+    "districts": [
+      {
+        "name": "Daffiama-Bussie-Issa",
+        "Population 2010": "32,827",
+        "Population 2021": "38,754",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper West+Daffiama-Bussie-Issa"
+      },
+      {
+        "name": "Jirapa Municipal",
+        "Population 2010": "88,402",
+        "Population 2021": "91,279",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Upper West+Jirapa Municipal"
+      },
+      {
+        "name": "Lambussie Karni",
+        "Population 2010": "51,654",
+        "Population 2021": "51,118",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper West+Lambussie Karni"
+      },
+      {
+        "name": "Lawra Municipal",
+        "Population 2010": "54,889",
+        "Population 2021": "58,433",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Upper West+Lawra Municipal"
+      },
+      {
+        "name": "Nadowli-Kaleo",
+        "Population 2010": "61,561",
+        "Population 2021": "77,057",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper West+Nadowli-Kaleo"
+      },
+      {
+        "name": "Nandom",
+        "Population 2010": "46,040",
+        "Population 2021": "51,328",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper West+Nandom"
+      },
+      {
+        "name": "Sissala East Municipal",
+        "Population 2010": "56,528",
+        "Population 2021": "80,619",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Upper West+Sissala East Municipal"
+      },
+      {
+        "name": "Sissala West",
+        "Population 2010": "49,573",
+        "Population 2021": "63,828",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper West+Sissala West"
+      },
+      {
+        "name": "Wa East",
+        "Population 2010": "72,074",
+        "Population 2021": "91,457",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper West+Wa East"
+      },
+      {
+        "name": "Wa Municipal",
+        "Population 2010": "107,214",
+        "Population 2021": "200,672",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Upper West+Wa Municipal"
+      },
+      {
+        "name": "Wa West",
+        "Population 2010": "81,348",
+        "Population 2021": "96,957",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Upper West+Wa West"
+      }
+    ],
+    "Population 2010": "702,110",
+    "Population 2021": "901,502",
+    "map_url": "https://google.com/maps?q=ghana+Upper West"
+  },
+  "Volta": {
+    "districts": [
+      {
+        "name": "Adaklu",
+        "Population 2010": "36,391",
+        "Population 2021": "38,649",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Adaklu"
+      },
+      {
+        "name": "Afadzato South",
+        "Population 2010": "95,030",
+        "Population 2021": "73,146",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Afadzato South"
+      },
+      {
+        "name": "Agotime Ziope",
+        "Population 2010": "28,013",
+        "Population 2021": "39,553",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Agotime Ziope"
+      },
+      {
+        "name": "Akatsi North",
+        "Population 2010": "29,777",
+        "Population 2021": "32,541",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Akatsi North"
+      },
+      {
+        "name": "Akatsi South",
+        "Population 2010": "98,684",
+        "Population 2021": "92,494",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Akatsi South"
+      },
+      {
+        "name": "Anloga",
+        "Population 2010": "82,686",
+        "Population 2021": "94,895",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Anloga"
+      },
+      {
+        "name": "Central Tongu",
+        "Population 2010": "59,411",
+        "Population 2021": "83,803",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Central Tongu"
+      },
+      {
+        "name": "Hohoe Municipal",
+        "Population 2010": "167,016",
+        "Population 2021": "114,472",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Hohoe Municipal"
+      },
+      {
+        "name": "Ho Municipal",
+        "Population 2010": "177,281",
+        "Population 2021": "180,420",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Ho Municipal"
+      },
+      {
+        "name": "Ho West",
+        "Population 2010": "94,600",
+        "Population 2021": "82,886",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Ho West"
+      },
+      {
+        "name": "Keta Municipal",
+        "Population 2010": "64,932",
+        "Population 2021": "78,862",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Keta Municipal"
+      },
+      {
+        "name": "Ketu North Municipal",
+        "Population 2010": "99,913",
+        "Population 2021": "114,846",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Ketu North Municipal"
+      },
+      {
+        "name": "Ketu South Municipal",
+        "Population 2010": "160,756",
+        "Population 2021": "253,122",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Ketu South Municipal"
+      },
+      {
+        "name": "Kpando Municipal",
+        "Population 2010": "53,736",
+        "Population 2021": "58,552",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+Kpando Municipal"
+      },
+      {
+        "name": "North Dayi",
+        "Population 2010": "39,913",
+        "Population 2021": "39,268",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+North Dayi"
+      },
+      {
+        "name": "North Tongu",
+        "Population 2010": "89,777",
+        "Population 2021": "110,891",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+North Tongu"
+      },
+      {
+        "name": "South Dayi",
+        "Population 2010": "46,661",
+        "Population 2021": "57,526",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+South Dayi"
+      },
+      {
+        "name": "South Tongu",
+        "Population 2010": "87,950",
+        "Population 2021": "113,114",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Volta+South Tongu"
+      }
+    ],
+    "Population 2010": "1,481,363",
+    "Population 2021": "1,659,040",
+    "map_url": "https://google.com/maps?q=ghana+Volta"
+  },
+  "Western": {
+    "districts": [
+      {
+        "name": "Ahanta West Municipal",
+        "Population 2010": "106,215",
+        "Population 2021": "153,140",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Western+Ahanta West Municipal"
+      },
+      {
+        "name": "Effia-Kwesimintsim Municipal",
+        "Population 2010": "232,617",
+        "Population 2021": "173,975",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Western+Effia-Kwesimintsim Municipal"
+      },
+      {
+        "name": "Ellembelle",
+        "Population 2010": "87,501",
+        "Population 2021": "120,893",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Western+Ellembelle"
+      },
+      {
+        "name": "Jomoro Municipal",
+        "Population 2010": "150,107",
+        "Population 2021": "126,576",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Western+Jomoro Municipal"
+      },
+      {
+        "name": "Mpohor",
+        "Population 2010": "42,923",
+        "Population 2021": "52,473",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Western+Mpohor"
+      },
+      {
+        "name": "Nzema East Municipal",
+        "Population 2010": "60,828",
+        "Population 2021": "94,621",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Western+Nzema East Municipal"
+      },
+      {
+        "name": "Prestea-Huni Valley Municipal",
+        "Population 2010": "159,304",
+        "Population 2021": "229,301",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Western+Prestea-Huni Valley Municipal"
+      },
+      {
+        "name": "Shama",
+        "Population 2010": "81,966",
+        "Population 2021": "117,224",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Western+Shama"
+      },
+      {
+        "name": "Tarkwa Nsuaem Municipal",
+        "Population 2010": "90,477",
+        "Population 2021": "218,664",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Western+Tarkwa Nsuaem Municipal"
+      },
+      {
+        "name": "Wassa Amenfi Central",
+        "Population 2010": "69,014",
+        "Population 2021": "119,117",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Western+Wassa Amenfi Central"
+      },
+      {
+        "name": "Wassa Amenfi East Municipal",
+        "Population 2010": "83,478",
+        "Population 2021": "179,696",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Western+Wassa Amenfi East Municipal"
+      },
+      {
+        "name": "Wassa Amenfi West Municipal",
+        "Population 2010": "92,152",
+        "Population 2021": "129,882",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Western+Wassa Amenfi West Municipal"
+      },
+      {
+        "name": "Wassa East",
+        "Population 2010": "81,073",
+        "Population 2021": "99,641",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Western+Wassa East"
+      }
+    ],
+    "Population 2010": "1,664,586",
+    "Population 2021": "2,060,585",
+    "map_url": "https://google.com/maps?q=ghana+Western"
+  },
+  "Western North": {
+    "districts": [
+      {
+        "name": "Aowin Municipal",
+        "Population 2010": "117,886",
+        "Population 2021": "129,721",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Western North+Aowin Municipal"
+      },
+      {
+        "name": "Bia East",
+        "Population 2010": "27,393",
+        "Population 2021": "53,073",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Western North+Bia East"
+      },
+      {
+        "name": "Bia West",
+        "Population 2010": "88,939",
+        "Population 2021": "115,881",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Western North+Bia West"
+      },
+      {
+        "name": "Bibiani-Anhwiaso-Bekwai Municipal",
+        "Population 2010": "123,272",
+        "Population 2021": "167,971",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Western North+Bibiani-Anhwiaso-Bekwai Municipal"
+      },
+      {
+        "name": "Bodi",
+        "Population 2010": "53,314",
+        "Population 2021": "65,748",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Western North+Bodi"
+      },
+      {
+        "name": "Juaboso",
+        "Population 2010": "58,435",
+        "Population 2021": "88,814",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Western North+Juaboso"
+      },
+      {
+        "name": "Sefwi Akontombra",
+        "Population 2010": "82,467",
+        "Population 2021": "70,225",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Western North+Sefwi Akontombra"
+      },
+      {
+        "name": "Sefwi Wiawso Municipal",
+        "Population 2010": "139,200",
+        "Population 2021": "151,220",
+        "Status": "Municipal District",
+        "map_url": "https://google.com/maps?q=ghana+Western North+Sefwi Wiawso Municipal"
+      },
+      {
+        "name": "Suaman",
+        "Population 2010": "20,529",
+        "Population 2021": "38,268",
+        "Status": "District",
+        "map_url": "https://google.com/maps?q=ghana+Western North+Suaman"
+      }
+    ],
+    "Population 2010": "711,435",
+    "Population 2021": "880,921",
+    "map_url": "https://google.com/maps?q=ghana+Western North"
+  }
+}

@@ -1,0 +1,105 @@
+{% load custom_filters %}
+<div class="px-4 pb-8 overflow-y-auto">
+  <div>
+    <div class="w-full lg:flex lg:justify-between">
+      <div>
+        <div class="flex lg:gap-8 justify-between w-full">
+          <h1 class="text-2xl font-bold">{{population_projection.title}}</h1>
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md"><i class="fa-solid fas fa-ellipsis-h"></i></div>
+            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a class="edit" hx-trigger="click" hx-target="#modal-content" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" hx-get="{% url 'crud' %}?mode=update&id={{population_projection.pk}}">Edit</a></li>
+              <li><a hx-target="#modal-content" hx-swap="innerHTML" hx-get="{% url 'crud' %}?mode=delete&id={{population_projection.pk}}"class="delete" data-value="{{population_projection.slug}}" hx-on="htmx:afterOnLoad:my_modal_3.showModal()">Delete</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="mt-8">
+          {% if population_projection.description %}
+          <p class="mt-2">{{population_projection.description}}</p>
+          {% endif %}
+          <p class="mt-2">Projecting from {{base_years.0}} to {{projection_years.last}} for {{population_projection.content_object}} {{population_projection.area_type|title}}.</p>
+          <p class="mt-2">Area Type: {{population_projection.area_type|title}}</p>
+          <p class="mt-2">Created: {{population_projection.timestamp|date}}</p>
+        </div>
+        
+      </div>
+        
+        <div class="gap-5 hidden lg:flex">
+          <!--Generate report button-->
+          <a href="{% url 'generate_report' population_projection.slug %}" class="btn btn-md btn-primary">Generate Report</a>
+
+          <a href="{% url 'generate_report' population_projection.slug %}" class="btn btn-md btn-primary">Continue to needs assessment</a>
+
+        </div>
+        <div class="dropdown dropdown-end absolute right-3 top-3">
+          <div tabindex="0" role="button" class="m-1 p-1 bg-base-300 rounded-md"><i class="fa-solid fa-ellipsis-vertical"></i></div>
+          <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+            <li><a>Edit</a></li>
+            <li><a>Delete</a></li>
+          </ul>
+        </div>
+          
+    </div>
+    <div class="overflow-x-auto mt-8">
+        <table class="table table-lg">
+          <!-- head -->
+          <thead>
+            <tr>
+              <th class="text-lg">Base Year</th>
+              <th class="text-lg">Projecting Year</th>
+              <th class="text-lg">Base Population</th>
+              <th class="text-lg">Projected Population</th>
+              <th class="text-lg">Growth Rate (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in range %}
+              <tr class="{% cycle 'bg-base-200' '' %}">
+                  <td class="">{{ base_years|index:i }}</td>
+                  <td class="">{{ projection_years|index:i }}</td>
+                  <td class="">{{ base_populations|index:i }}</td>
+                  <td class="">{{ projected_populations|index:i }}</td>
+                  <td class="">{{ growth_rate|floatformat:2 }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+    <h2 class="font-medium mt-8 text-lg">Visualized Data</h3>
+      <div class="border border-gray-700 w-full mt-8 rounded-md p-4">
+        <canvas id="populationChart" height="{% if diff_year < 8 %} 120 {% else %} 150 {%endif%}" data-labels='{{ projection_years|queryset_to_list }}' data-values='{{ projected_populations|queryset_to_list }}'></canvas>
+    </div>
+    <div class="grid {% if diff_year > 8 %} md:grid-cols-1{% else %} md:grid-cols-2{% endif %}  mt-12 grid-cols-1 gap-5">
+        
+        <div class="border border-gray-700 w-full rounded-md p-4">
+            <canvas height="{% if diff_year > 8 %} 150 {% else %} 300 {%endif%}" data-labels='{{ projection_years|queryset_to_list }}' data-values='{{ projected_populations|queryset_to_list }}' id="populationChart2"></canvas>
+        </div> 
+        <div class="border border-gray-700 rounded-md p-4">
+          <canvas height="10"id="populationChart3" data-labels='{{ projection_years|queryset_to_list }}' data-values='{{ projected_populations|queryset_to_list }}'></canvas>
+        </div>
+       
+    </div>
+  </div>
+ <!--Map of content_object-->
+  <div class="mt-8">
+    <h2 class="font-medium text-lg mb-4">Map</h2>
+    <div class="border border-gray-700 w-full rounded-md p-4">
+      <div id="map" class="h-96">
+        <iframe class="w-full h-full" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d253609.52897772813!2d-1.911489328397378!3d6.69033852920503!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdb96ebefbe0563%3A0xb6f9278ff121292b!2sAshanti%20Region!5e0!3m2!1sen!2sgh!4v1717374537526!5m2!1sen!2sgh" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!--Needs Assessment-->
+  <!-- <div class="">
+    <h2 class="font-medium text-lg mt-8">Needs Assessment</h2>
+    <div class="border border-gray-700 w-full rounded-md p-4">
+      <p>Needs assessment for {{population_projection.content_object}} {{population_projection.area_type|title}}.</p>
+    </div>
+  </div> -->
+ 
+  
+</div>
+

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+    <!-- Tippy.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+</head>
+<body>
+    <form id="editForm" method="post" action="{% if object.id %}/update-url/{% else %}/create-url/{% endif %}">
+        {% csrf_token %}
+        {% if object.id %}
+            <input type="hidden" id="objectId" name="id" value="{{ object.id }}">
+        {% endif %}
+        <input type="text" id="name" name="name" value="{{ object.name }}" class="input input-bordered w-full mb-2" placeholder="Name">
+        <input type="email" id="email" name="email" value="{{ object.email }}" class="input input-bordered w-full mb-2" placeholder="Email">
+        <textarea id="description" name="description" class="textarea textarea-bordered w-full mb-2" placeholder="Description">{{ object.description }}</textarea>
+        <button type="submit" id="submitButton" class="btn btn-primary" disabled>Save Changes</button>
+    </form>
+
+    <!-- Tippy.js Script -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('editForm');
+    const submitButton = document.getElementById('submitButton');
+    const objectId = document.getElementById('objectId');
+    const inputs = form.querySelectorAll('input, textarea');
+    const initialFormData = new FormData(form);
+
+    // Convert FormData to a plain object
+    const initialValues = Object.fromEntries(initialFormData.entries());
+
+    // Initialize Tippy.js for the submit button
+    tippy(submitButton, {
+        content: 'Change something to be able to submit',
+        trigger: 'mouseenter',
+        placement: 'top',
+        arrow: true,
+        theme: 'light',
+    });
+
+    // Function to check if any field is empty
+    function isAnyFieldEmpty() {
+        for (const input of inputs) {
+            if (input.value.trim() === '') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Function to check if any field value has changed
+    function hasChanged() {
+        const currentFormData = new FormData(form);
+        const currentValues = Object.fromEntries(currentFormData.entries());
+        for (const key in initialValues) {
+            if (initialValues[key] !== currentValues[key]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    form.addEventListener('input', function() {
+        const fieldsChanged = hasChanged();
+        const fieldsEmpty = isAnyFieldEmpty();
+
+        // Enable or disable the submit button based on changes and empty fields
+        submitButton.disabled = fieldsEmpty || !fieldsChanged;
+
+        // Update Tippy content based on button state
+        if (submitButton.disabled) {
+            submitButton._tippy.setContent(fieldsEmpty ? 'All fields must be filled' : 'Change something to be able to submit');
+        } else {
+            submitButton._tippy.setContent('');
+        }
+    });
+
+    // Handle form submission via AJAX (fetch)
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Show loading spinner and disable the button
+        submitButton.disabled = true;
+        submitButton.textContent = 'Loading...';
+
+        const url = form.getAttribute('action');
+        const method = objectId ? 'PUT' : 'POST'; // Use PUT for updates, POST for creation
+        const headers = {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
+        };
+        const body = JSON.stringify(Object.fromEntries(new FormData(form)));
+
+        fetch(url, { method, headers, body })
+            .then(response => response.json())
+            .then(data => {
+                // Handle success (e.g., show a success message or redirect)
+                submitButton.textContent = 'Save Changes';
+                alert('Changes saved successfully');
+                // Optionally, redirect or update the page content
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                }
+            })
+            .catch(error => {
+                // Handle error (e.g., show an error message)
+                console.error('Error:', error);
+                submitButton.textContent = 'Save Changes';
+                submitButton.disabled = false; // Re-enable for retry
+                alert('An error occurred while saving changes');
+            });
+    });
+});
+
+    </script>
+</body>
+</html>
+
