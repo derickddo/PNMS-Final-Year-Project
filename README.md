@@ -1,4 +1,4 @@
-# Project Population Projection, Needs Assessment, and Map Prediction System (PNMS)
+# Population Projection, Needs Assessment, and Map Prediction System (PNMS)
 
 ## Overview
 
