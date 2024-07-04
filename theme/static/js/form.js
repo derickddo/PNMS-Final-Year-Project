@@ -202,12 +202,21 @@ modalContent.addEventListener('htmx:afterSettle', (e) => {
                 history.pushState('data', 'Title', '/population-projection/' + data.slug);
                 document.getElementById('main').innerHTML = data.rendered_template;
                 // make main innerHtml smooth and scrollable
-                document.getElementById('main').classList.add('overflow-y-scroll')
                 document.getElementById('my_modal_3').classList.add('hidden')
-                document.getElementById('main').classList.add('smooth')
                 projectButton.innerText = 'Update';
                 projectButton.disabled = false
-                initializeChart(); // reinitialize chart after htmx settle  
+                initializeChart(); // reinitialize chart after htmx settle 
+
+
+                // sweet alert
+                 swal({
+                    title: "Success!",
+                    text: "Population projection updated successfully!",
+                    icon: "success",
+                    button: "OK",
+                    position: 'top-end',
+                    timer: 3000
+                });
             })
             .catch((error) => {
                 console.error('Error:', error);

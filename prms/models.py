@@ -1,3 +1,4 @@
+from typing import Iterable
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.models import ContentType
@@ -13,6 +14,9 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+    class Meta:
+        db_table = 'user'
 
 class Population(models.Model):
     population = models.PositiveBigIntegerField()
@@ -35,6 +39,9 @@ class Region(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        db_table = 'region'
 
 class District(models.Model):
     DISTRICTS_TYPE_CHOICES = [
@@ -48,6 +55,9 @@ class District(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        db_table = 'district'
 
     
     
@@ -73,7 +83,6 @@ class PopulationProjection(models.Model):
     def __str__(self):
         return f'{self.title}'
     
-
     
     def delete(self, *args, **kwargs): # delete all projections when a population projection is deleted
         self.projections.clear()
@@ -93,11 +102,115 @@ class NeedsAssessment(models.Model):
     ]
     population_projection = models.ForeignKey(PopulationProjection, on_delete=models.CASCADE)
     sector = models.CharField(max_length=50, choices=SECTORS_CHOICES)
+    needs = models.ManyToManyField('Needs', related_name='needs')
+    slug = models.SlugField(unique=True, blank=True, null=True)
 
     def __str__(self):
-        return f'Needs assestment for {self.sector} sector in {self.population_projection.area_type}'  
+        return f'Needs assessment for {self.sector} sector in {self.population_projection.area_type}' 
+    
+    # delete all needs
+    def delete(self, *args, **kwargs):
+        self.needs.delete()
+        super().delete(*args, **kwargs)
+     
     class Meta:
-        db_table = 'needs_assestment'
+        db_table = 'needs_assessment'
+
+class FacilityType(models.Model):
+    type_name = models.CharField(max_length=50)
+    year = models.IntegerField()
+    standard = models.IntegerField()
+    required = models.IntegerField()
+    new_need = models.IntegerField(null=True, blank=True)
+    suplus = models.IntegerField(null=True, blank=True)
+    available = models.PositiveBigIntegerField(null=True, blank=True)
+    population = models.PositiveBigIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.type_name
+    
+    class Meta:
+        db_table = 'facility_type'
+
+class PersonnelType(models.Model):
+    type_name = models.CharField(max_length=50)
+    year = models.IntegerField()
+    standard = models.IntegerField()
+    required = models.IntegerField()
+    new_need = models.IntegerField(null=True, blank=True)
+    suplus = models.IntegerField(null=True, blank=True)
+    available = models.PositiveBigIntegerField(null=True, blank=True)
+    population = models.PositiveBigIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.type_name
+    
+    class Meta:
+        db_table = 'personnel_type'
+
+class EquipmentType(models.Model):
+    type_name = models.CharField(max_length=50)
+    year = models.IntegerField()
+    standard = models.IntegerField()
+    required = models.IntegerField()
+    new_need = models.IntegerField(null=True, blank=True)
+    suplus = models.IntegerField(null=True, blank=True)
+    available = models.PositiveBigIntegerField(null=True, blank=True)
+    population = models.PositiveBigIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.type_name
+    
+    class Meta:
+        db_table = 'equipment_type'
+
+class FurnitureType(models.Model):
+    type_name = models.CharField(max_length=50)
+    year = models.IntegerField()
+    standard = models.IntegerField()
+    required = models.IntegerField()
+    new_need = models.IntegerField(null=True, blank=True)
+    suplus = models.IntegerField(null=True, blank=True)
+    available = models.PositiveBigIntegerField(null=True, blank=True)
+    population = models.PositiveBigIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.type_name
+    
+
+class OtherType(models.Model):
+    description = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.description
+
+class Needs(models.Model):
+    NEEDS_TYPE_CHOICES = [
+        ('facility', 'Facility'),
+        ('personnel', 'Personnel'),
+        ('equipment', 'Equipment'),
+        ('furniture', 'Furniture'),
+        ('others', 'Others')
+    ]
+    needs_type = models.CharField(max_length=50, choices=NEEDS_TYPE_CHOICES, default='facility')
+    # generic one to many relationship to all needs
+    object_id = models.IntegerField() # id of the needs type
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True) # type of the needs
+    content_object = GenericForeignKey('content_type', 'object_id') # the needs object
+ 
+    def __str__(self):
+        return f'needs for {self.needs_type}'
+
+    def delete(self, *args, **kwargs):
+        self.content_object.delete()
+        super().delete(*args, **kwargs)  
+
+    class Meta:
+        db_table = 'needs'
+
+
+
+
 
 class MapPrediction(models.Model):
     population_projection = models.ForeignKey(PopulationProjection, on_delete=models.CASCADE)

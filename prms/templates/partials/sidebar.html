@@ -1,0 +1,79 @@
+<div class="fixed inset-0 top-0 md:top-[4rem] z-50 bg-base-200 h-screen overflow-y-auto px-4 md:left-0 w-64  transition duration-200 ease-in-out transform -translate-x-full md:translate-x-0">
+    
+        <a id="logo" href="#" class="flex md:hidden items-center space-x-2 px-4 mt-5">
+            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 10l-6 6-6-6"></path>
+            </svg>
+            <span class="text-2xl font-bold">PRMS</span>
+        </a>
+        <div class="h-[calc(100%-5rem)] flex flex-col justify-between">
+            <nav class="mt-[3rem] space-y-2">
+                <a href="#" hx-get="{% url 'dashboard' %}" hx-target="#main" hx-swap="innerHTML" hx-push-url="true" class="flex gap-4 items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">
+                    <i class="fa-solid fa-tachometer-alt"></i> <!-- Dashboard Icon -->
+                    Dashboard
+                </a>
+                <a href="#" class="flex gap-4 items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white cursor-pointer" id="projection-button" hx-trigger="click" hx-get="{% url 'crud' %}?mode=create" hx-target="#modal-content" hx-swap="innerHTML" hx-on="htmx:afterOnLoad:my_modal_3.showModal()">
+                    <i class="fa-solid fa-person-arrow-up-from-line"></i> <!-- Population Projection Icon -->
+                    Population Projection
+                </a>
+                <a href="{% url 'create_need_assessment' %}" hx-get="{% url 'create_need_assessment' %}" hx-target="#main" hx-push-url="true" class="flex gap-4 items-center py py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">
+                    <i class="fa-solid fa-clipboard-list"></i> <!-- Needs Assessment Icon -->
+                    Needs Assessment
+                </a>
+                <a href="#" class="flex gap-4 items-center py py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">
+                    <i class="fa-solid fa-map-marked-alt"></i> <!-- Map Prediction Icon -->
+                    Map Prediction
+                </a>
+                <a href="#" class="flex gap-4 items-center py py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">
+                    <i class="fa-solid fa-sign-out-alt"></i> <!-- Logout Icon -->
+                    Logout
+                </a>
+            </nav>
+            <div class="w-full relative">
+                <details class="dropdown w-full">
+                    <summary class="btn btn-outline w-full flex justify-between">Settings<i class="fa-solid fa-gear"></i></summary>
+                    <ul class="menu dropdown-content w-full bg-base-100 rounded-box z-[1]  p-2 shadow absolute left-0 bottom-full mb-2">
+                        <li class="theme"><a><i class="fa-solid fa-moon"></i>Dark</a></li>
+                        <li class="theme"><a><i class="fa-solid fa-sun"></i>Light</a></li>
+                    </ul>
+                </details>
+            </div>
+            
+        </div>
+        
+        
+  </div>
+    <div class="flex-1 p-4">
+        <button id="menuButton" class="md:hidden bg-gray-800 text-white p-2 rounded-md focus:outline-none">
+            Menu
+        </button>
+    </div>
+
+<script>
+    const sidebar = document.querySelector('.fixed.inset-0');
+    const toggleButton = document.getElementById('sidebar-toggle');
+    const menuButton = document.getElementById('menuButton');
+    const logo = document.getElementById('logo');
+    const themeBtn = document.querySelectorAll('.theme');
+
+    menuButton.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');  // Toggle sidebar visibility
+        
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!sidebar.contains(e.target) && e.target !== toggleButton && e.target !== menuButton) {
+            sidebar.classList.add('-translate-x-full');  // Close sidebar when clicked outside
+            logo.classList.remove('hidden')
+        }
+    });
+
+    themeBtn.forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.getElementsByTagName('html')[0].dataset.theme = btn.textContent.toLowerCase();
+            localStorage.setItem('theme', btn.textContent.toLowerCase());
+    });
+    });
+    
+
+</script>  

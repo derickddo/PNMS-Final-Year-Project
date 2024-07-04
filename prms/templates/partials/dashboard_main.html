@@ -19,7 +19,7 @@
     <div id="populationProjection" class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3 h-fit">
       {% for population_projection in population_projections %}
           <!--Graph card-->
-          <div class="card-borderd border border-gray-600 rounded-md shadow-md relative card-item">
+          <div class="card-bordered shadow-md card rounded-md  relative card-item">
               <div class="dropdown dropdown-end absolute right-3 top-3">
                   <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md">
                       <i class="fa-solid fas fa-ellipsis-h"></i>
@@ -34,9 +34,9 @@
                   </ul>
               </div>
               <div class="card-body p-5">
-                  <h2 class="card-title text-xl font-bold mb-1">{{ population_projection.title|truncatewords:3 }}</h2>
+                  <h2 class="card-title text-lg">{{ population_projection.title|truncatewords:3 }}</h2>
                   {% if population_projection.description %}
-                      <p class="mb-2">{{ population_projection.description }}</p>
+                      <p class="mb-2 text-xs">{{ population_projection.description }}</p>
                   {% else %}
                       <p class="mb-2">Population Projection from {{ population_projection.projections.all.0.base_year }} to {{ population_projection.projections.all.last.projecting_year }}</p>
                   {% endif %}
@@ -67,29 +67,59 @@
       <h2 class="text-xl font-bold mt-8">Needs Assessment</h2>
       <p class="mt-2 w-[30rem]">A systematic process for determining and addressing needs between current conditions and desired conditions </p>
 
+      
+      {% if needs_assessments %}
       <div class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3 h-fit">
-        <div class="card-bordered rounded-md  shadow-md">
-          <div class="card-body">
-            <h2 class="card-title text-xl font-bold mb-2">Health Needs Assessment</h2>
-            <p class="mb-4">Health needs assessment is a systematic method for reviewing the health issues facing a population, leading to agreed priorities and resource allocation that will improve health and reduce inequalities.</p>
-            <a href="#" class="btn btn-primary">Go</a>
+        
+        {% for need in needs_assessments  %}
+          <div class="card-bordered shadow-md card rounded-md  relative card-item">
+              <div class="dropdown dropdown-end absolute right-3 top-3">
+                  <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md">
+                      <i class="fa-solid fas fa-ellipsis-h"></i>
+                  </div>
+                  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <li>
+                          <a class="edit" hx-trigger="click" hx-target="#modal-content" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" hx-get="{% url 'crud' %}?mode=update&id={{ need.pk }}">Edit</a>
+                      </li>
+                      <li>
+                          <a hx-target="#modal-content" hx-swap="innerHTML" hx-get="{% url 'crud' %}?mode=delete&id={{ need.pk }}" class="delete" data-value="{{ need.slug }}" hx-on="htmx:afterOnLoad:my_modal_3.showModal()">Delete</a>
+                      </li>
+                  </ul>
+              </div>
+              <div class="card-body p-5">
+                  <h2 class="card-title text-lg mb-1">Needs for {{ need.population_projection|truncatewords:3 }}</h2>
+                  {% if need.description %}
+                      <p class="mb-2">{{ need.description }}</p>
+                  {% else %}
+                      <p class="mb-2">Needs Assessment from {{ need.population_projection.projections.all.0.base_year }} to {{ need.population_projection.projections.all.last.projecting_year }}</p>
+
+                      <p>Sector: {{need.sector}}</p>
+                  {% endif %}
+                  <div>
+                    <!--Display [required, available, suplus]-->
+                    <div class="flex justify-between">
+                      
+                      <!-- {% for needs in need.needs.all  %}
+                          <p>No. Available: {{needs.available}}</p>
+                      {% endfor %} -->
+                        
+                    </div>  
+                  </div>
+                  <a hx-get="{% url 'manage_need_assessment' need.slug %}" class="btn btn-primary" hx-push-url="true" hx-target="#main" hx-swap="innerHTML">Go</a>
+              </div>
           </div>
-        </div>
-        <div class="card-bordered rounded-md  shadow-md">
-          <div class="card-body">
-            <h2 class="card-title text-xl font-bold mb-2">Education Needs Assessment</h2>
-            <p class="mb-4">Education needs assessment is a systematic method for reviewing the education issues facing a population, leading to agreed priorities and resource allocation that will improve education and reduce inequalities.</p>
-            <a href="#" class="btn btn-primary">Go</a>
-          </div>
-        </div>
-        <div class="card-bordered rounded-md  shadow-md">
-          <div class="card-body">
-            <h2 class="card-title text-xl font-bold mb-2">Infrastructure Needs Assessment</h2>
-            <p class="mb-4">Infrastructure needs assessment is a systematic method for reviewing the infrastructure issues facing a population, leading to agreed priorities and resource allocation that will improve infrastructure and reduce inequalities.</p>
-            <a href="#" class="btn btn-primary">Go</a>
-          </div>
-        </div>
+
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="flex justify-center items-center h-[20rem]">
+        <button hx-trigger="click" hx-push-url="{% url 'create_need_assessment' %}" hx-get="{% url 'create_need_assessment' %}"hx-target="#main" hx-on="htmx:afterOnLoad:handleSectorSelection" hx-swap="innerHTML"class="btn btn-primary">
+          + new assessment
+        </button>
+      </div>
+      {% endif %}
+        
+          
     </div>
 
   </div>
-

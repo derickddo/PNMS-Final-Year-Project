@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django_components',
     'django_components.safer_staticfiles',  # Add the safer_staticfiles app
 
-    'pnms', # Add the prms app to the installed apps
+    'prms', # Add the prms app to the installed apps
     'tailwind', # Add the tailwind app to the installed apps
     'theme', # Add the theme app to the installed apps
 
@@ -94,7 +94,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 ACCOUNT_FORMS = {
-    'signup': 'pnms.forms.CustomSignupForm',
+    'signup': 'prms.forms.CustomSignupForm',
 }
 
 

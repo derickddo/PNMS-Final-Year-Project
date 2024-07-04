@@ -12,6 +12,8 @@ urlpatterns = [
     path('crud/', views.crud, name='crud'),
 
     path('delete-projection/<int:id>/', views.delete_population_projection, name='delete_population_projection'),
-    path('needs-assessment/', views.needs_assessment, name='needs_assessment'),
+    path('needs-assessment/', views.needs_assessment, name='create_need_assessment'),
+    path('needs-assessment/<str:slug>', views.needs_assessment, name='manage_need_assessment'),
+    
 ]
    

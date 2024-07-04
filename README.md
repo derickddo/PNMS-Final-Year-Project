@@ -21,7 +21,7 @@ PNMS is a comprehensive platform designed to aid development planners in Ghana w
 - Pandas
 - GeoPy
 
-### Installation
+<!-- ### Installation
 
 1. Clone the repository:
     ```bash
@@ -59,7 +59,7 @@ PNMS is a comprehensive platform designed to aid development planners in Ghana w
     python manage.py runserver
     ```
 
-7. Access the application at `http://localhost:8000`.
+7. Access the application at `http://localhost:8000`. -->
 
 ## Usage
 

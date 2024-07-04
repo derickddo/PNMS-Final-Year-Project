@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Region, District, Population, PopulationProjection, Projection, User
+from .models import Region, District, Population, PopulationProjection, Projection, User, NeedsAssessment, Needs, FacilityType
 from django.contrib.contenttypes.admin import GenericTabularInline
 from django.db.models import Q
 from django.contrib import messages
@@ -43,6 +43,9 @@ admin.site.register(Population, PopulationAdmin)
 admin.site.register(PopulationProjection)
 admin.site.register(Projection)
 admin.site.register(User)
+admin.site.register(NeedsAssessment)
+admin.site.register(Needs)
+admin.site.register(FacilityType)
     
 
 

@@ -29,7 +29,7 @@
           <!--Generate report button-->
           <a href="{% url 'generate_report' population_projection.slug %}" class="btn btn-md btn-primary">Generate Report</a>
 
-          <a href="{% url 'generate_report' population_projection.slug %}" class="btn btn-md btn-primary">Continue to needs assessment</a>
+          <a hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}" hx-target="#main" class="btn btn-md btn-primary">Continue to needs assessment</a>
 
         </div>
         <div class="dropdown dropdown-end absolute right-3 top-3">
@@ -68,15 +68,15 @@
     </div>
 
     <h2 class="font-medium mt-8 text-lg">Visualized Data</h3>
-      <div class="border border-gray-700 w-full mt-8 rounded-md p-4">
-        <canvas id="populationChart" height="{% if diff_year < 8 %} 120 {% else %} 150 {%endif%}" data-labels='{{ projection_years|queryset_to_list }}' data-values='{{ projected_populations|queryset_to_list }}'></canvas>
+      <div class="card card-bordered w-full mt-8 rounded-md p-4">
+        <canvas id="populationChart" height="{% if diff_year < 4 %} 150 {% else %} 150 {%endif%}" data-labels='{{ projection_years|queryset_to_list }}' data-values='{{ projected_populations|queryset_to_list }}'></canvas>
     </div>
     <div class="grid {% if diff_year > 8 %} md:grid-cols-1{% else %} md:grid-cols-2{% endif %}  mt-12 grid-cols-1 gap-5">
         
-        <div class="border border-gray-700 w-full rounded-md p-4">
+        <div class="card-bordered w-full rounded-md p-4">
             <canvas height="{% if diff_year > 8 %} 150 {% else %} 300 {%endif%}" data-labels='{{ projection_years|queryset_to_list }}' data-values='{{ projected_populations|queryset_to_list }}' id="populationChart2"></canvas>
         </div> 
-        <div class="border border-gray-700 rounded-md p-4">
+        <div class="card card-bordered rounded-md p-4">
           <canvas height="10"id="populationChart3" data-labels='{{ projection_years|queryset_to_list }}' data-values='{{ projected_populations|queryset_to_list }}'></canvas>
         </div>
        
@@ -91,6 +91,41 @@
       </div>
     </div>
   </div>
+  <div class="mt-8">
+    <div>
+        <input type="text" id="areaInput" placeholder="Enter area name">
+        <button onclick="getMapData()">Get Map</button>
+    </div>
+    <div id="map"></div>
+  </div>
+    
+<script>
+    let map = L.map('map').setView([0, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    function getMapData() {
+        const areaName = document.getElementById('areaInput').value;
+        fetch(`/get-area-map/${areaName}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.geojson) {
+                    const geojsonLayer = L.geoJSON(data.geojson);
+                    geojsonLayer.addTo(map);
+                    map.fitBounds(geojsonLayer.getBounds());
+                } else {
+                    alert('Area not found');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            });
+    }
+</script>
+
+
 
   <!--Needs Assessment-->
   <!-- <div class="">

@@ -5,6 +5,8 @@
  * https://unpkg.com/browse/tailwindcss@latest/stubs/defaultConfig.stub.js
  */
 
+const { default: daisyui } = require('daisyui');
+
 module.exports = {
     content: [
         /**
@@ -55,4 +57,9 @@ module.exports = {
         require('@tailwindcss/aspect-ratio'),
         require("daisyui")
     ],
+    daisyui:{
+        theme:[
+            'light', 'dark',  'cupcake', 'bumblebee', 'emerald', 'corporate', 'synthwave', 'retro', 'cyberpunk', 'valentine', 'halloween', 'garden', 'forest', 'aqua', 'lofi', 'pastel', 'fantasy', 'wireframe', 'black', 'luxury', 'dracula'
+        ]
+    }
 }
