@@ -110,7 +110,8 @@ class NeedsAssessment(models.Model):
     
     # delete all needs
     def delete(self, *args, **kwargs):
-        self.needs.delete()
+        for need in self.needs.all():
+            need.delete()
         super().delete(*args, **kwargs)
      
     class Meta:
@@ -202,7 +203,10 @@ class Needs(models.Model):
         return f'needs for {self.needs_type}'
 
     def delete(self, *args, **kwargs):
+        # delete all generic relations
         self.content_object.delete()
+        self.content_type.delete()
+        self.object_id.delete()
         super().delete(*args, **kwargs)  
 
     class Meta:

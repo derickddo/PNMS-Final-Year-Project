@@ -17,16 +17,18 @@
     // 
     document.addEventListener('htmx:afterOnLoad', function(event) {
         let path = event.detail.pathInfo.requestPath
-        path = path.split('?')[1].split('=')[1].split('&')[0]
-        if (path === 'update'){
-            document.getElementById('form-header').innerText = 'Update Population Projection'
-        }
-        else if (path === 'create'){
-            document.getElementById('form-header').innerText = 'Create Population Projection'
-        }
-        else
-        {
-            document.getElementById('form-header').innerText = ''
+        if (path == '/create-population-projection/'){
+            path = path.split('?')[1].split('=')[1].split('&')[0]
+            if (path === 'update'){
+                document.getElementById('form-header').innerText = 'Update Population Projection'
+            }
+            else if (path === 'create'){
+                document.getElementById('form-header').innerText = 'Create Population Projection'
+            }
+            else
+            {
+                document.getElementById('form-header').innerText = ''
+            }
         }
 
         
@@ -282,6 +284,7 @@ modalContent.addEventListener('htmx:afterSettle', (e) => {
         growthRateType.addEventListener('change', function() {
             if (growthRateType.value === 'auto') {
                 // hide the growthrate container
+                console.log('auto')
                 document.getElementById('growthRateContainer').classList.add('hidden')
                 growthRate.value = '';
             } else {

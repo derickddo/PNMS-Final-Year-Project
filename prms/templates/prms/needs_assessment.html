@@ -9,12 +9,22 @@
                     <span class="label-text">Select Projected Population</span>
                 </label>
                 <select 
+                
                 {% if needs_assessment %}
                     disabled
                 {% endif %}
+                    
                  name="projected_population" id="projectedPopulationSelect" class="select select-bordered w-full">
-                    {% for population in population_projections %}
-                        <option value="{{ population.slug }}">{{ population }} </option>
+                    {% for projected_population in population_projections %}
+                        <option 
+                        
+                        {% if needs_assessment %}
+                            {% if needs_assessment.population_projection == projected_population %}
+                                selected
+                            {% endif %} 
+                        {% endif %}
+                            
+                        value="{{ projected_population.slug }}">{{ projected_population }} </option>
                     {% endfor %}
                 </select>
             </div>
@@ -28,9 +38,6 @@
                     <span class="label-text">Select Sector</span>
                 </label>
                 <select 
-                {% if needs_assessment %}
-                    disabled
-                {% endif %}
                      id="sectorSelection" name="sector" class="select select-bordered w-full">
                     <option
                      
@@ -57,29 +64,22 @@
                 <label class="label">
                     <span class="label-text">Select Health Type</span>
                 </label>
-                <select
-                
-                {% if needs %}
-                    disabled
-                {% endif %}
-                    
+                <select      
                  id="sectorType" name="sectorType" class="select select-bordered w-full" >
+                    <option
                     
-                    {% if needs.0.needs_type == 'facility' %}
-                        <option value="facility" selected >Facility</option>
-                    {% else %}
-                        <option value="facility">Facility</option>
+                    
+                    {% if facility_needs %}
+                        selected
                     {% endif %}
-                    {% if needs.0.needs_type == 'equipment' %}
-                        <option value="equipment" selected >Equipment</option>
-                    {% else %}
-                        <option value="equipment">Equipment</option>
+                            
+
+                     value="facility">Facility</option>
+                    <option
+                    {% if personnel_needs %}
+                        selected
                     {% endif %}
-                    {% if needs.0.needs_type == 'personnel' %}
-                        <option value="personnel" selected >Personnel</option>
-                    {% else %}
-                        <option value="personnel">Personnel</option>
-                    {% endif %}   
+                     value="personnel">Personnel</option>  
                 </select>
             </div>
 
@@ -96,177 +96,218 @@
         </div>
     </div>
 
-    <div class="card card-bordered shadow-lg rounded-lg p-6 h-[30rem] overflow-y-scroll">
-        <div id="healthFacilityTypeContainer" class="form-control mb-4">
-            <label class="mb-2">
-                <span class="label-text">Select Facility</span>
-            </label>
-            <div class="flex flex-col space-y-5">
-                <label class="flex items-center space-x-2">
-                    <input type="checkbox" name="facilityType" value="hospital" class="checkbox checkbox-primary facility-checkbox" 
-                    {% if facility_types_with_available %}
-                        disabled
-                        {% for facility in facility_types_with_available %}
+    <div  class="card card-bordered shadow-lg rounded-lg p-6 h-[30rem] overflow-y-scroll">
+        <div id="health">
+            <!--Facility-->
+            <div id="healthFacility">
+                <h2 class="text-2xl font-bold mb-4">Health Facility</h2>
+                <div id="healthFacilityTypeContainer" class="form-control mb-4">
+                    <label class="mb-2">
+                        <span class="label-text">Select Facility</span>
+                    </label>
+                    <div class="flex flex-col space-y-5">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="facilityType" value="hospital" class="checkbox checkbox-primary facility-checkbox" 
+                            {% if facility_types_with_available %}
+                                {% for facility in facility_types_with_available %}
+                                    
+                                {% if facility.facility == 'Hospital' %}
+                                    checked 
+                                {% endif %}  
+                                {% endfor %}
+                            {% endif %}
+                                
+                                />
+                            <span class="label-text">Hospital</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="facilityType" value="chps" class="checkbox checkbox-primary facility-checkbox" 
+                            {% if facility_types_with_available %}
+                                
+                                {% for facility in facility_types_with_available %}
+                                    
+                                {% if facility.facility == 'Chps' %}
+                                    checked 
+                                {% endif %}  
+                                {% endfor %}
+                            {% endif %}
+                            />
+                            <span class="label-text">CHPS</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="facilityType" value="health Center" class="checkbox checkbox-primary facility-checkbox" 
+                            {% if facility_types_with_available %}
                             
-                        {% if facility.facility == 'Hospital' %}
-                            checked 
-                        {% endif %}  
-                        {% endfor %}
-                    {% endif %}
-                        
-                         />
-                    <span class="label-text">Hospital</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input type="checkbox" name="facilityType" value="chps" class="checkbox checkbox-primary facility-checkbox" 
-                    {% if facility_types_with_available %}
-                        disabled
-                        {% for facility in facility_types_with_available %}
+                                {% for facility in facility_types_with_available %}
+                                    
+                                {% if facility.facility == 'Health Center' %}
+                                    checked 
+                                {% endif %}  
+                                {% endfor %}
+                            {% endif %}
+                            />
+                            <span class="label-text">Health Center</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="facilityType" value="clinic" class="checkbox checkbox-primary facility-checkbox" 
+                            {% if facility_types_with_available %}
                             
-                        {% if facility.facility == 'Chps' %}
-                            checked 
-                        {% endif %}  
-                        {% endfor %}
-                    {% endif %}
-                    />
-                    <span class="label-text">CHPS</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input type="checkbox" name="facilityType" value="health Center" class="checkbox checkbox-primary facility-checkbox" 
-                    {% if facility_types_with_available %}
-                    disabled
-                        {% for facility in facility_types_with_available %}
-                            
-                        {% if facility.facility == 'Health Center' %}
-                            checked 
-                        {% endif %}  
-                        {% endfor %}
-                    {% endif %}
-                    />
-                    <span class="label-text">Health Center</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input type="checkbox" name="facilityType" value="clinic" class="checkbox checkbox-primary facility-checkbox" 
-                    {% if facility_types_with_available %}
-                    disabled
-                        {% for facility in facility_types_with_available %}
-                            
-                        {% if facility.facility == 'Clinic' %}
-                            checked 
-                        {% endif %}  
-                        {% endfor %}
-                    {% endif %}
-                    />
-                    <span class="label-text">Clinic</span>
-                </label>
-            </div>
-        </div>
-        
-        <div id="facilityNumberContainer" class="form-control mb-4">
-            <label class="mb-2">
-                <span class="label-text">Available Number of Facilities</span>
-                <p class="text-sm italic">Select faciltity to enter number of available facilities</p>
-            </label>
-            <div id="facilityNumbers" class="grid grid-cols-2 gap-4">
-                <!-- Input fields will be dynamically added here -->
-                 
-                 {% if facility_types_with_available %}
-
-                    
-                    {% for facility in facility_types_with_available  %}
-                    <div class="form-control" id="facilityNumber-{{facility.facility|lower}}">
-                        <span class="label-text mb-2">{{facility.facility}}
-                        <p class="italic" style="font-style:italic">(enter number of 
-                            {{facility.facility}}s)</p>
-                        </span>
-                        <input disabled type="number" min="1" 
-                        id="facilityNumber-{{facility.facility}}"
-                        name="facilityNumber-{{facility.facility}}" value="{{facility.available}}" class="input input-bordered w-full" />
+                                {% for facility in facility_types_with_available %}
+                                    
+                                {% if facility.facility == 'Clinic' %}
+                                    checked 
+                                {% endif %}  
+                                {% endfor %}
+                            {% endif %}
+                            />
+                            <span class="label-text">Clinic</span>
+                        </label>
                     </div>
-                    {% endfor %}
-                       
-                    
-                 {% endif %}
-                    
+                </div>
+                
+                <div id="facilityNumberContainer" class="form-control mb-4">
+                    <label class="mb-2">
+                        <span class="label-text">Available Number of Facilities</span>
+                        <p class="text-sm italic">Select faciltity to enter number of available facilities</p>
+                    </label>
+                    <div id="facilityNumbers" class="grid grid-cols-2 gap-4">
+                        <!-- Input fields will be dynamically added here -->
+                        
+                        {% if facility_types_with_available %}
+
+                            
+                            {% for facility in facility_types_with_available  %}
+                            <div class="form-control" id="facilityNumber-{{facility.facility|lower}}">
+                                <span class="label-text mb-2">{{facility.facility}}
+                                <p class="italic" style="font-style:italic">(enter number of 
+                                    {{facility.facility}}s)</p>
+                                </span>
+                                <input  type="number" min="1" 
+                                id="facilityNumber-{{facility.facility}}"
+                                name="facilityNumber-{{facility.facility}}" value="{{facility.available}}" class="input input-bordered w-full" />
+                            </div>
+                            {% endfor %}
+                            
+                            
+                        {% endif %}
+                            
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <input id="hidden" type="hidden" name="" value="{{needs_assessment.slug}}">
-    </div>
-</div>
-<!--display results-->
-<div id="resultsContainer" class="card h-full shadow-lg rounded-lg p-6 mt-4">
+            <!--Health Personnel-->
+            <div id="healthPersonnel">
+                <h2 class="text-2xl font-bold mb-4">Health Personnel</h2>
+                <div id="healthPersonnelTypeContainer" class="form-control mb-4">
+                    <label class="mb-2">
+                        <span class="label-text">Select Personnel</span>
+                    </label>
+                    <div class="flex flex-col space-y-5">
+                        <label class="flex items
+                        -center space-x-2">
+                            <input type="checkbox" name="personnelType" value="doctor" class="checkbox checkbox-primary personnel-checkbox" 
+                            {% if personnel_needs %}
+                                
+                                {% for personnel in personnel_needs %}
+                                    
+                                {% if personnel.content_object.type_name == 'Doctor' %}
+                                    checked 
+                                {% endif %}  
+                                {% endfor %}
+                            {% endif %}
+                            />
+                            <span class="label-text
+                            ">Doctor</span>
+                        </label>
+                        <label class="flex items
+                        -center space-x-2">
+                            <input type="checkbox" name="personnelType" value="nurse" class="checkbox checkbox-primary personnel-checkbox" 
+                            {% if personnel_needs %}
+                                
+                                {% for personnel in personnel_needs %}
+                                    
+                                {% if personnel.content_object.type_name == 'Nurse' %}
+                                    checked 
+                                {% endif %}  
+                                {% endfor %}
+                            {% endif %}
+                            />
+                            <span class="label-text ">Nurse</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="personnelType" value="midwife" class="checkbox checkbox-primary personnel-checkbox" 
+                            {% if personnel_needs %}
+                                
+                                {% for personnel in personnel_needs %}
+                                    
+                                {% if personnel.content_object.type_name == 'Midwife' %}
+                                    checked 
+                                {% endif %}  
+                                {% endfor %}
+                            {% endif %}
+                            />
+                            <span class="label-text">Midwife</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="personnelType" value="pharmacist" class="checkbox checkbox-primary personnel-checkbox" 
+                            {% if personnel_needs %}
+                                
+                                {% for personnel in personnel_needs %}
+                                    
+                                {% if personnel.content_object.type_name == 'Pharmacist' %}
+                                    checked 
+                                {% endif %}  
+                                {% endfor %}
+                            {% endif %}
+                            />
+                            <span class="label-text">Pharmacist</span>
+                        </label>
+
+                        
+                    </div>
+                </div>
+                
+                <div id="personnelNumberContainer" class="form-control mb-4">
+                    <label class="mb-2">
+                        <span class="label-text">Available Number of Personnel</span>
+                        <p class="text-sm italic">Select personnel to enter number of available personnel</p>
+                    </label>
+                    <div id="personnelNumbers" class="grid grid-cols-2 gap-4">
+                        <!-- Input fields will be dynamically added here -->
+                        {% if personnels_types_with_available %}
+                            {% for personnel in personnels_types_with_available  %}
+                            <div class="form-control" id="personnelNumber-{{personnel.personnel_type|lower}}">
+                                <span class="label-text mb-2">{{personnel.personnel_type}}
+                                <p class="italic" style="font-style:italic">(enter number of 
+                                    {{personnel.personnel_type}}s)</p>
+                                </span>
+                                <input type="number" min="1"
+                                
+                                id="{{personnel.personnel_type}}"
+                                name="personnelNumber-{{personnel.personnel_type}}" value="{{personnel.available}}" class="input input-bordered w-full" />
+
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div> 
     
-    <div class="flex justify-between">
-        <h2 class="text-2xl font-bold mb-4">Results</h2>
-        
-        {% if needs_assessment %}
-            <div class="flex gap-2">
-                <button class="btn btn-md btn-primary edit-need" data-id="{{ need.id }}">Edit</button>
-                <button class="btn btn-md btn-danger delete-need" data-id="{{ need.id }}">Delete</button>
-            </div> 
-        {% endif %}
-            
-        
-    </div>
+    <input type="hidden" id="needs_assessment_slug" name="" value="{{needs_assessment.slug}}">
+    <input id="needs_assessment_sector" type="hidden" name="" id="" value="{{needs_assessment.sector}}">
     
-    {% if needs_assessment %}
-        
-        <h2 class="text-xl font-bold mb-4">{{needs_assessment}}</h2>
-
-        <div class="overflow-x-auto">
-            <table class="table table-zebra w-full">
-              <thead>
-                <tr>
-                  <th>Facility</th>
-                  <th>Year</th>
-                  <th>Population</th>
-                  <th>Standard Threshold</th>
-                  <th>No. Available</th>
-                  <th>Required</th>
-                  <th>New Need</th>
-                  <th>Surplus</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for need in needs %}
-                <tr>
-                  <td>{{ need.content_object.type_name }}</td>
-                  <td>{{ need.content_object.year }}</td>
-                  <td>{{ need.content_object.population|floatformat:"0" }}</td>
-                  <td>{{ need.content_object.standard }}</td>
-                  <td>{{ need.content_object.available }}</td>
-                  <td>{{ need.content_object.required }}</td>
-                  <td>
-                  {% if need.content_object.new_need is None %}
-                     -
-                    {% else %}
-                     {{need.content_object.new_need}}
-                  {% endif %}
-                    </td>
-                  <td>{% if need.content_object.suplus is None %}
-                        -
-                    {% else %}
-                        {{need.content_object.suplus}}
-                 {% endif %}</td>
-
-                 
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-          
-    {% else %}
-    <div id="needs-assessment-results">
-        <!--Empty svg icon -->
-         <svg class="w-6 h-6 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-         </svg>
-         <p class="text-center">No results yet</p>
-         
-     </div>
+    
+    {% if facility_needs %}
+        <input type="hidden" id="need_type" name="" value="{{facility_needs.0.needs_type}}">
+    {% endif %}
+    
+    {% if personnel_needs %}
+        <input id="need_type" type="hidden" name="" value="{{personnel_needs.0.needs_type}}">
     {% endif %}
         
-    
+        
 </div>
+
+

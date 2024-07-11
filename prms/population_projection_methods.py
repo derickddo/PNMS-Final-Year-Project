@@ -1,8 +1,16 @@
-standards = {
+facility_standards = {
     'hospital': 200000,
     'health center':25000,
     'clinic':5000,
     'chps': 5000
+}
+
+personnel_standards = {
+    'doctor': 5000,
+    'nurse': 5000,
+    'midwife': 5000,
+    'pharmacist': 5000,
+    'lab technician': 5000,
 }
 
 # Description: Population projection methods
@@ -33,8 +41,8 @@ def calculate_growth_rate(pop_2010, pop_2021) -> float:
         t = 2021 - 2010
         return  float((int(pop_2021) - int(pop_2010)) / (pop_2010 * t))
 
-
-def calculate_facilities_required(population,facility_numbers,year, standards=standards):
+def calculate_facilities_required(population,facility_numbers,year, standards=facility_standards):
+    
         """ Calculate the number of facilities required """
         results = []
         for facility_type, available in facility_numbers.items():
@@ -54,6 +62,34 @@ def calculate_facilities_required(population,facility_numbers,year, standards=st
                 'facility_type':facility_type,
                 'available':available,
                 'required':required_facilities,
+                'standard': standard,
+                'new_need': new_need,
+                'suplus':suplus,
+                'population':population
+            })
+
+        return results
+
+def calculate_personnel_required(population, personnel_numbers, year, standards=personnel_standards):
+        """ Calculate the number of personnel required """
+        results = []
+        for personnel_type, available in personnel_numbers.items():
+            standard = standards[str(personnel_type).lower()]
+            required_personnel = int(population / standard)
+            new_need = int(required_personnel) - int(available)
+            suplus = None
+            
+            # check if new need is negative
+            if new_need > 0:
+                suplus = new_need
+            else:
+                new_need = None
+            
+            results.append({
+                'year':year,
+                'personnel_type':personnel_type,
+                'available':available,
+                'required':required_personnel,
                 'standard': standard,
                 'new_need': new_need,
                 'suplus':suplus,

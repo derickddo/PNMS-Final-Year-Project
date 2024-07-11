@@ -1,0 +1,469 @@
+{% load static %}
+{% load custom_filters %}
+{% if needs_assessment %}
+<div class="px-4 " id="needs_assessment">
+    <div class="flex justify-between">
+        <div>
+            <h3 class="font-bold text-2xl text-slate-700">Needs assessment for the {{needs_assessment.population_projection.content_object.name}} {{needs_assessment.population_projection.area_type|title}}
+            </h3>
+            <p class="mt-2 text-gray-600">{{needs_assessment|title}}</p>
+        </div>
+        <button class="btn btn-error btn-link ">
+            <i class="fas fa-trash-alt"></i>
+            Delete
+        </button>
+    </div>
+
+
+
+    <div class="grid grid-cols-1 md:grid-cols-1 mt-8">
+        {% if facility_needs %}
+        <h2 class="font-bold text-xl mb-2">Facility Needs</h2>
+        <p class="text-gray-600 mb-4 ">Needs assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type }} with in the {{needs_assessment.sector}} Sector for health facilities</p>
+        <div class="card card-bordered p-4 rounded-md shadow-lg">
+            <div class="">
+                <div>
+                    <h3 class="font-bold text-slate-700 text-lg">Needs Assessment for {{ needs_assessment.population_projection.content_object.name|title }} {{ needs_assessment.population_projection.area_type|title }}  with in the {{needs_assessment.sector|title}} Sector</h3>
+                    <!-- Type of need -->
+                    <div>
+                        <div class="flex justify-between items-center">
+                            <div>
+
+                                <!--Categories of needs-->
+                                <div class="flex items-center mt-4">
+                                    <span class="font-medium">
+                                    <i class="fas fa-tags"></i>
+                                    Categories of {{ facility_needs.0.needs_type|title }}:
+                                    </span>
+                                    
+                                    {% for needs_type in  needs_assessment.needs.all|get_distinct_needs_type:'facility' %}
+                                    <span class="ml-2">
+                                        <span class="badge badge-primary badge-md">{{ needs_type }}</span>
+                                    </span>
+                                    {% endfor %}
+                            
+                                </div>
+            
+                                
+                                <div class="flex gap-8 mb-2 mt-2">
+                                    <!--Area Name-->
+                                    <div class="flex items-center">
+                                    <span class="font-medium">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        Area Name:
+                                        </span>
+                                        <span class="ml-2">{{ needs_assessment.population_projection.content_object.name|title }}</span>
+                                        
+            
+                                    </div>
+            
+                                    <!--Area type-->
+                                    <div class="flex items-center">
+                                        <span class="font-medium">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        Area Type:
+                                        </span>
+                                        <span class="ml-2">{{ needs_assessment.population_projection.area_type|title }}</span>
+                                    </div>
+                                </div>
+            
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-4">
+                                    <!-- Type of need -->
+                                    <div class="flex items-center">
+                                    <span class=" font-medium">
+                                        <i class="fas fa-tag"></i>
+                                        Type:
+                                        </span>
+                                    <span class="ml-2">{{ facility_needs.0.needs_type }}</span>
+                                    </div>
+                                    <!-- Year of need -->
+                                    <div class="flex items-center">
+                                    <span class="font-medium">
+                                        <i class="fas fa-calendar"></i>
+                                        Year:
+                                        </span>
+                                    <span class="ml-2">{{ needs_assessment.needs.all.0.content_object.year }} - {{needs_assessment.population_projection.projections.last.projecting_year}}</span>
+                                    </div>
+                                </div>
+            
+                                <div class="flex justify-between gap-4">
+                                    <!-- Population of need -->
+                                    <div class="flex items-center">
+                                    <span class=" font-medium">
+                                        <i class="fas fa-users"></i>
+                                        Population:
+                                        </span>
+                                    <span class="ml-2">{{ needs_assessment.needs.all.0.content_object.population|floatformat:"0" }}</span>
+                                    </div>
+            
+                                    <!-- Total number of needs -->
+                                    <div class="flex items-center">
+                                        <span class="font-medium">
+                                        <i class="fas fa-list"></i>
+                                        Total Needs:
+                                        </span>
+                                        <span class="ml-2">{{ facility_needs.count }}</span>
+                                    </div>
+                                </div>    
+                            </div>
+            
+                        </div>
+                    </div>
+                    
+                </div>
+                <!--Edit and Delete btn-->
+                <div class="dropdown dropdown-end absolute right-3 top-3">
+                    <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md">
+                        <i class="fa-solid fas fa-ellipsis-h"></i>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li>
+                            <a hx-get="" hx-trigger="click" hx-target="#main" hx-push-url="true" class="editBtn">Edit</a>
+                        </li>
+                        <li>
+                            <a class="deleteBtn">Delete</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--summary on available, required surplus and new need-->
+                
+
+                
+            </div>
+              
+            <h3 class="mt-6 font-bold">Need Table</h3>
+            <p class="mt-2 mb-4 text-gray-600">The table below shows the facility needs assessment for the {{needs_assessment.population_projection.content_object.name}} {{needs_assessment.population_projection.area_type}} with in the {{needs_assessment.sector}} Sector</p>
+            <!-- Table to show needs in needs_assessment -->
+            <table class="table table-zebra w-full mt-4">
+                <thead>
+                    <tr>
+                        <th>Facility</th>
+                        <th>Year</th>
+                        <th>Population</th>
+                        <th>Standard Threshold</th>
+                        <th>No. Available</th>
+                        <th>Required</th>
+                        <th>New Need</th>
+                        <th>Surplus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for need in facility_needs %}
+                    <tr class="{% if forloop.counter > 5 %}hidden{% endif %} need-row">
+                        <td>{{ need.content_object.type_name }}</td>
+                        <td>{{ need.content_object.year }}</td>
+                        <td>{{ need.content_object.population|floatformat:"0" }}</td>
+                        <td>{{ need.content_object.standard }}</td>
+                        <td>{{ need.content_object.available }}</td>
+                        <td>{{ need.content_object.required }}</td>
+                        <td>{% if need.content_object.new_need is None %} - {% else %} {{ need.content_object.new_need }} {% endif %}</td>
+                        <td>{% if need.content_object.suplus is None %} - {% else %} {{ need.content_object.suplus }} {% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            {% if facility_needs.count > 5 %}
+            <div class="mt-4">
+                <button class="btn btn-sm btn-primary view-more-less">View More</button>
+            </div>
+            {% endif %}
+          
+
+            <input class="needType" type="hidden" name="needType" value="{{facility_needs.0.needs_type}}"> 
+
+        </div> 
+        {% endif %}
+            
+      
+        
+        {% if personnel_needs %}
+        <h2 class="font-bold text-xl mt-12 mb-2">Personnel Needs</h2>
+        <p class="text-gray-600 mb-4">Needs assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type }} with in the {{needs_assessment.sector}} Sector for personnel</p>    
+        <div class="card card-bordered p-4 rounded-md shadow-lg">
+            <div>
+                <h3 class="font-bold text-slate-700  text-lg">{{ needs_assessment }}</h3>
+                <!-- Type of need -->
+                <div>
+                    <div class="flex justify-between items-center">
+                        <div>
+
+                            <!--Categories of needs-->
+                            <div class="flex items-center mt-4">
+                                <span class="font-medium">
+                                <i class="fas fa-tags"></i>
+                                Categories of {{ personnel_needs.0.needs_type|title }}:
+                                </span>
+                                
+                                {% for needs_type in  needs_assessment.needs.all|get_distinct_needs_type:'personnel' %}
+                                <span class="ml-2">
+                                    <span class="badge badge-primary badge-md">{{ needs_type }}</span>
+                                </span>
+                                {% endfor %}
+                        
+                            </div>
+        
+                            
+                            <div class="flex gap-8 mb-2 mt-2">
+                                <!--Area Name-->
+                                <div class="flex items-center">
+                                <span class="font-medium">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Area Name:
+                                    </span>
+                                    <span class="ml-2">{{ needs_assessment.population_projection.content_object.name|title }}</span>
+                                    
+        
+                                </div>
+        
+                                <!--Area type-->
+                                <div class="flex items-center">
+                                    <span class="font-medium">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Area Type:
+                                    </span>
+                                    <span class="ml-2">{{ needs_assessment.population_projection.area_type|title }}</span>
+                                </div>
+                            </div>
+        
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-4">
+                                <!-- Type of need -->
+                                <div class="flex items-center">
+                                <span class=" font-medium">
+                                    <i class="fas fa-tag"></i>
+                                    Type:
+                                    </span>
+                                <span class="ml-2">{{ personnel_needs.0.needs_type|title }}</span>
+                                </div>
+                                <!-- Year of need -->
+                                <div class="flex items-center">
+                                <span class="font-medium">
+                                    <i class="fas fa-calendar"></i>
+                                    Year:
+                                    </span>
+                                <span class="ml-2">{{ needs_assessment.needs.all.0.content_object.year }} - {{needs_assessment.population_projection.projections.last.projecting_year}}</span>
+                                </div>
+                            </div>
+        
+                            <div class="flex justify-between gap-4">
+                                <!-- Population of need -->
+                                <div class="flex items-center">
+                                <span class=" font-medium">
+                                    <i class="fas fa-users"></i>
+                                    Population:
+                                    </span>
+                                <span class="ml-2">{{ needs_assessment.needs.all.0.content_object.population|floatformat:"0" }}</span>
+                                </div>
+        
+                                <!-- Total number of needs -->
+                                <div class="flex items-center">
+                                    <span class="font-medium">
+                                    <i class="fas fa-list"></i>
+                                    Total Needs:
+                                    </span>
+                                    <span class="ml-2">{{ personnel_needs.count }}</span>
+                                </div>
+                            </div>    
+                        </div>
+        
+                    </div>
+                </div>
+                 <!--Edit and Delete btn-->
+                 <div class="dropdown dropdown-end absolute right-3 top-3">
+                    <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md">
+                        <i class="fa-solid fas fa-ellipsis-h"></i>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li>
+                            <a hx-get="" hx-trigger="click" hx-target="#main" hx-push-url="true" class="editBtn">Edit</a>
+                        </li>
+                        <li>
+                            <a class="deleteBtn">Delete</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--info on available, required surplus and new need-->
+                
+            </div>
+            <!-- Table to show needs in needs_assessment -->
+             <h3 class="mt-6 font-bold">Need Table</h3>
+             <p class="mt-2 mb-4 text-gray-600">The table below shows the personnel needs assessment for the {{needs_assessment.population_projection.content_object.name}} {{needs_assessment.population_projection.area_type}} with in the {{needs_assessment.sector}} Sector</p>
+            <table class="table table-zebra w-full mt-4">
+                <thead>
+                    <tr>
+                        <th>Personnel</th>
+                        <th>Year</th>
+                        <th>Population</th>
+                        <th>Standard Threshold</th>
+                        <th>No. Available</th>
+                        <th>Required</th>
+                        <th>New Need</th>
+                        <th>Surplus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for need in personnel_needs %}
+                    <tr class="{% if forloop.counter > 5 %}hidden{% endif %} need-row">
+                        <td>{{ need.content_object.type_name }}</td>
+                        <td>{{ need.content_object.year }}</td>
+                        <td>{{ need.content_object.population|floatformat:"0" }}</td>
+                        <td>{{ need.content_object.standard }}</td>
+                        <td>{{ need.content_object.available }}</td>
+                        <td>{{ need.content_object.required }}</td>
+                        <td>{% if need.content_object.new_need is None %} - {% else %} {{ need.content_object.new_need }} {% endif %}</td>
+                        <td>{% if need.content_object.suplus is None %} - {% else %} {{ need.content_object.suplus }} {% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            {% if personnel_needs.count > 5 %}
+            <div class="mt-4">
+                <button class="btn btn-sm btn-primary view-more-less">View More</button>
+            </div>
+            {% endif %}
+            <input class="needType" type="hidden" name="needType" value="{{personnel_needs.0.need_type}}">
+        </div>
+
+            
+        {% endif %}
+         
+    </div>
+
+    <input id="hidden" type="hidden" name="" value="{{needs_assessment.slug}}">  
+    </div>
+
+    
+</div>
+{% else %}
+<div class="mt-8">
+    <h3 class="font-medium text-lg">No Needs Assessment Data</h3>
+</div> 
+{% endif %}
+
+<script type="module">
+    // import {initializeChart} from "{% static 'js/export_chart.js' %}"
+    function handleViewMoreLess(){
+      const viewMoreLessButtons = document.querySelectorAll('.view-more-less');
+  
+      viewMoreLessButtons.forEach(button => {
+          button.addEventListener('click', function() {
+              const card = button.closest('.card');
+              const hiddenRows = card.querySelectorAll('.need-row.hidden');
+              const visibleRows = card.querySelectorAll('.need-row');
+  
+              if (button.textContent === 'View More') {
+                  hiddenRows.forEach(row => row.classList.remove('hidden'));
+                  button.textContent = 'View Less';
+                  card.scrollIntoView({ behavior: 'smooth' });
+              } else {
+                  visibleRows.forEach((row, index) => {
+                      if (index >= 5) {
+                          row.classList.add('hidden');
+                      }
+                  });
+                  button.textContent = 'View More';
+                  card.scrollIntoView({ behavior: 'smooth' });
+              }
+          });
+      });
+    }
+    
+    let needsAssessmentSlug = document.getElementById('hidden').value
+    let deleteBtns = document.querySelectorAll('.deleteBtn')
+    let editBtns = document.querySelectorAll('.editBtn')
+    
+    
+    handleViewMoreLess()
+
+    deleteBtns.forEach(deleteBtn => {
+            deleteBtn.addEventListener('click', (e)=> {
+              
+            let parent = e.target.parentElement.parentElement.parentElement.parentElement.parentElement
+            console.log(parent)
+
+            //get hidden input value from parent
+            let hidden = parent.querySelector('input[type="hidden"]')
+            let needType = hidden.value
+            console.log(needType)
+
+            let url = '/needs-assessment/' + needsAssessmentSlug + '/need/'+ needType + '/delete'
+            console.log(url)
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this data!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        fetch(url, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                        }
+                        ).then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                            history.pushState({}, '', '/needs-assessment/'+needsAssessmentSlug);
+                            document.getElementById('main').innerHTML = data.template;
+
+                            // initializeChart()
+                            // sweet alert
+                            swal({
+                                title: "Data Deleted",
+                                text: "Data has been successfully deleted",
+                                icon: "success",
+                                button: "Ok",
+                            })
+                        
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                    } 
+                    else {
+                        swal("Your data is safe!");
+                    }
+                });
+        })
+        })
+
+        editBtns.forEach(editBtn => {
+            editBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                swal({
+                    title: "Edit",
+                    text: "Do you want to edit this item?",
+                    icon: "info",
+                    buttons: ["No", "Yes"],
+                    
+                    dangerMode: false
+                }).then((willEdit) => {
+                    if (willEdit) {
+                        const url = "{% url 'update_needs_assessment_page' needs_assessment.slug %}"
+                        // htmx ajax request
+                        htmx.ajax('GET', url, { 
+                            target: '#main', 
+                            swap: 'innerHTML', 
+                            pushUrl: true,
+                        })
+                        history.pushState({}, '', url);
+                        
+                    }
+                });
+            });
+        });
+
+
+    
+</script>
+    

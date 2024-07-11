@@ -1,10 +1,10 @@
 {% load custom_filters %}
-<div class="px-4 pb-8 overflow-y-auto">
+<div class="px-4 overflow-y-auto">
   <div>
     <div class="w-full lg:flex lg:justify-between">
       <div>
         <div class="flex lg:gap-8 justify-between w-full">
-          <h1 class="text-2xl font-bold">{{population_projection.title}}</h1>
+          <h1 class="text-2xl font-bold">{{population_projection.title|title}}</h1>
           <div class="dropdown dropdown-end">
             <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md"><i class="fa-solid fas fa-ellipsis-h"></i></div>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
@@ -14,13 +14,13 @@
           </div>
         </div>
         
-        <div class="mt-8">
+        <div class="mt-2">
           {% if population_projection.description %}
           <p class="mt-2">{{population_projection.description}}</p>
           {% endif %}
-          <p class="mt-2">Projecting from {{base_years.0}} to {{projection_years.last}} for {{population_projection.content_object}} {{population_projection.area_type|title}}.</p>
-          <p class="mt-2">Area Type: {{population_projection.area_type|title}}</p>
-          <p class="mt-2">Created: {{population_projection.timestamp|date}}</p>
+          <p class="mt-1 text-gray-600 dark:text-white">Projecting from {{base_years.0}} to {{projection_years.last}} for {{population_projection.content_object}} {{population_projection.area_type|title}}.</p>
+          <p class="mt-2 text-gray-600 dark:text-white ">Area Type: {{population_projection.area_type|title}}</p>
+          <p class="mt-2 text-gray-600 dark:text-white">Created: {{population_projection.timestamp|date}}</p>
         </div>
         
       </div>
@@ -29,7 +29,7 @@
           <!--Generate report button-->
           <a href="{% url 'generate_report' population_projection.slug %}" class="btn btn-md btn-primary">Generate Report</a>
 
-          <a hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}" hx-target="#main" class="btn btn-md btn-primary">Continue to needs assessment</a>
+          <!--  -->
 
         </div>
         <div class="dropdown dropdown-end absolute right-3 top-3">
@@ -42,15 +42,18 @@
           
     </div>
     <div class="overflow-x-auto mt-8">
-        <table class="table table-lg">
+      <h3 class="font-bold text-xl mb-1">Results Of Projection</h3>
+      <p class="text-gray-600 dark:text-white mb-4">The table below shows the population projection for the {{population_projection.content_object.name}} {{population_projection.area_type|title}}.</p>
+      
+      <table class="table table-md xl:table-lg">
           <!-- head -->
           <thead>
             <tr>
-              <th class="text-lg">Base Year</th>
-              <th class="text-lg">Projecting Year</th>
-              <th class="text-lg">Base Population</th>
-              <th class="text-lg">Projected Population</th>
-              <th class="text-lg">Growth Rate (%)</th>
+              <th class="text-sm 2xl:text-lg">Base Year</th>
+              <th class="text-sm 2xl:text-lg">Projecting Year</th>
+              <th class="text-sm 2xl:text-lg">Base Population</th>
+              <th class="text-sm 2xl:text-lg">Projected Population</th>
+              <th class="text-sm 2xl:text-lg">Growth Rate (%)</th>
             </tr>
           </thead>
           <tbody>
@@ -64,77 +67,199 @@
               </tr>
             {% endfor %}
           </tbody>
-        </table>
+      </table>
     </div>
 
-    <h2 class="font-medium mt-8 text-lg">Visualized Data</h3>
+    <h2 class="font-bold mt-8 text-xl">Visualized Data</h2>
+    <p class="mt-2 text-gray-600 dark:text-white">Graphical representation of the population projection for the {{population_projection.content_object.name}} {{population_projection.area_type|title}}.</p>
       <div class="card card-bordered w-full mt-8 rounded-md p-4">
-        <canvas id="populationChart" height="{% if diff_year < 4 %} 150 {% else %} 150 {%endif%}" data-labels='{{ projection_years|queryset_to_list }}' data-values='{{ projected_populations|queryset_to_list }}'></canvas>
-    </div>
-    <div class="grid {% if diff_year > 8 %} md:grid-cols-1{% else %} md:grid-cols-2{% endif %}  mt-12 grid-cols-1 gap-5">
+        <div class="flex justify-between mb-10">
+          <div>
+            <h3 class="font-bold text-lg">Population Projection</h3>
+            <p class="mt-2">Population projection for the {{population_projection.content_object.name}} {{population_projection.area_type|title}}.</p>
+          </div>
+          <div>
+           <!--output showing arrows of rate of years for 3 data-->
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex gap-2 items-center">
+                <i class="fa-solid fa-arrow-up text-green-500"></i>
+                <p class="text-green-500">Growth Rate</p>
+                <p class="text-green-500">{{ growth_rate|floatformat:2 }}%</p>
+              </div>
+              <div class="flex gap-2 items-center">
+                <!--Total projected population-->
+                <i class="fa-solid fa-users"></i>
+                <p>Total Population:</p>
+                <p class="">{{ projected_populations.last }}</p>
+              </div>
+              <!--Total Projections-->
+              <div class="flex gap-2 items-center">
+                <i class="fa-solid fa-person-arrow-up-from-line"></i>
+                <p>Total Projections:</p>
+                <p>{{ projected_populations.count }}</p>  
+              </div>
+
+              <!--Year span of projections-->
+              <div class="flex gap-2 items-center">
+                <i class="fa-solid fa-calendar-days"></i>
+                <p>Year Span:</p>
+                <p>{{base_years.0}} - {{projection_years.last}}</p>
+              </div>
+            </div>
+
+          
+        </div>
+        </div>
+        <canvas id="populationChart" height="{% if diff_year < 4 %} 150 {% else %} 200 {%endif%}" data-labels='{{ projection_years|queryset_to_list }}' data-values='{{ projected_populations|queryset_to_list }}'></canvas>
+      </div>
+    <div class="  mt-12">
         
         <div class="card-bordered w-full rounded-md p-4">
-            <canvas height="{% if diff_year > 8 %} 150 {% else %} 300 {%endif%}" data-labels='{{ projection_years|queryset_to_list }}' data-values='{{ projected_populations|queryset_to_list }}' id="populationChart2"></canvas>
+          <div class="flex justify-between mb-10">
+            <div>
+              <h3 class="font-bold text-lg">Population Projection</h3>
+              <p class="mt-2">Population projection for the {{population_projection.content_object.name}} {{population_projection.area_type|title}}.</p>
+            </div>
+            <div>
+             <!--output showing arrows of rate of years for 3 data-->
+              <div class="grid grid-cols-2 gap-3">
+                <div class="flex gap-2 items-center">
+                  <i class="fa-solid fa-arrow-up text-green-500"></i>
+                  <p class="text-green-500">Growth Rate</p>
+                  <p class="text-green-500">{{ growth_rate|floatformat:2 }}%</p>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <!--Total projected population-->
+                  <i class="fa-solid fa-users"></i>
+                  <p>Total Population:</p>
+                  <p class="">{{ projected_populations.last }}</p>
+                </div>
+                <!--Total Projections-->
+                <div class="flex gap-2 items-center">
+                  <i class="fa-solid fa-person-arrow-up-from-line"></i>
+                  <p>Total Projections:</p>
+                  <p>{{ projected_populations.count }}</p>  
+                </div>
+  
+                <!--Year span of projections-->
+                <div class="flex gap-2 items-center">
+                  <i class="fa-solid fa-calendar-days"></i>
+                  <p>Year Span:</p>
+                  <p>{{base_years.0}} - {{projection_years.last}}</p>
+                </div>
+              </div>
+  
+            
+            </div>
+          </div>
+          <div class="">
+            <canvas class="" width="" height="100" data-labels='{{ projection_years|queryset_to_list }}' data-values='{{ projected_populations|queryset_to_list }}' id="populationChart2">
+
+            </canvas>
+          </div>
+         
         </div> 
-        <div class="card card-bordered rounded-md p-4">
-          <canvas height="10"id="populationChart3" data-labels='{{ projection_years|queryset_to_list }}' data-values='{{ projected_populations|queryset_to_list }}'></canvas>
-        </div>
+        
        
     </div>
   </div>
- <!--Map of content_object-->
-  <div class="mt-8">
-    <h2 class="font-medium text-lg mb-4">Map</h2>
-    <div class="border border-gray-700 w-full rounded-md p-4">
-      <div id="map" class="h-96">
-        <iframe class="w-full h-full" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d253609.52897772813!2d-1.911489328397378!3d6.69033852920503!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdb96ebefbe0563%3A0xb6f9278ff121292b!2sAshanti%20Region!5e0!3m2!1sen!2sgh!4v1717374537526!5m2!1sen!2sgh" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-      </div>
-    </div>
-  </div>
-  <div class="mt-8">
-    <div>
-        <input type="text" id="areaInput" placeholder="Enter area name">
-        <button onclick="getMapData()">Get Map</button>
-    </div>
-    <div id="map"></div>
-  </div>
-    
-<script>
-    let map = L.map('map').setView([0, 0], 2);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    function getMapData() {
-        const areaName = document.getElementById('areaInput').value;
-        fetch(`/get-area-map/${areaName}/`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.geojson) {
-                    const geojsonLayer = L.geoJSON(data.geojson);
-                    geojsonLayer.addTo(map);
-                    map.fitBounds(geojsonLayer.getBounds());
-                } else {
-                    alert('Area not found');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to retrieve data');
-            });
-    }
-</script>
-
-
+ 
 
   <!--Needs Assessment-->
-  <!-- <div class="">
-    <h2 class="font-medium text-lg mt-8">Needs Assessment</h2>
-    <div class="border border-gray-700 w-full rounded-md p-4">
-      <p>Needs assessment for {{population_projection.content_object}} {{population_projection.area_type|title}}.</p>
+  <div class="mt-16">
+    <div class="needs-assessment">
+      <h2 class="font-bold text-xl">Needs Assessment</h2>
+      <p class="mt-2">Needs assessment for the {{population_projection.content_object.name}} {{population_projection.area_type|title}}.</p>
+      <!--Sectors navbar and make toggle between clicked-->
+      <div>
+        <nav class="bg-blue-950 h-[5rem] mt-2 rounded-md">
+          <ul class="flex gap-8 items-center h-full py-3 px-5">
+            <li><a href="{% url 'population_projection' population_projection.slug %}?sector=health" class="btn bg-white sectorBtn active">Health</a></li>
+            <li><a href="{% url 'population_projection' population_projection.slug %}?sector=education" class=" text-white sectorBtn">Education</a></li>
+            <li><a href="{% url 'population_projection' population_projection.slug %}?sector=agriculture" class="text-white sectorBtn">Agriculture</a></li>
+            <li><a href="{% url 'population_projection' population_projection.slug %}?sector=infrastructure" class="text-white sectorBtn">Infrastructure</a></li>
+          </ul>
+        </nav>
+      </div>
     </div>
-  </div> -->
+    <!--Needs Assessment for health sector-->
+    <div id="sector">
+        {% include 'partials/health_sector.html' %}
+    </div>
+  </div>
  
   
 </div>
+<script>
+  function handleSectorBtn(){
+    const sectorBtns = document.querySelectorAll('.sectorBtn');
+    sectorBtns.forEach(btn => {
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        // make the clicked button active
+        sectorBtns.forEach(button => {button.classList.remove('bg-white' , 'btn', 'active')
+          button.classList.add('text-white')
+          button.style.color = 'white';
+        }
+      );
 
+        btn.classList.add('btn', 'text-black', 'active');
+        btn.style.color = 'black';
+        const sector = btn.textContent.toLowerCase();
+        const url = btn.href
+        const sectorDiv = document.getElementById('sector');
+      
+        //htmx request
+        htmx.ajax('GET', url,{
+          target: '#sector',
+          historyUpdate: true,
+          swap: 'innerHTML',  
+        })
+        
+      });
+    });
+  }
+  
+  function handleViewMoreLess(){
+    const viewMoreLessButtons = document.querySelectorAll('.view-more-less');
+
+    viewMoreLessButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const card = button.closest('.card');
+            const hiddenRows = card.querySelectorAll('.need-row.hidden');
+            const visibleRows = card.querySelectorAll('.need-row');
+
+            if (button.textContent === 'View More') {
+                hiddenRows.forEach(row => row.classList.remove('hidden'));
+                button.textContent = 'View Less';
+                card.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                visibleRows.forEach((row, index) => {
+                    if (index >= 5) {
+                        row.classList.add('hidden');
+                    }
+                });
+                button.textContent = 'View More';
+                card.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+  }
+  
+   
+    
+  
+  document.getElementById('sector').addEventListener('htmx:afterSwap', () => {
+    handleViewMoreLess();
+    // scroll smoothly to the table
+    document.getElementById('sector').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  )
+  
+  handleSectorBtn()
+  handleViewMoreLess();
+
+  
+
+</script>

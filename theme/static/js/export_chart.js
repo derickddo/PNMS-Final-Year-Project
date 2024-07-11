@@ -1,11 +1,15 @@
 // export chart js
+
+
+
 export const initializeChart = () => {
     var ctx = document.getElementById('populationChart').getContext('2d');
     var ctx2 = document.getElementById('populationChart2').getContext('2d');
-    var ctx3 = document.getElementById('populationChart3').getContext('2d');
+    // var ctx3 = document.getElementById('populationChart3').getContext('2d');
    
     let backgroundColors = JSON.parse(ctx.canvas.dataset.values).map((value, index) => {
-        return index % 2 === 0 ? 'rgba(255, 99, 132, 1)' : 'rgba(54, 162, 235, 1)';
+        // this will return a color (bg-slat-500) of the value
+        return index % 2 === 0 ? 'rgba(255, 99, 132, 0.8)' : 'rgba(54, 162, 235, 0.8)';
     })
     var populationChart = new Chart(ctx, {
         type: 'line', // or 'bar', 'pie', etc.
@@ -35,7 +39,7 @@ export const initializeChart = () => {
                         text: 'Population'
                     }
                 }
-            }
+            },
         }
     });
     
@@ -70,37 +74,37 @@ export const initializeChart = () => {
         }
     });
    
-    var populationChart3 = new Chart(ctx3, {
-        type: 'doughnut', // or 'bar', 'pie', etc.
-        data: {
-            labels: JSON.parse(ctx.canvas.dataset.labels), // Example labels
-            datasets: [{
-                label: 'Population Projection',
-                data: JSON.parse(ctx.canvas.dataset.values), // Example data
-                borderColor: backgroundColors,
-                backgroundColor: backgroundColors,
+    // var populationChart3 = new Chart(ctx3, {
+    //     type: 'doughnut', // or 'bar', 'pie', etc.
+    //     data: {
+    //         labels: JSON.parse(ctx.canvas.dataset.labels), // Example labels
+    //         datasets: [{
+    //             label: 'Population Projection',
+    //             data: JSON.parse(ctx.canvas.dataset.values), // Example data
+    //             borderColor: backgroundColors,
+    //             backgroundColor: backgroundColors,
                 
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Year'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Population'
-                    }
-                }
-            }
-        }
-    });
+    //             fill: true
+    //         }]
+    //     },
+    //     options: {
+    //         responsive: true,
+    //         scales: {
+    //             x: {
+    //                 title: {
+    //                     display: true,
+    //                     text: 'Year'
+    //                 }
+    //             },
+    //             y: {
+    //                 title: {
+    //                     display: true,
+    //                     text: 'Population'
+    //                 }
+    //             }
+    //         }
+    //     }
+    // });
    
 }
 

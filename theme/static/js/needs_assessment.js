@@ -1,393 +1,739 @@
-let sectorSelection = document.getElementById('sectorSelection');
-let healthTypeContainer = document.getElementById('healthTypeContainer');
-let needsAssessmentBtn = document.getElementById('needsAssessmentBtn');
-let projectedPopulationSelect = document.getElementById('projectedPopulationSelect');
-let sectorType = document.getElementById('sectorType');
-const checkboxes = document.querySelectorAll('.facility-checkbox');
-const facilityNumbersContainer = document.getElementById('facilityNumbers');
-const facilityNumbersContainerMain = document.getElementById('facilityNumberContainer');
-let inputFields = [];
-let healthFacilityTypeContainer = document.getElementById('healthFacilityTypeContainer');
-let hidden = document.getElementById('hidden')
+import { innerHTMLListener } from "./innerHTMLListener.js";
 
+document.addEventListener('htmx:afterSettle', function(e) {
+    console.log(e.detail.target.id)
+    if (e.detail.target.id === 'main'){
+        // check url to determine if it is the needs assessment page with the regrex of '/needs-assessment/[a-zA-Z0-9]' or '/needs-assessment/' 
+        let url = window.location.pathname;
 
-
-
-
-let inputs = facilityNumbersContainer.querySelectorAll('input')
-let inputsArray = Array.from(inputs);
-
-// function to check if all input fields are filled
-function checkInputs(inputs) {
-    let allFieldsFilled = inputs.every(field => {
-        return field.value !== '';
-    });
-    needsAssessmentBtn.disabled = !allFieldsFilled;
-}
-
-function handleEditInputFields(inputs) {
-    // Add event listener to each input
-    inputs.forEach(input => {
-        input = document.getElementById(input.id) 
-        if (input){
-            input.addEventListener('input', ()=>{
-                checkInputs(inputs)
-                console.log(inputs)
-            
-            });
+        if (url === '/needs-assessment/' || url.includes('edit')){
+            console.log('needs assessment page')
+            main()
         }
-    });
-
-}
-
-
-
-if (hidden.value){
-    const originalData = {
-        sector: sectorSelection.value,
-        projectedPopulation: projectedPopulationSelect.value,
-        facilityNumbers: {},
-        needType: sectorType.value
-    };
-    inputs.forEach((input) => {
-        let facilityType = input.name.split('-')[1];
-        originalData.facilityNumbers[facilityType] = input.value;
-    });
-
-
-    let sector = sectorSelection.value;
-    let editBtn = document.querySelector('.edit-need')
-    let deleteBtn = document.querySelector('.delete-need')
-    needsAssessmentBtn.innerText = 'Update'
-    editBtn.addEventListener('click', ()=>{
-        // get all fields including checked check boxes
         
-        inputs.forEach((input) =>{
-            input.disabled = false
-        })
-        sectorSelection.disabled = false
-        projectedPopulationSelect.disabled = false
-        sectorType.disabled = false
-        checkboxes.forEach((checkbox) =>{
-            checkbox.disabled = false
-        })
-        handleCheckBoxes(checkboxes, inputsArray)
-        checkInputs(inputsArray)
-        handleSectorSelection(sector)
-        // Scroll smoothly to resultsContainer
-        let main = document.getElementById('main');
-        if (main) {
-            main.scrollIntoView({ behavior: 'smooth' });
-        }
-         
-    })
-
-    handleEditInputFields(inputsArray)
-    needsAssessmentBtn.addEventListener('click', function() {
-       
-
-        let sector = sectorSelection.value;
-        let projectedPopulation = projectedPopulationSelect.value;
-        let facilityNumbers = {};
-        inputsArray.forEach(inputField => {
-            let input = inputField;
-            let facilityType = input.name.split('-')[1];
-            facilityNumbers[facilityType] = input.value;
-        });
-        let url = '/needs-assessment/' + hidden.value
-    
-        let data = {
-            sector,
-            projectedPopulation,
-            facilityNumbers,
-            needType: sectorType.value
-        };
-
-        // compare the original data with the new data
-        let newData = JSON.stringify(data)
-        let originalDataString = JSON.stringify(originalData)
-        if (newData === originalDataString){
-            // sweet alert
-            swal({
-                title: "No changes made",
-                text: "You have not made any changes to the data",
-                icon: "info",
-                button: "Ok",
-              });
-
-        }
-        else{
-
-            needsAssessmentBtn.innerHTML = `<span id="loading" class="loading loading-spinner loading-md text-gray-600"></span>`
-            needsAssessmentBtn.disabled = true;
-            fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }
-            ).then(response => response.json())
-            .then(data => {
-                console.log(data)
-                history.pushState({}, '', '/needs-assessment/' + data.slug);
-                needsAssessmentBtn.innerHTML = 'Update'
-                document.getElementById('main').innerHTML = data.template;
-                // Scroll smoothly to resultsContainer
-                let resultsContainer = document.getElementById('resultsContainer');
-                if (resultsContainer) {
-                    resultsContainer.scrollIntoView({ behavior: 'smooth' });
-                }
-                // sweet alert
-                swal({
-                    title: "Data Updated",
-                    text: "Data has been successfully updated",
-                    icon: "success",
-                    button: "Ok",
-                })
-            
-            })
-            .catch(error => {
-                needsAssessmentBtn.innerHTML = 'Update'
-                swal({
-                    title: "Error",
-                    text: `An error occured, please try again (${error})`,
-                    icon: "error",
-                    button: "Ok",
-                })
-            });
-        }
-         
-    })
-
-    deleteBtn.addEventListener('click', ()=>{
-        let url = '/needs-assessment/' + hidden.value
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this data!",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-            })
-            .then((willDelete) => {
-                if (willDelete) {
-                    fetch(url, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    }
-                    ).then(response => response.json())
-                    .then(data => {
-                        console.log(data)
-                        history.pushState({}, '', '/dashboard/');
-                        document.getElementById('main').innerHTML = data.template;
-                        // sweet alert
-                        swal({
-                            title: "Data Deleted",
-                            text: "Data has been successfully deleted",
-                            icon: "success",
-                            button: "Ok",
-                        })
-                    
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-                } 
-                else {
-                    swal("Your data is safe!");
-                }
-            });
-    })
-        
-
-
-
-}
-else{
-    let sector = sectorSelection.value;
-    handleSectorSelection(sector)
-    handleInputFields();
-    handleCheckBoxes(checkboxes)
-    needsAssessmentBtn.addEventListener('click', function() {
-        needsAssessmentBtn.innerHTML = `<span id="loading" class="loading loading-spinner loading-md text-gray-600"></span>`
-        needsAssessmentBtn.disabled = true;
-        let sector = sectorSelection.value;
-        let projectedPopulation = projectedPopulationSelect.value;
-        let facilityNumbers = {};
-        let needType = sectorType.value
-        inputFields.forEach(inputField => {
-            let input = inputField.querySelector('input');
-            let facilityType = input.name.split('-')[1];
-            facilityNumbers[facilityType] = input.value;
-        });
-        let url = '/needs-assessment/';
-    
-        let data = {
-            sector,
-            projectedPopulation,
-            facilityNumbers,
-            needType
-        };
-        console.log(data)
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data)
-            history.pushState({}, '', '/needs-assessment/' + data.slug);
-            document.getElementById('main').innerHTML = data.template;
-            // Scroll smoothly to resultsContainer
-            needsAssessmentBtn.innerHTML = 'Update'
-            let resultsContainer = document.getElementById('resultsContainer');
-            if (resultsContainer) {
-                resultsContainer.scrollIntoView({ behavior: 'smooth' });
-            }
-            handleInputFields();
-
-        })
-        .catch(error => {
-            needsAssessmentBtn.innerHTML = 'Assess Needs'
-            swal({
-                title: "Error",
-                text: `An error occured, please try again (${error})`,
-                icon: "error",
-                button: "Ok",
-            })
-        });
-    });
-}
-
-
-
-
-
-function handleSectorSelection(sector) {
-    // Implement sector selection logic if needed
-    if (sector === 'health') {
-        healthTypeContainer.classList.remove('hidden');
-        facilityNumbersContainerMain.classList.remove('hidden');
-        healthFacilityTypeContainer.classList.remove('hidden');
-    } else {
-        healthTypeContainer.classList.add('hidden');
-        facilityNumbersContainerMain.classList.add('hidden');
-        healthFacilityTypeContainer.classList.add('hidden');
     }
+  
+})
+
+// page reload
+document.addEventListener('DOMContentLoaded', function() {
+    // check url to determine if it is the needs assessment page with the regrex of '/needs-assessment/[a-zA-Z0-9]' or '/needs-assessment/'
+    let url = window.location.pathname
+    if (url === '/needs-assessment/' || url.includes('edit')){
+        main()
+        console.log('needs assessment page')
+    }
+
+})
+
+
+
+
+
+
+
+// function to handle needs assessment page
+function main(){
+        let sectorSelection = document.getElementById('sectorSelection');
+        let healthTypeContainer = document.getElementById('healthTypeContainer');
+        let needsAssessmentBtn = document.getElementById('needsAssessmentBtn');
+        let projectedPopulationSelect = document.getElementById('projectedPopulationSelect');
+        let sectorType = document.getElementById('sectorType');
+        const facilityCheckboxes = document.querySelectorAll('.facility-checkbox');
+        const facilityNumbersContainer = document.getElementById('facilityNumbers');
+        const facilityNumbersContainerMain = document.getElementById('facilityNumberContainer');
     
-    sectorSelection.addEventListener('change', function() {
-        let sector = sectorSelection.value;
-        if (sector === 'health') {
-            healthTypeContainer.classList.remove('hidden');
-            facilityNumbersContainerMain.classList.remove('hidden');
-            healthFacilityTypeContainer.classList.remove('hidden');
-        } else {
-            healthTypeContainer.classList.add('hidden');
-            facilityNumbersContainerMain.classList.add('hidden');
-            healthFacilityTypeContainer.classList.add('hidden');
+        let healthFacilityTypeContainer = document.getElementById('healthFacilityTypeContainer');
+        let needsAssessmentSlug = document.getElementById('needs_assessment_slug')
+        let needsAssessmentSector = document.getElementById('needs_assessment_sector')
+        let needType = document.getElementById('need_type')
+        
+        let healthContainer = document.getElementById('health')
+
+        let personnelCheckboxes = document.querySelectorAll('.personnel-checkbox');
+
+        let personnelNumberContainerMain = document.getElementById('personnelNumberContainer')
+
+
+        let healthPersonnel = document.getElementById('healthPersonnel')
+        let healthFacility = document.getElementById('healthFacility')
+    
+
+        // check if post or put request
+        let url = window.location.pathname
+       
+        let postRequest = false;
+
+        if (url === '/needs-assessment/'){
+            postRequest = true;
         }
-    });
-}
+        console.log(url, postRequest)
 
+        if (postRequest){
+            console.log('POST')
+            let sectorSelectionValue = sectorSelection.value;
+            if (sectorSelectionValue === 'health'){
+                healthTypeContainer.classList.remove('hidden');
+                healthContainer.classList.remove('hidden')
+            
+            } else {
+                healthTypeContainer.classList.add('hidden');
+                healthContainer.classList.add('hidden')
+                
+            }
+            // check the value of the health type dropdown
+            let type = sectorType.value;
+            if (type === 'facility'){
+                healthFacility.classList.remove('hidden');
+                healthPersonnel.classList.add('hidden');
+               
+            } else {
+                healthFacility.classList.add('hidden');
+                healthPersonnel.classList.remove('hidden');
+            }
 
-function handleCheckBoxes(checkboxes, inputs){
-    
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', (e) => {
-            let facilityType = e.target.value;
-            const inputFieldId = `facilityNumber-${facilityType}`;
-            facilityType = facilityType.charAt(0).toUpperCase() + facilityType.slice(1);
+            // add event listener to sector selection dropdown
+            sectorSelection.addEventListener('change', function(){
+                let sectorSelectionValue = sectorSelection.value;
+                if (sectorSelectionValue === 'health'){
+                    healthTypeContainer.classList.remove('hidden');
+                    healthContainer.classList.remove('hidden')
+                    handleCheckboxChange()
+                } else {
+                    healthTypeContainer.classList.add('hidden');
+                    healthContainer.classList.add('hidden')
+                    handleCheckboxChange()
+                }
+            })
 
-            if (e.target.checked) {
-                // Add input field
-                let inputField = document.createElement('div');
-                inputField.id = inputFieldId;
-                inputField.innerHTML = `
-                    <div class="form-control">
-                        <span class="label-text mb-2">${facilityType}
-                            <p class="italic" style="font-style:italic">(enter number of ${facilityType}s)</p>
-                        </span>
-                        <input value="" type="number" min="1" name="facilityNumber-${facilityType}" class="input input-bordered w-full" />
-                    </div>
-                `;
-                if (inputs){
-                    inputs.forEach(input => {
-                        if (input.id !== 'hidden'){
-                            let inputId = input.id.split('-')[1].toLowerCase()
-                            let inputFieldID = inputFieldId.split('-')[1].toLowerCase()
-                            if ( inputFieldID === inputId){
-                                
-                                inputField.querySelector('input').value = input.value
-                            }
-                           
+            // add event listener to health type dropdown
+            sectorType.addEventListener('change', function(){
+                let healthTypeValue = sectorType.value;
+                if (healthTypeValue === 'facility'){
+                    healthFacility.classList.remove('hidden');
+                    healthPersonnel.classList.add('hidden');
+                    handleCheckboxChange()
+                    
+                } else {
+                    healthFacility.classList.add('hidden');
+                    healthPersonnel.classList.remove('hidden');
+                    handleCheckboxChange()
+                }
+            })
+
+            handleCheckboxChange()
+
+            // add event listener to projected population select
+
+            // handle checkbox change if type is facility or personnel
+            function handleCheckboxChange(){
+            if (sectorType.value === 'facility') {
+                // if facilityNumberContainer is not empty, disable the needs assessment button
+                let inputs = facilityNumbersContainerMain.querySelectorAll('input');
+                let isEmpty = checkEmptyInput(inputs);
+                needsAssessmentBtn.disabled = isEmpty;
+                console.log(isEmpty)
+
+                // add event listener to facility checkboxes
+                
+                facilityCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function(e) {
+                        let facilityType = e.target.value;
+                        const inputFieldId = `${facilityType}`;
+                        facilityType = facilityType.charAt(0).toUpperCase() + facilityType.slice(1);
+            
+                        const inputField = document.getElementById(inputFieldId) || document.createElement('div');
+                        inputField.id = inputFieldId;
+            
+                        if (e.target.checked) {
+                            inputField.innerHTML = `
+                                <div class="form-control">
+                                    <span class="label-text mb-2">${facilityType}
+                                        <p class="italic" style="font-style:italic">(enter number of ${facilityType}s)</p>
+                                    
+                                    <input value="" type="number" min="1" name="facilityNumber-${facilityType}" class="input mt-2 input-bordered w-full" />
+                                </div>
+                            `;
+                            facilityNumbersContainer.appendChild(inputField);
+                        } else {
+                            inputField.innerHTML = '';
                         }
                         
+                        let newInputs = facilityNumbersContainerMain.querySelectorAll('input');
+                        let isEmpty = checkEmptyInput(newInputs); // check if input field is empty
+                        
+                        needsAssessmentBtn.disabled = isEmpty; // disable or enable the needs assessment button
+
+                        // add event listener to input fields to check if they are empty
+                        console.log(newInputs)
+                        newInputs.forEach(input =>{
+                            input.addEventListener('input', function(){
+                                // check all input fields to see if they are empty
+                                let isEmpty = checkEmptyInput(newInputs);
+                                needsAssessmentBtn.disabled = isEmpty;
+                            })
+                        })
+                    });
+
+                    
+                });
+
+                
+            }
+            
+            else{   
+                let inputs = personnelNumberContainerMain.querySelectorAll('input');
+                let isEmpty = checkEmptyInput(inputs);
+                needsAssessmentBtn.disabled = isEmpty;
+                console.log(isEmpty)
+                personnelCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function(e) {
+                        let personnelType = e.target.value;
+                        const inputFieldId = `${personnelType}`;
+                        personnelType = personnelType.charAt(0).toUpperCase() + personnelType.slice(1);
+                        
+            
+                        const inputField = document.getElementById(inputFieldId) || document.createElement('div');
+                        inputField.id = inputFieldId;
+            
+                        if (e.target.checked) {
+                            inputField.innerHTML = `
+                                <div class="form-control">
+                                    <span class="label-text mb-2">${personnelType}
+                                        <p class="italic" style="font-style:italic">(enter number of ${personnelType}s)</p>
+
+                                    <input id=${personnelType} value="" type="number" min="1" name="personnelNumber-${personnelType}" class="input mt-2 input-bordered w-full" />
+                                </div>
+                            `;
+                            personnelNumberContainerMain.appendChild(inputField);
+                        } else {
+                            inputField.innerHTML = '';
+                        }
+
+                        let newInputs = personnelNumberContainerMain.querySelectorAll('input');
+                        let isEmpty = checkEmptyInput(newInputs); // check if input field is empty
+
+                        needsAssessmentBtn.disabled = isEmpty; // disable or enable the needs assessment button
+
+                        // add event listener to input fields to check if they are empty
+                        newInputs.forEach(function(input){
+                            input.addEventListener('input', function(){
+                                // check all input fields to see if they are empty
+                                let isEmpty = checkEmptyInput(newInputs);
+                                needsAssessmentBtn.disabled = isEmpty;
+                            })
+                            console.log(input.value)
+                            console.log(isEmpty)
+                        })
+                        console.log(newInputs)
+                    });
+
+                    
+                })
+            } 
+            }
+
+            // submit needs assessment form
+            needsAssessmentBtn.addEventListener('click', function(){
+                needsAssessmentBtn.innerHTML = `<span id="loading" class="loading loading-spinner loading-md text-gray-600"></span>`
+                needsAssessmentBtn.disabled = true;
+                let sectorSelectionValue = sectorSelection.value;
+                let healthTypeValue = sectorType.value;
+                let projectedPopulationValue = projectedPopulationSelect.value;
+                let facilityNumbers = {};
+                let personnelNumbers = {};
+                let facilityNumberInputs = facilityNumbersContainerMain.querySelectorAll('input');
+                let personnelNumberInputs = personnelNumberContainerMain.querySelectorAll('input');
+               
+
+                if (facilityNumberInputs.length > 0){
+                    facilityNumberInputs.forEach(input => {
+                        let facilityType = input.name.split('-')[1];
+                        facilityNumbers[facilityType] = input.value;
+                    });
+                }
+
+                if (personnelNumberInputs.length > 0){
+                    personnelNumberInputs.forEach(input => {
+                        let personnelType = input.name.split('-')[1];
+                        personnelNumbers[personnelType] = input.value;
+                    });
+                }
+                let data = ''
+
+                // check if health type is facility or personnel
+                if (healthTypeValue === 'facility'){
+                    // send post request to server
+                    data = {
+                        sector: sectorSelectionValue,
+                        type: healthTypeValue,
+                        projectedPopulation: projectedPopulationValue,
+                        facilityNumbers: facilityNumbers
+                    }
+                }
+                else{
+                    data = {
+                        sector: sectorSelectionValue,
+                        type: healthTypeValue,
+                        projectedPopulation: projectedPopulationValue,
+                        personnelNumbers: personnelNumbers
+                    }
+                }
+                console.log(data)
+
+                fetch('/needs-assessment/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    if (data){
+                        // redirect to the needs assessment page
+                        history.pushState({}, null, `/needs-assessment/${data.slug}`); 
+                        document.getElementById('main').innerHTML = data.template;
+                        
+                        // sweet alert
+                        swal({
+                            title: 'Success',
+                            text: 'Needs assessment submitted successfully',
+                            icon: 'success',
+                            button: 'Ok'
+                        })
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                    needsAssessmentBtn.disabled = false;
+                    needsAssessmentBtn.innerHTML = 'Assess Needs'
+                    swal({
+                        title: 'Error',
+                        text: 'An error occured',
+                        icon: 'error',
+                        button: 'Ok'
+                    })
+                })
+            })
+
+                
+            
+        }
+        // put functionality
+        else{
+            console.log('PUT')
+            needsAssessmentBtn.innerText = 'Update'
+            let sectorSelectionValue = sectorSelection.value;
+            if (sectorSelectionValue === 'health'){
+                healthTypeContainer.classList.remove('hidden');
+                healthContainer.classList.remove('hidden')
+            
+            } else {
+                healthTypeContainer.classList.add('hidden');
+                healthContainer.classList.add('hidden')
+                
+            }
+            // check the value of the health type dropdown
+            let type = needType.value;
+            if (type === 'facility'){
+                healthFacility.classList.remove('hidden');
+                healthPersonnel.classList.add('hidden');
+               
+            } else {
+                healthFacility.classList.add('hidden');
+                healthPersonnel.classList.remove('hidden');
+            }
+
+            // add event listener to sector selection dropdown
+            sectorSelection.addEventListener('change', function(){
+                let sectorSelectionValue = sectorSelection.value;
+                if (sectorSelectionValue === 'health'){
+                    healthTypeContainer.classList.remove('hidden');
+                    healthContainer.classList.remove('hidden')
+                    handleCheckboxChange()
+                } else {
+                    healthTypeContainer.classList.add('hidden');
+                    healthContainer.classList.add('hidden')
+                    handleCheckboxChange()
+                }
+            })
+
+            // add event listener to health type dropdown
+            sectorType.addEventListener('change', function(){
+                let healthTypeValue = sectorType.value;
+                if (healthTypeValue === 'facility'){
+                    healthFacility.classList.remove('hidden');
+                    healthPersonnel.classList.add('hidden');
+                    handleCheckboxChange()
+                    
+                } else {
+                    healthFacility.classList.add('hidden');
+                    healthPersonnel.classList.remove('hidden');
+                    handleCheckboxChange()
+                }
+            })
+
+            handleCheckboxChange()
+
+            // get original data
+            let originalData = {
+                sector: needsAssessmentSector.value,
+                type: needType.value,
+                projectedPopulation: projectedPopulationSelect.value,
+                facilityNumbers: {},
+                personnelNumbers: {}
+            }
+
+            let inputs = personnelNumberContainerMain.querySelectorAll('input');
+            inputs.forEach(input => {
+                let personnelType = input.name.split('-')[1];
+                originalData.personnelNumbers[personnelType] = input.value;
+            })
+
+            let facilityInputs = facilityNumbersContainerMain.querySelectorAll('input');
+            facilityInputs.forEach(input => {
+                let facilityType = input.name.split('-')[1];
+                originalData.facilityNumbers[facilityType] = input.value;
+            })
+
+            if (type === 'facility'){
+                // remove personnelNumber from original data
+                delete originalData.personnelNumbers;
+            }
+            else{
+                // remove facilityNumbers from original data
+                delete originalData.facilityNumbers;
+            }
+
+            console.log(originalData)
+
+            needsAssessmentBtn.addEventListener('click', function(){
+                needsAssessmentBtn.innerHTML = `<span id="loading" class="loading loading-spinner loading-md text-gray-600"></span>`
+                needsAssessmentBtn.disabled = true;
+                let sectorSelectionValue = sectorSelection.value;
+                let healthTypeValue = sectorType.value;
+                let projectedPopulationValue = projectedPopulationSelect.value;
+                let facilityNumbers = {};
+                let personnelNumbers = {};
+                let facilityNumberInputs = facilityNumbersContainerMain.querySelectorAll('input');
+                let personnelNumberInputs = personnelNumberContainerMain.querySelectorAll('input');
+
+                if (facilityNumberInputs.length > 0){
+                    facilityNumberInputs.forEach(input => {
+                        let facilityType = input.name.split('-')[1];
+                        facilityNumbers[facilityType] = input.value;
+                    });
+                }
+
+                if (personnelNumberInputs.length > 0){
+                    personnelNumberInputs.forEach(input => {
+                        let personnelType = input.name.split('-')[1];
+                        personnelNumbers[personnelType] = input.value;
+                    });
+                }
+                let data = ''
+
+                // check if health type is facility or personnel
+                if (healthTypeValue === 'facility'){
+                    // send post request to server
+                    data = {
+                        sector: sectorSelectionValue,
+                        type: healthTypeValue,
+                        projectedPopulation: projectedPopulationValue,
+                        facilityNumbers: facilityNumbers
+                    }
+                }
+                else{   
+                    data = {
+                        sector: sectorSelectionValue,
+                        type: healthTypeValue,
+                        projectedPopulation: projectedPopulationValue,
+                        personnelNumbers: personnelNumbers
+                    }
+                }
+                
+                let newData = {
+                    sector: sectorSelectionValue,
+                    type: healthTypeValue,
+                    projectedPopulation: projectedPopulationValue,
+                    facilityNumbers: facilityNumbers,
+                    personnelNumbers: personnelNumbers
+                }
+
+                // remove facilityNumbers from original data if type is personnel
+                if (healthTypeValue === 'personnel'){
+                    delete newData.facilityNumbers;
+                }
+                else{
+                    delete newData.personnelNumbers;
+                }
+
+                // check if data is different from original data
+                let isDifferent = JSON.stringify(originalData) === JSON.stringify(newData);
+                console.log(isDifferent)
+
+            
+
+                if (!isDifferent){
+                    console.log(data)
+                    fetch(`/needs-assessment/${needsAssessmentSlug.value}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                        if (data){
+                            // redirect to the needs assessment page
+                            history.pushState({}, null, `/needs-assessment/${data.slug}`);
+                            document.getElementById('main').innerHTML = data.template;
+
+                            // sweet alert
+                            swal({
+                                title: 'Success',
+                                text: 'Needs assessment updated successfully',
+                                icon: 'success',
+                                button: 'Ok'
+                            })
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        needsAssessmentBtn.disabled = false;
+                        needsAssessmentBtn.innerHTML = 'Update'
+                        swal({
+                            title: 'Error',
+                            text: 'An error occured',
+                            icon: 'error',
+                            button: 'Ok'
+                        })
+                    })
+                }
+                else{
+                    needsAssessmentBtn.disabled = false;
+                    needsAssessmentBtn.innerHTML = 'Update'
+                    swal({
+                        title: 'Info',
+                        text: 'No changes made, make changes to data to update needs assessment',
+                        icon: 'info',
+                        button: 'Ok'
+                    })
+
+                }
+            })
+
+
+
+
+
+            // add event listener to projected population select
+
+            // handle checkbox change if type is facility or personnel
+            function handleCheckboxChange(){
+                if (sectorType.value === 'facility') {
+                    // if facilityNumberContainer is not empty, disable the needs assessment button
+                    let inputs = facilityNumbersContainerMain.querySelectorAll('input');
+                    let isEmpty = checkEmptyInput(inputs);
+                    needsAssessmentBtn.disabled = isEmpty;
+                    console.log(isEmpty)
+
+                    inputs.forEach(input => {
+                        input.addEventListener('input', function(){
+                            // check all input fields to see if they are empty
+                            let isEmpty = checkEmptyInput(inputs);
+                            needsAssessmentBtn.disabled = isEmpty;
+                        })
+                    })
+
+                    // add event listener to facility checkboxes
+                    
+                    facilityCheckboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', function(e) {
+                            // find it corresponding div and input
+                            let div = document.getElementById(`facilityNumber-${e.target.value}`)
+                            console.log(div)
+
+                            if (!div){
+                                let facilityType = e.target.value;
+                                const inputFieldId = `facilityNumber-${facilityType}`;
+                                facilityType = facilityType.charAt(0).toUpperCase() + facilityType.slice(1);
+                                
+                                const inputField = document.getElementById(inputFieldId) || document.createElement('div');
+                                inputField.id = inputFieldId;
+                                
+                                inputField.innerHTML = `
+                                    <div class="form-control" id="facilityNumber-${e.target.value}">
+                                        <span class="label-text mb-2">${facilityType}
+                                            <p class="italic" style="font-style:italic">(enter number of ${facilityType}s)</p>
+
+                                        <input id=${facilityType} value="" type="number" min="1" name=facilityNumber-${facilityType}" class="input mt-2 input-bordered w-full" />
+                                    </div>
+                                `;
+                                let facilityInput = inputField.querySelector(`input[id=${facilityType}]`)
+
+                                if (inputs){
+                                    inputs.forEach(input => {
+                                        
+                                        if (input.id === facilityType){
+                                            facilityInput.value = input.value
+                                        }
+                                        console.log(input.id, facilityType)
+                                    })
+                                }
+                                facilityNumbersContainerMain.appendChild(inputField);
+                            
+                            }
+                                
+                            
+                            else{
+                                console.log(e, 'unchecked')
+                                let div = document.getElementById(`facilityNumber-${e.target.value}`)
+                                
+                                div.remove()
+
+                            }
+
+                            let newInputs = personnelNumberContainerMain.querySelectorAll('input');
+                            let isEmpty = checkEmptyInput(newInputs); // check if input field is empty
+    
+                            needsAssessmentBtn.disabled = isEmpty; // disable or enable the needs assessment button
+    
+                            // add event listener to input fields to check if they are empty
+                            newInputs.forEach(function(input){
+                                input.addEventListener('input', function(){
+                                    // check all input fields to see if they are empty
+                                    let isEmpty = checkEmptyInput(newInputs);
+                                    needsAssessmentBtn.disabled = isEmpty;
+                                })
+                                console.log(input.value)
+                                console.log(isEmpty)
+                            })
+                            console.log(newInputs)
+
+                        })
                     })
                     
                 }
-                console.log(inputs)
-                facilityNumbersContainer.appendChild(inputField);
-                inputFields.push(inputField);
-
-                if (hidden.value){
-                    // Add the new input element
-                    inputField = inputField.querySelector('input')
-                    inputField.id = inputFieldId
-                    inputsArray.push(inputField);
-                    checkInputs(inputsArray)
-                    handleEditInputFields(inputsArray)
-                }
-                else{
-                    handleInputFields();
-                }
-            } else {
-                // Remove input field
-                const inputField = document.getElementById(inputFieldId);
-                if (inputField) {
-                    facilityNumbersContainer.removeChild(inputField);
-                    inputFields = inputFields.filter(field => field.id !== inputFieldId)
                     
+                else {   
+                    // 
+                    let inputs = personnelNumberContainerMain.querySelectorAll('input');
+                    let isEmpty = checkEmptyInput(inputs);
+                    needsAssessmentBtn.disabled = isEmpty;
+                    console.log(isEmpty)
+
+                    inputs.forEach(input => {
+                        input.addEventListener('input', function(){
+                            // check all input fields to see if they are empty
+                            let isEmpty = checkEmptyInput(inputs);
+                            needsAssessmentBtn.disabled = isEmpty;
+                        })
+                    })
+
+                    personnelCheckboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', function(e) {
+                            if (e.target.checked){
+                                
+                                // find it corresponding div and input
+                                let div = document.getElementById(`personnelNumber-${e.target.value}`)
+                                console.log(div)
+
+                                if (!div){
+                                    let personnelType = e.target.value;
+                                    const inputFieldId = `personnelNumber-${personnelType}`;
+                                    personnelType = personnelType.charAt(0).toUpperCase() + personnelType.slice(1);
+                                    
+                                    const inputField = document.getElementById(inputFieldId) || document.createElement('div');
+                                    inputField.id = inputFieldId;
+                                    
+                                    inputField.innerHTML = `
+                                        <div class="form-control" id="personnelNumber-${e.target.value}">
+                                            <span class="label-text mb-2">${personnelType}
+                                                <p class="italic" style="font-style:italic">(enter number of ${personnelType}s)</p>
+
+                                            <input id=${personnelType} value="" type="number" min="1" name="personnelNumber-${personnelType}" class="input mt-2 input-bordered w-full" />
+                                        </div>
+                                    `;
+                                    let personnelInput = inputField.querySelector(`input[id=${personnelType}]`)
+
+                                    if (inputs){
+                                        inputs.forEach(input => {
+                                            
+                                            if (input.id === personnelType){
+                                                personnelInput.value = input.value
+                                            }
+                                            console.log(input.id, personnelType)
+                                        })
+                                    }
+                                    personnelNumberContainerMain.appendChild(inputField);
+                                
+                                }
+                                
+                            }
+                            else{
+                                console.log(e, 'unchecked')
+                                let div = document.getElementById(`personnelNumber-${e.target.value}`)
+                                
+                                div.remove()
+
+                            }
+
+                            let newInputs = personnelNumberContainerMain.querySelectorAll('input');
+                            let isEmpty = checkEmptyInput(newInputs); // check if input field is empty
+    
+                            needsAssessmentBtn.disabled = isEmpty; // disable or enable the needs assessment button
+    
+                            // add event listener to input fields to check if they are empty
+                            newInputs.forEach(function(input){
+                                input.addEventListener('input', function(){
+                                    // check all input fields to see if they are empty
+                                    let isEmpty = checkEmptyInput(newInputs);
+                                    needsAssessmentBtn.disabled = isEmpty;
+                                })
+                                console.log(input.value)
+                                console.log(isEmpty)
+                            })
+                            console.log(newInputs)
+
+                            
+                        })
+                    })
                 }
-                if (hidden.value){
-                    inputsArray = inputsArray.filter(field => field.id !== inputFieldId)
-                    checkInputs(inputsArray)
-                    handleEditInputFields(inputsArray)
-                }
-                else{
-                    handleInputFields()
-                }
-            
+                                    
             }
-            
-            
-            
-        });
-    });   
-}
 
+            // handle put request
 
-function handleInputFields() {
-    if (inputFields.length > 0) {
-        // Disable button if no input field is filled
-        inputFields.forEach(inputField => {
-            let input = inputField.querySelector('input');
-            input.addEventListener('input', function() {
-                let allFieldsFilled = inputFields.every(field => {
-                    let input = field.querySelector('input');
-                    return input.value !== '';
-                });
-                needsAssessmentBtn.disabled = !allFieldsFilled;
-            });
-        });
-    } else {
-        needsAssessmentBtn.disabled = true;
+            
+        }
+
+    // check if input field is empty
+    function checkEmptyInput(inputs){
+        let empty = false;
+        if (inputs.length === 0){
+            empty = true;
+        }
+        else{
+            inputs.forEach(function(input){
+                if (input.value === ''){
+                    empty = true;
+                }
+            })
+        }
+        return empty;
+        
     }
-}
 
 
-
+        
+    
+       
+    
+}       

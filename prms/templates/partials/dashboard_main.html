@@ -6,11 +6,11 @@
         <p class="mt-2">Welcome to the dashboard</p>
       </div>
       
-      <div class="text-sm breadcrumbs">
+      <div class="text-sm breadcrumbs hidden md:block">
         <ul>
           <li><a href="#populationProjection">Population Projection</a></li> 
           <li><a href="#needsAssessment">Needs Assessment</a></li> 
-          <li>Add Document</li>
+          <li><a href="#">Map Prediction</a></li>
         </ul>
       </div>
     </div>
@@ -19,7 +19,7 @@
     <div id="populationProjection" class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3 h-fit">
       {% for population_projection in population_projections %}
           <!--Graph card-->
-          <div class="card-bordered shadow-md card rounded-md  relative card-item">
+          <div class="card-bordered shadow-lg card relative card-item">
               <div class="dropdown dropdown-end absolute right-3 top-3">
                   <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md">
                       <i class="fa-solid fas fa-ellipsis-h"></i>
@@ -38,16 +38,16 @@
                   {% if population_projection.description %}
                       <p class="mb-2 text-xs">{{ population_projection.description }}</p>
                   {% else %}
-                      <p class="mb-2">Population Projection from {{ population_projection.projections.all.0.base_year }} to {{ population_projection.projections.all.last.projecting_year }}</p>
+                      <p class="mb-1">Population Projection from {{ population_projection.projections.all.0.base_year }} to {{ population_projection.projections.all.last.projecting_year|truncatewords:0 }}</p>
                   {% endif %}
                   <div>
                       {% with projections=population_projection.projections.all %}
                           {% with base_years=projections|get_base_years projected_population=projections|get_projected_population %}
-                              <canvas class="populationProjectionChart" data-labels='{{ base_years }}' class="w-full" height="250" data-values='{{ projected_population }}'></canvas>
+                              <canvas class="populationProjectionChart" data-labels='{{ base_years }}' class="w-full" height="200" data-values='{{ projected_population }}'></canvas>
                           {% endwith %}
                       {% endwith %}
                   </div>
-                  <a href="{% url 'population_projection' population_projection.slug %}" hx-get="{% url 'population_projection' population_projection.slug %}" class="btn btn-primary" hx-push-url="true" hx-target="#main" hx-swap="innerHTML">Go</a>
+                  <button href="{% url 'population_projection' population_projection.slug %}" hx-get="{% url 'population_projection' population_projection.slug %}" class="btn btn-primary" hx-push-url="true" hx-target="#main" hx-swap="innerHTML">View Projection</button>
               </div>
           </div>
       {% endfor %}
@@ -65,51 +65,93 @@
     <!--Needs Assessment-->
     <div class="mt-[4rem]" id="needsAssessment">
       <h2 class="text-xl font-bold mt-8">Needs Assessment</h2>
-      <p class="mt-2 w-[30rem]">A systematic process for determining and addressing needs between current conditions and desired conditions </p>
+      <p class="mt-2 w-[30rem]">Recently created need assessments</p>
 
       
       {% if needs_assessments %}
       <div class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3 h-fit">
         
-        {% for need in needs_assessments  %}
-          <div class="card-bordered shadow-md card rounded-md  relative card-item">
+        {% for need in needs_assessments %}
+        <div class="card-bordered shadow-lg card  relative card-item ">
+          <div class="card-body p-5">
+            <div class="flex">
+              <h2 class="card-title text-lg mb-1 font-bold">Needs Assessment for {{ need.population_projection|truncatewords:0 }}</h2>
               <div class="dropdown dropdown-end absolute right-3 top-3">
-                  <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md">
-                      <i class="fa-solid fas fa-ellipsis-h"></i>
-                  </div>
-                  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                      <li>
-                          <a class="edit" hx-trigger="click" hx-target="#modal-content" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" hx-get="{% url 'crud' %}?mode=update&id={{ need.pk }}">Edit</a>
-                      </li>
-                      <li>
-                          <a hx-target="#modal-content" hx-swap="innerHTML" hx-get="{% url 'crud' %}?mode=delete&id={{ need.pk }}" class="delete" data-value="{{ need.slug }}" hx-on="htmx:afterOnLoad:my_modal_3.showModal()">Delete</a>
-                      </li>
-                  </ul>
+                <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md">
+                  <i class="fa-solid fas fa-ellipsis-h"></i>
+                </div>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                  <li>
+                    <a class="edit" hx-trigger="click" hx-target="#modal-content" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" hx-get="{% url 'manage_need_assessment' need.slug %}">Edit</a>
+                  </li>
+                  <li>
+                    <a hx-target="#modal-content" hx-swap="innerHTML" hx-get="{% url 'crud' %}?mode=delete&id={{ need.pk }}" class="delete" data-value="{{ need.slug }}" hx-on="htmx:afterOnLoad:my_modal_3.showModal()">Delete</a>
+                  </li>
+                </ul>
               </div>
-              <div class="card-body p-5">
-                  <h2 class="card-title text-lg mb-1">Needs for {{ need.population_projection|truncatewords:3 }}</h2>
-                  {% if need.description %}
-                      <p class="mb-2">{{ need.description }}</p>
-                  {% else %}
-                      <p class="mb-2">Needs Assessment from {{ need.population_projection.projections.all.0.base_year }} to {{ need.population_projection.projections.all.last.projecting_year }}</p>
+            </div>
+            
 
-                      <p>Sector: {{need.sector}}</p>
-                  {% endif %}
-                  <div>
-                    <!--Display [required, available, suplus]-->
-                    <div class="flex justify-between">
-                      
-                      <!-- {% for needs in need.needs.all  %}
-                          <p>No. Available: {{needs.available}}</p>
-                      {% endfor %} -->
-                        
-                    </div>  
-                  </div>
-                  <a hx-get="{% url 'manage_need_assessment' need.slug %}" class="btn btn-primary" hx-push-url="true" hx-target="#main" hx-swap="innerHTML">Go</a>
+            <div class="flex  justify-between">
+              <div>
+        
+                <p class="mb-2 flex">
+                  <span class="font-bold flex gap-2 items-center">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    Year
+                  </span>
+                  <span class="">: 
+                    {{ need.population_projection.projections.all.0.base_year }} - {{ need.population_projection.projections.all.last.projecting_year }}
+                  </span>
+                </p>
+
+                <p class="mb-2 flex">
+                  <span class="font-bold flex gap-2 items-center">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Area Type
+                  </span>
+                  <span class="">
+                    : {{need.population_projection.area_type|title}}
+                  </span>
+                </p>
+                
+
+                
+                <p class=""><span class="font-bold"></span></p>
+                
               </div>
+              <div>
+                <p class="mb-2"><span class="font-bold">Sector</span>: {{ need.sector|title }}</p>
+                <p class=""><span class="font-bold">Total Needs</span>: {{ need.needs.all.count }}</p>
+              </div>
+            </div>
+
+            <!-- <table class="table table-sm table-zebra w-full">  
+              <thead>
+                <tr>
+                  <th>Need</th>
+                  <th>Available</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for need_item in need.needs.all %}
+                <tr class="{% if forloop.counter > 3 %}hidden{% endif %} need-row">
+                  <td>{{ need_item.content_object.type_name }}</td>
+                  <td>{{ need_item.content_object.available }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table> -->
+
+           
+            <button hx-get="{% url 'manage_need_assessment' need.slug %}" hx-target="#main" hx-swap="innerHTML" hx-push-url="true" href="{% url 'manage_need_assessment' need.slug %}" class="btn btn-primary">View more</button>
+             
+            
           </div>
-
+          
+        </div>
         {% endfor %}
+
       </div>
       {% else %}
       <div class="flex justify-center items-center h-[20rem]">

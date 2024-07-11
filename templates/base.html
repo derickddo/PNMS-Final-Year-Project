@@ -1,7 +1,7 @@
 {% load tailwind_tags %}
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" >
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,15 +14,28 @@
       href="https://unpkg.com/tippy.js@6/animations/scale.css"
     />  
      <script src=
-"https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js">
-  </script>
+        "https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js">
+      </script>
     {% tailwind_css %}
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+   <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
+   
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu+Sans:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
     <style>
-        #map {
-            height: 600px;
-            width: 100%;
-        }
+      body {
+        font-family: 'Ubuntu Sans', sans-serif;
+      }
+      .btn-primary.active::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: #2563eb; /* Customize the color as needed */
+      }
     </style>
   </head>
   <body>
