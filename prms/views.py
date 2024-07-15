@@ -283,7 +283,7 @@ def get_population_projection(request, slug):
     needs_assessments = NeedsAssessment.objects.filter(population_projection=population_projection)
  
 
-    contex = {
+    context = {
         'population_projection' :population_projection,
         'projection_years':projection_years,
         'base_years':base_years,
@@ -298,42 +298,70 @@ def get_population_projection(request, slug):
     }
 
     # Render the child template
-    child_template = get_template('prms/population_projection.html').render(contex)
+    child_template = get_template('prms/population_projection.html').render(context)
     
 
     # Check if the request is an htmx request
     if request.htmx:
-        sector = request.GET.get('sector', None)
-        needs_assessments = needs_assessments.filter(sector=sector)
-        faclity_needs = []
-        personnel_needs = []
-        for need_assessment in needs_assessments:
-            for need in need_assessment.needs.all():
-                if need.needs_type == 'facility':
-                    faclity_needs.append(need)
-                elif need.needs_type == 'personnel':
-                    personnel_needs.append(need)
-            # get slug for needs assessment
-        needs_assessment_slug = need_assessment.slug
-        facility_and_personnel_needs_assessment = NeedsAssessment.objects.get(slug=needs_assessment_slug)
-        
-        # make facility_needs and personnel_needs available a querysets
-        
-        if sector:
-            contex['needs_assessments'] = needs_assessments
-            contex['facility_needs'] = faclity_needs
-            contex['personnel_needs'] = personnel_needs
-            contex['needs_assessment_slug'] = needs_assessment_slug
-            contex['facility_and_personnel_needs_assessment'] = facility_and_personnel_needs_assessment
-            
-
-            return render(request, 'partials/health_sector.html', contex)
-        else:
-            return render(request, 'prms/population_projection.html', contex)
+        return render(request, 'prms/population_projection.html', context)
     
     # If the request is not an htmx request, render the dashboard template
     return render(request, 'prms/dashboard.html', {'child_template': child_template})
 
+
+def get_population_projection_details(request, slug):
+    population_projection = PopulationProjection.objects.get(slug=slug)
+    projections = population_projection.projections.all()
+    area_type = population_projection.area_type
+    area = population_projection.content_object.name
+    
+    from_year = projections.values_list('base_year', flat=True).order_by('base_year').first()
+    to_year = projections.values_list('projecting_year', flat=True).order_by('projecting_year').last()
+
+    base_population = projections.values_list('base_population', flat=True).order_by('base_population').first()
+
+    projected_population = projections.values_list('projected_population', flat=True).order_by('projected_population').last()
+
+    # get geojson data
+    # geojson = get_geojson_from_nominatim(area)
+    context = {
+        'population_projection':population_projection,
+        # 'geojson':geojson,
+        'area_type':area_type,
+        'area':area,
+        'from_year':from_year,
+        'to_year':to_year,
+        'base_population':base_population,
+        'projected_population':projected_population
+    }
+    return render(request, 'partials/population_projection_details.html', context)
+
+# get needs assessment for a population projection
+def get_needs_assessment_for_population_projection(request, slug):
+    sector = request.GET.get('sector', None)
+    if sector is not None:
+        population_projection = PopulationProjection.objects.get(slug=slug)
+        
+        needs_assessments = NeedsAssessment.objects.filter(population_projection=population_projection, sector=sector)
+        facility_needs = []
+        personnel_needs = []
+        for need_assessment in needs_assessments:
+            needs = need_assessment.needs.all()
+            for need in needs:
+                if need.needs_type == 'facility':
+                    facility_needs.append(need)
+                elif need.needs_type == 'personnel':
+                    personnel_needs.append(need)
+            
+        context = {
+            'population_projection':population_projection,
+            'needs_assessments':needs_assessments,
+            'facility_needs':facility_needs,
+            'personnel_needs':personnel_needs,
+            'sector':sector,
+            'needs_assessment_slug':needs_assessments.first().slug if needs_assessments else None
+        }
+    return render(request, 'partials/health_sector.html', context)
 
 # generate report view
 def generate_report(request, slug):
@@ -615,7 +643,7 @@ def create_needs_assesment(request):
         else:
             pass
         
-        context = get_needs_assessment_context(slug=needs_assessment_slug)
+        context = get_needs_assessment_context(slug=needs_assessment_slug, request=request)
         
         needs_assessment_template = get_template('prms/get_needs_assessment.html').render(context) 
             
@@ -626,8 +654,8 @@ def create_needs_assesment(request):
     return render(request, 'prms/dashboard.html', {'child_template': child_template}) 
 
 # get needs assessment context
-def get_needs_assessment_context(slug):
-    population_projections = PopulationProjection.objects.all()
+def get_needs_assessment_context(request, slug):
+    population_projections = PopulationProjection.objects.filter(user=request.user).all()
     needs_assessment = NeedsAssessment.objects.get(slug=slug)
     needs = needs_assessment.needs.all()
     
@@ -685,7 +713,7 @@ def get_needs_assessment(request, slug):
     needs_assessment = NeedsAssessment.objects.get(slug=slug)
     
     # get distinct facility types
-    context = get_needs_assessment_context(slug=slug)
+    context = get_needs_assessment_context(slug=slug, request=request)
 
     child_template = get_template('prms/get_needs_assessment.html').render(context)
 
@@ -799,7 +827,7 @@ def update_needs_assessment(request, slug):
                 facility.population = formatted_facilities[index]['population']
                 facility.save()
        
-        context = get_needs_assessment_context(slug=new_slug)
+        context = get_needs_assessment_context(slug=new_slug, request=request)
         needs_assessment_template = get_template('prms/get_needs_assessment.html').render(context)
         return JsonResponse({'template': needs_assessment_template, 'slug':slug})
     
@@ -807,10 +835,22 @@ def update_needs_assessment(request, slug):
 
     return render(request, 'prms/dashboard.html', {'child_template': child_template}) 
 
+
 def udpate_needs_assessment_page(request, slug):
-    population_projections = PopulationProjection.objects.all()
+    needs_type = request.GET.get('needs_type', None)
+    population_projections = PopulationProjection.objects.filter(user=request.user).all()
     needs_assessment = NeedsAssessment.objects.get(slug=slug)
-    context = get_needs_assessment_context(slug=slug)
+    context = get_needs_assessment_context(slug=slug, request=request)
+    if needs_type == 'personnel':
+        personnel_needs = needs_assessment.needs.filter(needs_type='personnel')
+        context['personnel_needs'] = personnel_needs
+        context['needs_type'] = 'personnel'
+        
+    elif needs_type == 'facility':
+        facility_needs = needs_assessment.needs.filter(needs_type='facility')
+        context['facility_needs'] = facility_needs
+        context['needs_type'] = 'facility'
+
     child_template = get_template('prms/needs_assessment.html').render(context)
     # if ajax
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -826,7 +866,7 @@ def delete_needs(request, slug, needs_type, **kwargs):
         needs_assessment = get_object_or_404(NeedsAssessment, slug=slug)
         needs_to_delete = needs_assessment.needs.filter(needs_type=needs_type)
         needs_to_delete.delete()
-        context = get_needs_assessment_context(slug=slug)
+        context = get_needs_assessment_context(slug=slug, request=request)
         needs_assessment_template = get_template('prms/get_needs_assessment.html').render(context)
 
         # check if need assessment has any needs
@@ -882,7 +922,7 @@ def delete_needs_assessment(request, slug):
 # needs assessment view
 @csrf_exempt
 def needs_assessment(request, slug=None):
-    population_projections = PopulationProjection.objects.all()
+    population_projections = PopulationProjection.objects.filter(user=request.user).all()
     if request.method == 'POST' and slug is None:
         return create_needs_assesment(request)
     elif slug is not None:

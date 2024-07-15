@@ -29,7 +29,6 @@ def get_distinct_needs_type(needs, needs_type):
     # filter needs
     if type(needs) == list:
         needs = [need for need in needs if need.needs_type == needs_type]
-        print(needs)
         return list(set([need.content_object.type_name for need in needs]))
     else:
         needs  = needs.filter(needs_type=needs_type)
@@ -39,3 +38,15 @@ def get_distinct_needs_type(needs, needs_type):
 @register.filter(name='get_needs')
 def get_needs(needs, needs_type):
     return needs.filter(needs_type=needs_type)
+
+
+# range filter
+@register.filter(name='in_range')
+def in_range(value):
+    return range(value)
+
+
+@register.filter(name='get_needs_type')
+def get_needs_type(needs):
+    # get distinct needs type
+    return list(set([need.needs_type for need in needs]))

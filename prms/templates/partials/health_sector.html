@@ -2,16 +2,31 @@
 {% if needs_assessments %}
 <div class="mt-8">
     <h3 class="font-bold text-xl">{{needs_assessments.all.0.sector|title}} Sector</h3>
-    <p class="mt-2">Recently created need assessments</p>
+    <p class="mt-2 text-gray-500">Recently created need assessments</p>
     <div class="grid grid-cols-1 md:grid-cols-1 mt-4">        
         {% if facility_needs %} 
-        <h3 class="font-bold text-lg ">{{ facility_needs.0.needs_type|title }} Needs</h3>
-        <p class="mt-2">Facility needs for {{ facility_needs.content_object.name|title }}</p>     
-            <div class="card card-bordered p-5 rounded-md shadow-xl">
+        <h3 class="font-bold text-lg ">{{ facility_needs.0.needs_type|title }} Needs Assessment</h3>
+        <p class="mt-2 text-gray-500">Facility needs assessment for {{ needs_assessments.0.population_projection.content_object.name }} {{ needs_assessments.0.population_projection.area_type|title }}</p>     
+            <div class="card card-bordered p-5 rounded-md shadow-xl mt-4">
+                <!--Edit and Delete btn-->
+                <h3 class="font-bold text-xl">Facility needs assessment for {{ needs_assessments.0.population_projection.content_object.name }} {{ needs_assessments.0.population_projection.area_type|title }} </h3>
+                <div class="dropdown dropdown-end absolute right-3 top-3">
+                    <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md">
+                        <i class="fa-solid fas fa-ellipsis-h"></i>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li>
+                            <a href="{% url 'update_needs_assessment_page' needs_assessment_slug %}?needs_type={{facility_needs.0.needs_type}}" hx-trigger="click" hx-target="#main" hx-push-url="true" class="editBtn">Edit</a>
+                        </li>
+                        <li>
+                            <a class="deleteBtn">Delete</a>
+                        </li>
+                    </ul>
+                </div>
                 <div>
                     <div class="flex justify-between">
                         <div>
-                            <h3 class="font-bold text-xl">Facility Needs Assessment</h3>
+                            
                             <!--Categories of needs-->
                             <div class="flex items-center mt-4">
                             <span class="font-medium">
@@ -35,9 +50,8 @@
                                     <i class="fas fa-map-marker-alt"></i>
                                     Area Name:
                                     </span>
-                                    <span class="ml-2">{{ facility_and_personnel_needs_assessment.population_projection.content_object.name|title }}</span>
-                                    
-
+                                    <span class="ml-2">{{ needs_assessments.0.population_projection.content_object.name }} </span>
+                            
                                 </div>
 
                                 <!--Area type-->
@@ -46,7 +60,7 @@
                                     <i class="fas fa-map-marker-alt"></i>
                                     Area Type:
                                     </span>
-                                    <span class="ml-2">{{ facility_and_personnel_needs_assessment.population_projection.area_type|title }}</span>
+                                    <span class="ml-2">{{ needs_assessments.0.population_projection.area_type }}</span>
                                 </div>
                             </div>
                             
@@ -71,7 +85,7 @@
                                     <i class="fas fa-calendar"></i>
                                     Year:
                                     </span>
-                                <span class="ml-2">{{ needs_assessment.needs.all.0.content_object.year }} - {{facility_and_personnel_needs_assessment.population_projection.projections.last.projecting_year}}</span>
+                                <span class="ml-2">{{ needs_assessments.0.needs.all.0.content_object.year }} - {{needs_assessments.0.population_projection.projections.all.last.projecting_year}}<span>
                                 </div>
                             </div>
 
@@ -80,9 +94,9 @@
                                 <div class="flex items-center">
                                 <span class=" font-medium">
                                     <i class="fas fa-users"></i>
-                                    Population:
+                                    Projected Population:
                                     </span>
-                                <span class="ml-2">{{ needs_assessment.needs.all.0.content_object.population|floatformat:"0" }}</span>
+                                <span class="ml-2">{{ needs_assessments.0.needs.all.0.content_object.population|floatformat:"0" }}</span>
                                 </div>
 
                                 <!-- Total number of needs -->
@@ -98,6 +112,7 @@
 
                     </div>
                 </div>
+                
                 <!-- Table to show needs in needs_assessment -->
                 <table class="table table-zebra w-full mt-4">
                     <thead>
@@ -121,8 +136,8 @@
                             <td>{{ need.content_object.standard }}</td>
                             <td>{{ need.content_object.available }}</td>
                             <td>{{ need.content_object.required }}</td>
-                            <td>{% if need.content_object.new_need is None %} - {% else %} {{ need.content_object.new_need }} {% endif %}</td>
-                            <td>{% if need.content_object.suplus is None %} - {% else %} {{ need.content_object.suplus }} {% endif %}</td>
+                            <td>{% if need.content_object.new_need is None %} <i class="fa-solid fa-minus"></i>{% else %} {{ need.content_object.new_need }} {% endif %}</td>
+                            <td>{% if need.content_object.suplus is None %} <i class="fa-solid fa-minus"></i>{% else %} {{ need.content_object.suplus }} {% endif %}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -137,13 +152,28 @@
         {% endif %} 
 
         {% if personnel_needs %}
-        <h3 class="font-bold text-lg mt-8">{{ personnel_needs.0.needs_type|title }} Needs</h3>
-        <p class="mt-2">Personnel needs for {{ facility_and_personnel_needs_assessment.population_projection.content_object.name|title }}</p>     
-            <div class="card card-bordered p-5 rounded-md shadow-xl">
+        <h3 class="font-bold text-lg mt-8">{{ personnel_needs.0.needs_type|title }} Needs Assessment</h3>
+        <p class="mt-2 text-gray-500">Personnel needs assessment for {{needs_assessments.0.population_projection.content_object.name}} {{needs_assessments.0.population_projection.area_type|title}}</p>     
+            <div class="card card-bordered p-5 rounded-md shadow-xl mt-4">
+                <h3 class="font-bold text-xl">Personnel needs assessment for {{needs_assessments.0.population_projection.content_object.name}} {{needs_assessments.0.population_projection.area_type|title}}</h3>
+                <!--Edit and Delete btn-->
+                <div class="dropdown dropdown-end absolute right-3 top-3">
+                    <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md">
+                        <i class="fa-solid fas fa-ellipsis-h"></i>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li>
+                            <a href="{% url 'update_needs_assessment_page' needs_assessment_slug %}?needs_type={{personnel_needs.0.needs_type}}" hx-trigger="click" hx-target="#main" hx-push-url="true" class="editBtn">Edit</a>
+                        </li>
+                        <li>
+                            <a class="deleteBtn">Delete</a>
+                        </li>
+                    </ul>
+                </div>
                 <div>
                     <div class="flex justify-between">
                         <div>
-                            <h3 class="font-bold text-xl">Personnel Needs Assessment </h3>
+                          
                             <!--Categories of needs-->
                             <div class="flex items-center mt-4">
                             <span class="font-medium">
@@ -167,10 +197,8 @@
                                     <i class="fas fa-map-marker-alt"></i>
                                     Area Name:
                                     </span>
-                                    <span class="ml-2">{{ facility_and_personnel_needs_assessment.population_projection.content_object.name|title }}</span>
-                                    
-
-                                </div>
+                                    <span class="ml-2"> {{needs_assessments.0.population_projection.content_object.name}}</span>
+                               </div>
 
                                 <!--Area type-->
                                 <div class="flex items-center">
@@ -178,7 +206,7 @@
                                     <i class="fas fa-map-marker-alt"></i>
                                     Area Type:
                                     </span>
-                                    <span class="ml-2">{{ facility_and_personnel_needs_assessment.population_projection.area_type|title }}</span>
+                                    <span class="ml-2">{{needs_assessments.0.population_projection.area_type|title }}</span>
                                 </div>
                             </div>
                             
@@ -203,7 +231,7 @@
                                     <i class="fas fa-calendar"></i>
                                     Year:
                                     </span>
-                                <span class="ml-2">{{ personnel_needs.0.content_object.year }} - {{ facility_and_personnel_needs_assessment.population_projection.projections.last.projecting_year}}</span>
+                                <span class="ml-2">{{ personnel_needs.0.content_object.year }} - {{ needs_assessments.0.population_projection.projections.last.projecting_year}}</span>
                                 </div>
                             </div>
 
@@ -212,9 +240,9 @@
                                 <div class="flex items-center">
                                 <span class=" font-medium">
                                     <i class="fas fa-users"></i>
-                                    Population:
+                                    Projected Population:
                                     </span>
-                                <span class="ml-2">{{ facility_and_personnel_needs_assessment.needs.all.0.content_object.population|floatformat:"0" }}</span>
+                                <span class="ml-2">{{ needs_assessments.0.needs.all.0.content_object.population|floatformat:"0" }}</span>
                                 </div>
 
                                 <!-- Total number of needs -->
@@ -253,8 +281,8 @@
                             <td>{{ need.content_object.standard }}</td>
                             <td>{{ need.content_object.available }}</td>
                             <td>{{ need.content_object.required }}</td>
-                            <td>{% if need.content_object.new_need is None %} - {% else %} {{ need.content_object.new_need }} {% endif %}</td>
-                            <td>{% if need.content_object.suplus is None %} - {% else %} {{ need.content_object.suplus }} {% endif %}</td>
+                            <td>{% if need.content_object.new_need is None %} <i class="fa-solid fa-minus text-gray-500"></i>{% else %} {{ need.content_object.new_need }} {% endif %}</td>
+                            <td>{% if need.content_object.suplus is None %} <i class="fa-solid fa-minus text-gray-500"></i>{% else %} {{ need.content_object.suplus }} {% endif %}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -269,10 +297,11 @@
         {% endif %}
 
     </div>
+    <input id='hidden' type="hidden" name="" value="{{needs_assessment_slug}}">
 </div>
 {% else %}
 <div class="mt-8">
     <h3 class="font-medium text-lg">No Needs Assessment Data</h3>
 </div> 
 {% endif %}
-    
+

@@ -1,392 +1,80 @@
-
+<!-- needs_assessment.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projection Form with DaisyUI</title>
+    <title>Needs Assessment</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@1.14.0/dist/full.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-gray-100">
 
-<form id="projectionForm" class="w-full max-w-lg p-6 bg-base-200 rounded-lg shadow-lg">
-    <div class="form-control mb-4">
-        <label class="label font-medium mb-2">Title</label>
-        <input type="text" id="title" name="title" class="input input-bordered w-full" placeholder="Population Projection for ...">
-    </div>
-    <div class="form-control mb-4">
-        <label class="label font-medium mb-2">Description</label>
-        <textarea id="description" name="description" class="textarea textarea-bordered w-full" placeholder="Population Projection for ..."></textarea>
-    </div>
-    <div class="form-control mb-4">
-        <label class="label font-medium mb-2">Select Area Type:</label>
-        <div class="flex items-center gap-4 mb-2">
-            <div class="flex items-center">
-                <input type="radio" id="region" name="areaType" value="region" class="radio mr-2">
-                <label for="region" class="mr-4">Region</label>
-            </div>
-            <div class="flex items-center">
-                <input type="radio" id="district" name="areaType" value="district" class="radio mr-2">
-                <label for="district" class="mr-4">District</label>
-            </div>
-            <div class="flex items-center">
-                <input type="radio" id="town" name="areaType" value="town" class="radio mr-2">
-                <label for="town">Town</label>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-control mb-4 hidden" id="regionSelectContainer">
-        <label for="regionSelect" class="label font-medium mb-2">Choose Region:</label>
-        <div class="relative">
-            <input type="text" id="regionSelect" name="region" placeholder="Search Region..." class="input input-bordered w-full">
-            <div id="regionDropdown" class="absolute top-full left-0 w-full mt-1 bg-base-100 border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto hidden">
-                <ul id="regionDropdownList" class="menu menu-compact">
-                    <li class="p-2 hover:bg-base-200 cursor-pointer">Ashanti</li>
-                    <li class="p-2 hover:bg-base-200 cursor-pointer">Brong-Ahafo</li>
-                    <li class="p-2 hover:bg-base-200 cursor-pointer">Central</li>
-                    <li class="p-2 hover:bg-base-200 cursor-pointer">Eastern</li>
-                    <li class="p-2 hover:bg-base-200 cursor-pointer">Greater Accra</li>
-                    <li class="p-2 hover:bg-base-200 cursor-pointer">Northern</li>
-                    <li class="p-2 hover:bg-base-200 cursor-pointer">Upper East</li>
-                    <li class="p-2 hover:bg-base-200 cursor-pointer">Upper West</li>
-                    <li class="p-2 hover:bg-base-200 cursor-pointer">Volta</li>
-                    <li class="p-2 hover:bg-base-200 cursor-pointer">Western</li>
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gray-800 h-screen p-4 text-white">
+            <h1 class="text-3xl font-bold mb-4">PRMS</h1>
+            <nav>
+                <ul>
+                    <li class="mb-2"><a href="#" class="block py-2 px-4 bg-gray-700 rounded">Home</a></li>
+                    <li class="mb-2"><a href="#" class="block py-2 px-4 bg-gray-700 rounded">Projections</a></li>
+                    <li class="mb-2"><a href="#" class="block py-2 px-4 bg-gray-700 rounded">Needs Assessment</a></li>
                 </ul>
+            </nav>
+            <div class="mt-4">
+                <img src="path/to/user-image.jpg" alt="User Image" class="rounded-full w-12 h-12">
+                <span class="ml-2">Gal Gadot</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-4">ASHANTI REGIONAL MAP</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <img src="path/to/ashanti-regional-map.jpg" alt="Ashanti Regional Map" class="rounded-lg shadow-lg">
+                    <div class="bg-white p-4 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-bold mb-2">Facilities</h3>
+                        <table class="table-auto w-full">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-2">Facilities</th>
+                                    <th class="px-4 py-2">Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for facility in facilities %}
+                                <tr>
+                                    <td class="border px-4 py-2">{{ facility.name }}</td>
+                                    <td class="border px-4 py-2">{{ facility.required }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <h2 class="font-bold text-xl mb-4">AREA TO LOCATE FACILITIES</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="placeName" class="block mb-2">Place name:</label>
+                        <input type="text" id="placeName" class="input input-bordered w-full mb-4">
+                    </div>
+                    <div>
+                        <label for="latitude" class="block mb-2">Latitude:</label>
+                        <input type="text" id="latitude" class="input input-bordered w-full mb-4">
+                    </div>
+                    <div>
+                        <label for="longitude" class="block mb-2">Longitude:</label>
+                        <input type="text" id="longitude" class="input input-bordered w-full mb-4">
+                    </div>
+                </div>
+                <button class="btn btn-primary">Select</button>
             </div>
         </div>
     </div>
 
-    <div class="form-control mb-4 hidden" id="districtSelectContainer">
-        <label for="districtSelect" class="label font-medium mb-2">Choose District:</label>
-        <div class="relative">
-            <input type="text" id="districtSelect" name="district" placeholder="Search District..." class="input input-bordered w-full">
-            <div id="districtDropdown" class="absolute top-full left-0 w-full mt-1 bg-base-100 border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto hidden">
-                <ul id="districtDropdownList" class="menu menu-compact"></ul>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-control mb-4 hidden" id="townSelectContainer">
-        <label for="townSelect" class="label font-medium mb-2">Choose Town:</label>
-        <div class="relative">
-            <input type="text" id="townSelect" name="town" placeholder="Search or type a town..." class="input input-bordered w-full">
-            <div id="townDropdown" class="absolute top-full left-0 w-full mt-1 bg-base-100 border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto hidden">
-                <ul id="townDropdownList" class="menu menu-compact"></ul>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-control mb-4 flex justify-between">
-        <div class="w-1/2 pr-2">
-            <label for="baseYear" class="label font-medium mb-2">Base Year:</label>
-            <input type="number" id="baseYear" name="baseYear" class="input input-bordered w-full">
-        </div>
-        <div class="w-1/2 pl-2">
-            <label for="projectYear" class="label font-medium mb-2">Projecting Year:</label>
-            <input type="number" id="projectYear" name="projectYear" class="input input-bordered w-full">
-        </div>
-    </div>
-
-    <div class="form-control mb-4">
-        <label for="growthRate" class="label font-medium mb-2">Growth Rate (%):</label>
-        <input type="number" id="growthRate" name="growthRate" step="0.01" class="input input-bordered w-full">
-    </div>
-
-    <button type="submit" id="projectButton" class="btn btn-primary w-full" disabled>Project</button>
-</form>
-
-<script>
-    
-    function handleAreaTypeChange() {
-            regionSelectContainer.classList.add('hidden');
-            districtSelectContainer.classList.add('hidden');
-            townSelectContainer.classList.add('hidden');
-            regionSelect.value = '';
-            districtSelect.value = '';
-            townSelect.value = '';
-            
-            if (selectedAreaType.value === 'region') {
-                regionSelectContainer.classList.remove('hidden');
-            } else if (selectedAreaType.value === 'district') {
-                regionSelectContainer.classList.remove('hidden');
-                districtSelectContainer.classList.remove('hidden');   
-            } else if (selectedAreaType.value === 'town') {
-                regionSelectContainer.classList.remove('hidden');
-                districtSelectContainer.classList.remove('hidden');
-                townSelectContainer.classList.remove('hidden');
-            }
-        }
-
-        handleAreaTypeChange()
-
-        
-        function validateForm() {
-            const isRegionSelected = regionSelectContainer.classList.contains('hidden') || regionSelect.value.trim() !== '';
-            const isDistrictSelected = districtSelectContainer.classList.contains('hidden') || districtSelect.value.trim() !== '';
-            const isTownSelected = townSelectContainer.classList.contains('hidden') || townSelect.value.trim() !== '';
-            const isBaseYearFilled = baseYear.value.trim() !== '';
-            const isProjectYearFilled = projectYear.value.trim() !== '';
-            const isGrowthRateFilled = growthRate.value.trim() !== '';
-            const isTitleFilled = title.value.trim() !== '';
-            const isBaseYearPopulationFilled = baseYearPopulation.value.trim() !== '';
-            const isGrowthRateTypeFilled = growthRateType.value.trim() !== '';
-            if (!objectId){
-                if (isRegionSelected && isDistrictSelected && isTownSelected && isBaseYearFilled && isProjectYearFilled && isTitleFilled && isBaseYearPopulationFilled){
-                    if(growthRateType.value === 'manual' && isGrowthRateFilled){
-                        projectButton.disabled = false
-                    }
-                    else if (growthRateType.value === 'auto' && !isGrowthRateFilled){
-                        projectButton.disabled = false 
-                    }
-                    else{
-                        projectButton.disabled = true
-                    }
-                }
-                else{
-                    projectButton.disabled = true
-                }
-            }
-                
-        }
-
-        areaTypeInputs.forEach(input => input.addEventListener('change', () => {
-            handleAreaTypeChange();
-            validateForm();
-        }));
-    
-        regionSelect.addEventListener('input', validateForm)
-        districtSelect.addEventListener('input', validateForm);
-        townSelect.addEventListener('input', validateForm);
-        baseYear.addEventListener('change', validateForm);
-        projectYear.addEventListener('change', validateForm);
-        growthRate.addEventListener('input', validateForm);
-        title.addEventListener('input', validateForm);
-        baseYearPopulation.addEventListener('input', validateForm);
-        growthRateType.addEventListener('change', () => {
-            if (growthRateType.value === 'auto'){
-                growthRate.value = ''
-                growthRate.disabled = true 
-            }
-            else{
-                growthRate.disabled = false
-            }
-            validateForm()
-        })
-
-        regionSelect.addEventListener('focus', () => {
-            regionDropdown.classList.remove('hidden');
-        });
-
-        regionSelect.addEventListener('input', () => {
-            const filter = regionSelect.value.toLowerCase();
-            Array.from(regionDropdownList.getElementsByTagName('li')).forEach(option => {
-                if (option.textContent.toLowerCase().includes(filter)) {
-                    option.style.display = '';
-                } else {
-                    option.style.display = 'none';
-                }
-            });
-        });
-
-        regionDropdownList.addEventListener('click', (e) => {
-            if (e.target.tagName === 'LI') {
-                regionSelect.value = e.target.textContent;
-                regionDropdown.classList.add('hidden');
-                handleInputChange();
-                populateDistricts(e.target.textContent);
-            }
-        });
-
-        districtSelect.addEventListener('focus', () => {
-            districtDropdown.classList.remove('hidden');
-        });
-
-        districtSelect.addEventListener('input', () => {
-            const filter = districtSelect.value.toLowerCase();
-            Array.from(districtDropdownList.getElementsByTagName('li')).forEach(option => {
-                if (option.textContent.toLowerCase().includes(filter)) {
-                    option.style.display = '';
-                } else {
-                    option.style.display = 'none';
-                }
-            });
-        });
-
-        districtDropdownList.addEventListener('click', (e) => {
-            if (e.target.tagName === 'LI') {
-                districtSelect.value = e.target.textContent;
-                districtDropdown.classList.add('hidden');
-                handleInputChange();
-                populateTowns(e.target.textContent);
-            }
-        });
-
-        townSelect.addEventListener('focus', () => {
-            townDropdown.classList.remove('hidden');
-        });
-
-        townSelect.addEventListener('input', () => {
-            const filter = townSelect.value.toLowerCase();
-            Array.from(townDropdownList.getElementsByTagName('li')).forEach(option => {
-                if (option.textContent.toLowerCase().includes(filter)) {
-                    option.style.display = '';
-                } else {
-                    option.style.display = 'none';
-                }
-            });
-        });
-
-        townDropdownList.addEventListener('click', (e) => {
-            if (e.target.tagName === 'LI') {
-                townSelect.value = e.target.textContent;
-                townDropdown.classList.add('hidden');
-                handleInputChange();
-            }
-        });
-        window.onload = populateRegions();
-
-        function populateRegions() {
-            fetch('http://127.0.0.1:8000/regions',)
-                .then(response => response.json())
-                .then(data => {
-                    const regions = data.regions;
-                    
-                    regions.forEach(region => {
-                        const li = document.createElement('li');
-                        li.textContent = region.name;
-                        li.className = 'p-2 hover:bg-base-200 cursor-pointer';
-                        regionDropdownList.appendChild(li);
-                    });
-                });
-        }
-
-        function populateDistricts(region) {
-            districtDropdownList.innerHTML = '';
-            fetch('http://127.0.0.1:8000/districts?region=' + region)
-                .then(response => response.json())
-                .then(data => {
-                    const districts = data.districts;
-                    districts.forEach(district => {
-                        const li = document.createElement('li');
-                        li.textContent = district.name
-                        li.className = 'p-2 hover:bg-base-200 cursor-pointer';
-                        districtDropdownList.appendChild(li);
-                    });
-                });
-        }
-
-        function populateTowns(district) {
-            townDropdownList.innerHTML = '';
-            if (towns[district]) {
-                towns[district].forEach(town => {
-                    const li = document.createElement('li');
-                    li.textContent = town;
-                    li.className = 'p-2 hover:bg-base-200 cursor-pointer';
-                    townDropdownList.appendChild(li);
-                });
-            }
-        }
-
-        document.addEventListener('click', (event) => {
-            if (!regionSelect.contains(event.target) && !regionDropdown.contains(event.target)) {
-                regionDropdown.classList.add('hidden');
-            }
-            if (!districtSelect.contains(event.target) && !districtDropdown.contains(event.target)) {
-                districtDropdown.classList.add('hidden');
-            }
-            if (!townSelect.contains(event.target) && !townDropdown.contains(event.target)) {
-                townDropdown.classList.add('hidden');
-            }
-        });
-
-    }
-
-
-        function slugify(text) {
-            return text.toString().toLowerCase()
-                .replace(/\s+/g, '-')           // Replace spaces with -
-                .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-                .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-                .replace(/^-+/, '')             // Trim - from start of text
-                .replace(/-+$/, '');            // Trim - from end of text
-        }
-        // submit form
-        function submitForm(method, id){
-            loading.classList.remove('hidden')
-            if (method == 'POST'){
-                projectButton.innerText = 'Projecting...'
-            }
-            else{
-                projectButton.innerText = 'Updating...'
-            }
-            const formData = new FormData(form);
-            const data = {};
-            formData.forEach((value, key) => {
-                if(value.trim() !== '') {
-                    data[key] = value.trim();
-                }
-            });
-            data['slug'] = slugify(title.value);
-            if (method === 'PUT'){
-                data['id'] = id
-            }
-            fetch('http://127.0.0.1:8000/create-population-projection/', {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            }).then(response => response.json())
-            .then(data => {
-                loading.classList.remove('hidden')
-                history.pushState('data', 'Title', '/population-projection/' + data.slug);
-                document.getElementById('main').innerHTML = data.rendered_template;
-                // make main innerHtml smooth and scrollable
-                document.getElementById('main').classList.add('overflow-y-scroll')
-                document.getElementById('my_modal_3').classList.add('hidden')
-                projectButton.innerText = 'Project';
-                loading.classList.add('hidden')
-                initializeChart(); // reinitialize chart after htmx settle  
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                document.getElementById('alert').classList.remove('hidden')
-                document.getElementById('alert').classList.add('flex')
-                document.getElementById('alert-message').innerText = 'An error occurred. Please try again.'
-                if (method == 'POST'){
-                    projectButton.innerText = 'Projecting...'
-                }
-                else{
-                    projectButton.innerText = 'Updating...'
-                }
-                loading.classList.add('hidden')
-            });
-            
-        }
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (projectButton.innerText === 'Project'){
-                console.log('POST')
-                submitForm('POST')
-                
-            }
-            else{
-                let id = hiddenInput.value
-                submitForm('PUT', id)
-
-            }
-
-        });  
-        
-    });
-
-
-
-
-</script>
-
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
 </body>
 </html>

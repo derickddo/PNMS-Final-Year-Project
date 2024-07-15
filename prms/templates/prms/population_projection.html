@@ -174,10 +174,10 @@
       <div>
         <nav class="bg-blue-950 h-[5rem] mt-2 rounded-md">
           <ul class="flex gap-8 items-center h-full py-3 px-5">
-            <li><a href="{% url 'population_projection' population_projection.slug %}?sector=health" class="btn bg-white sectorBtn active">Health</a></li>
-            <li><a href="{% url 'population_projection' population_projection.slug %}?sector=education" class=" text-white sectorBtn">Education</a></li>
-            <li><a href="{% url 'population_projection' population_projection.slug %}?sector=agriculture" class="text-white sectorBtn">Agriculture</a></li>
-            <li><a href="{% url 'population_projection' population_projection.slug %}?sector=infrastructure" class="text-white sectorBtn">Infrastructure</a></li>
+            <li><a href="{% url 'get_needs_assessment_for_population_projection' population_projection.slug %}?sector=health" class="btn bg-white sectorBtn active">Health</a></li>
+            <li><a href="{% url 'get_needs_assessment_for_population_projection' population_projection.slug %}?sector=education" class=" text-white sectorBtn">Education</a></li>
+            <li><a href="{% url 'get_needs_assessment_for_population_projection' population_projection.slug %}?sector=agriculture" class="text-white sectorBtn">Agriculture</a></li>
+            <li><a href="{% url 'get_needs_assessment_for_population_projection' population_projection.slug %}?sector=infrastructure" class="text-white sectorBtn">Infrastructure</a></li>
           </ul>
         </nav>
       </div>
@@ -187,17 +187,24 @@
         {% include 'partials/health_sector.html' %}
     </div>
   </div>
- 
-  
+
 </div>
 <script>
-  function handleSectorBtn(){
-    const sectorBtns = document.querySelectorAll('.sectorBtn');
-    sectorBtns.forEach(btn => {
+  
+  
+
+  // make a request to the health sector by default
+  htmx.ajax('GET', "{% url 'get_needs_assessment_for_population_projection' population_projection.slug %}?sector=health",{
+    target: '#sector',
+    historyUpdate: true,
+    swap: 'innerHTML',  
+  })
+
+  document.querySelectorAll('.sectorBtn').forEach(btn => {
       btn.addEventListener('click', function(e){
         e.preventDefault();
         // make the clicked button active
-        sectorBtns.forEach(button => {button.classList.remove('bg-white' , 'btn', 'active')
+        document.querySelectorAll('.sectorBtn').forEach(button => {button.classList.remove('bg-white' , 'btn', 'active')
           button.classList.add('text-white')
           button.style.color = 'white';
         }
@@ -208,58 +215,130 @@
         const sector = btn.textContent.toLowerCase();
         const url = btn.href
         const sectorDiv = document.getElementById('sector');
-      
+        
         //htmx request
         htmx.ajax('GET', url,{
           target: '#sector',
           historyUpdate: true,
           swap: 'innerHTML',  
-        })
+        }).then(() => {
+          // scroll to the sector div
+          sectorDiv.scrollIntoView({ behavior: 'smooth' });
+        });
         
       });
-    });
-  }
-  
-  function handleViewMoreLess(){
-    const viewMoreLessButtons = document.querySelectorAll('.view-more-less');
+  })
 
-    viewMoreLessButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const card = button.closest('.card');
-            const hiddenRows = card.querySelectorAll('.need-row.hidden');
-            const visibleRows = card.querySelectorAll('.need-row');
+ document.getElementById('sector').addEventListener('htmx:afterSwap', ()=> {
+    let viewMoreLessBtns = document.querySelectorAll('.view-more-less');
+    viewMoreLessBtns.forEach(btn => {
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        const card = btn.closest('.card');
+        const hiddenRows = card.querySelectorAll('.need-row.hidden');
+        const visibleRows = card.querySelectorAll('.need-row');
+        
 
-            if (button.textContent === 'View More') {
-                hiddenRows.forEach(row => row.classList.remove('hidden'));
-                button.textContent = 'View Less';
-                card.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                visibleRows.forEach((row, index) => {
-                    if (index >= 5) {
-                        row.classList.add('hidden');
+        if (btn.textContent === 'View More') {
+            hiddenRows.forEach(row => row.classList.remove('hidden'));
+            btn.textContent = 'View Less';
+            card.scrollIntoView({ behavior: 'smooth' });
+        } 
+        else {
+          visibleRows.forEach((row, index) => {
+              if (index >= 5) {
+                  row.classList.add('hidden');
+              }
+          });
+          btn.textContent = 'View More';
+          card.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    })
+
+    let needsAssessmentSlug = document.getElementById('hidden').value
+    let deleteBtns = document.querySelectorAll('.deleteBtn')
+    let editBtns = document.querySelectorAll('.editBtn')
+    deleteBtns.forEach(deleteBtn => {
+      deleteBtn.addEventListener('click', (e)=> {
+              
+            let parent = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
+            console.log(parent)
+
+            //get hidden input value from parent
+            let hidden = parent.querySelector('input[type="hidden"]')
+            let needType = hidden.value
+            
+            let url = '/needs-assessment/' + needsAssessmentSlug + '/need/'+ needType + '/delete'
+            
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this data!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        fetch(url, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                        }
+                        ).then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                            history.pushState({}, '', );
+                            document.getElementById('main').innerHTML = data.template;
+
+                            // initializeChart()
+                            // sweet alert
+                            swal({
+                                title: "Data Deleted",
+                                text: "Data has been successfully deleted",
+                                icon: "success",
+                                button: "Ok",
+                            })
+                        
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                    } 
+                    else {
+                        swal("Your data is safe!");
                     }
                 });
-                button.textContent = 'View More';
-                card.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
+        })
+    })
+
+    editBtns.forEach(editBtn => {
+      editBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                swal({
+                    title: "Edit",
+                    text: "Do you want to edit this item?",
+                    icon: "info",
+                    buttons: ["No", "Yes"],
+                    dangerMode: false
+                })
+                .then((willEdit) => {
+                    if (willEdit) {
+                        let url = e.target.getAttribute('href')
+                        // htmx ajax request
+                        htmx.ajax('GET', url, { 
+                            target: '#main', 
+                            swap: 'innerHTML', 
+                            pushUrl: true,
+                        })
+                        history.pushState({}, '', url);
+                        
+                    }
+                });
+            });
     });
-  }
-  
-   
-    
-  
-  document.getElementById('sector').addEventListener('htmx:afterSwap', () => {
-    handleViewMoreLess();
-    // scroll smoothly to the table
-    document.getElementById('sector').scrollIntoView({ behavior: 'smooth' });
-  }
+  })
 
-  )
-  
-  handleSectorBtn()
-  handleViewMoreLess();
-
-  
 
 </script>

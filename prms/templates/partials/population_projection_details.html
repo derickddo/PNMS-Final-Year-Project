@@ -1,0 +1,41 @@
+<!--Population Projection Details-->
+<label class="label-text">Population Projection Details</label>
+<div class="bg-gray-300 card card-bordered p-4 rounded-md mb-2 mt-2">
+    <h3 class="font-bold">Needs Assessment for {{area}} {{area_type|title}}</h3>
+    <div class="flex flex-col mt-2 gap-2">
+        <div class="flex gap-2">
+            <p class="font-medium flex gap-2 items-center">
+                <i class="fa-solid fa-calendar-days"></i>
+                Year:</p>
+            <p>{{from_year}} - {{to_year}}</p>
+        </div>
+        <div class="flex gap-2 ">
+            <p class="font-medium flex gap-2 items-center">
+                <i class="fa-solid fa-location-dot"></i>
+                Area Type:
+            </p>
+            <p>{{area_type|title}}</p>
+        </div>
+        <div class="flex gap-2">
+            <p class="font-medium flex gap-2 items-center">
+                <i class="fa-solid fa-map-marked-alt"></i>
+                Area:</p>
+            <p>{{area}}</p>
+        </div>
+        <!--base population-->
+        <div class="flex gap-2">
+            <p class="font-medium flex gap-2 items-center">
+                <i class="fa-solid fa-users"></i>
+                Base Population:</p>
+            <p>{{base_population}}</p>
+        </div>
+
+        <!--projected population-->
+        <div class="flex gap-2">
+            <p class="font-medium flex gap-2 items-center">
+                <i class="fa-solid fa-person-arrow-up-from-line" aria-hidden="true"></i>
+                Projected Population:</p>
+            <p>{{projected_population}}</p>
+        </div>
+    </div>
+</div>

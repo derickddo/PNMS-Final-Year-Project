@@ -127,110 +127,162 @@ function main(){
 
             // handle checkbox change if type is facility or personnel
             function handleCheckboxChange(){
-            if (sectorType.value === 'facility') {
-                // if facilityNumberContainer is not empty, disable the needs assessment button
-                let inputs = facilityNumbersContainerMain.querySelectorAll('input');
-                let isEmpty = checkEmptyInput(inputs);
-                needsAssessmentBtn.disabled = isEmpty;
-                console.log(isEmpty)
-
-                // add event listener to facility checkboxes
+                if (sectorType.value === 'facility') {
+                    // if facilityNumberContainer is not empty, disable the needs assessment button
+                    let inputs = facilityNumbersContainerMain.querySelectorAll('input');
+                    let isEmpty = checkEmptyInput(inputs);
+                    needsAssessmentBtn.disabled = isEmpty;
+                    console.log(isEmpty)
+                    
+                    // add event listener to facility checkboxes
+                    
+                    facilityCheckboxes.forEach((checkbox, index) => {
+                        checkbox.addEventListener('change', function(e) {
+                            let facilityType = e.target.value;
+                            const inputFieldId = `${facilityType}`;
+                            facilityType = facilityType.charAt(0).toUpperCase() + facilityType.slice(1);
                 
-                facilityCheckboxes.forEach(checkbox => {
-                    checkbox.addEventListener('change', function(e) {
-                        let facilityType = e.target.value;
-                        const inputFieldId = `${facilityType}`;
-                        facilityType = facilityType.charAt(0).toUpperCase() + facilityType.slice(1);
-            
-                        const inputField = document.getElementById(inputFieldId) || document.createElement('div');
-                        inputField.id = inputFieldId;
-            
-                        if (e.target.checked) {
-                            inputField.innerHTML = `
-                                <div class="form-control">
-                                    <span class="label-text mb-2">${facilityType}
-                                        <p class="italic" style="font-style:italic">(enter number of ${facilityType}s)</p>
+                            let inputField = document.createElement('div');
+                            inputField.id = inputFieldId;
+                
+                            if (e.target.checked) {
+                                inputField.innerHTML = `
+                                    <div class="form-control">
+                                        <span class="label-text mb-2">${facilityType}
+                                            <p class="italic" style="font-style:italic">(enter number of ${facilityType}s)</p>
+                                        
+                                        <input id=${facilityType.replace(' ', '')} value="" type="number" min="1" name="facilityNumber-${facilityType}" class="input mt-2 input-bordered w-full" />
+                                    </div>
+                                `;
+                                // Remove the corresponding skeleton
+                                const skeleton = document.querySelector(`#skeleton-${index}`);
+
+                                if (skeleton) {
+                                    skeleton.remove();
+                                }
+
+                                facilityNumbersContainer.appendChild(inputField);
+                            } else {
+                                const existingInputField = document.getElementById(inputFieldId);
+                                if (existingInputField) {
+                                    existingInputField.remove();
                                     
-                                    <input value="" type="number" min="1" name="facilityNumber-${facilityType}" class="input mt-2 input-bordered w-full" />
-                                </div>
-                            `;
-                            facilityNumbersContainer.appendChild(inputField);
-                        } else {
-                            inputField.innerHTML = '';
-                        }
-                        
-                        let newInputs = facilityNumbersContainerMain.querySelectorAll('input');
-                        let isEmpty = checkEmptyInput(newInputs); // check if input field is empty
-                        
-                        needsAssessmentBtn.disabled = isEmpty; // disable or enable the needs assessment button
+                                    // Re-add the corresponding skeleton
+                                    let skeleton = document.createElement('div');
+                                    skeleton.id = `skeleton-${index}`;
+                                    skeleton.classList.add('form-control', 'animate-pulse', 'mt-4');
+                                    skeleton.innerHTML = `
+                                        <span class="label-text mb-2">
+                                            <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                                            <p class="italic">
+                                                <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                                            </p>
+                                        </span>
+                                        <div class="h-10 bg-gray-300 rounded w-full"></div>
+                                    `;
+                                    
+                                    facilityNumbersContainer.appendChild(skeleton);
+                                }
+                            }
+                            let newInputs = facilityNumbersContainerMain.querySelectorAll('input');
+                            let isEmpty = checkEmptyInput(newInputs); // check if input field is empty
+                            
+                            needsAssessmentBtn.disabled = isEmpty; // disable or enable the needs assessment button
 
-                        // add event listener to input fields to check if they are empty
-                        console.log(newInputs)
-                        newInputs.forEach(input =>{
-                            input.addEventListener('input', function(){
-                                // check all input fields to see if they are empty
-                                let isEmpty = checkEmptyInput(newInputs);
-                                needsAssessmentBtn.disabled = isEmpty;
+                            // add event listener to input fields to check if they are empty
+                            console.log(newInputs)
+                            newInputs.forEach(input =>{
+                                input.addEventListener('input', function(){
+                                    // check all input fields to see if they are empty
+                                    let isEmpty = checkEmptyInput(newInputs);
+                                    needsAssessmentBtn.disabled = isEmpty;
+                                })
                             })
-                        })
+                        });
+
+                        
                     });
 
                     
-                });
-
+                }
                 
-            }
-            
-            else{   
-                let inputs = personnelNumberContainerMain.querySelectorAll('input');
-                let isEmpty = checkEmptyInput(inputs);
-                needsAssessmentBtn.disabled = isEmpty;
-                console.log(isEmpty)
-                personnelCheckboxes.forEach(checkbox => {
-                    checkbox.addEventListener('change', function(e) {
-                        let personnelType = e.target.value;
-                        const inputFieldId = `${personnelType}`;
-                        personnelType = personnelType.charAt(0).toUpperCase() + personnelType.slice(1);
-                        
-            
-                        const inputField = document.getElementById(inputFieldId) || document.createElement('div');
-                        inputField.id = inputFieldId;
-            
-                        if (e.target.checked) {
-                            inputField.innerHTML = `
-                                <div class="form-control">
-                                    <span class="label-text mb-2">${personnelType}
-                                        <p class="italic" style="font-style:italic">(enter number of ${personnelType}s)</p>
+                else{   
+                    let inputs = personnelNumberContainerMain.querySelectorAll('input');
+                    let isEmpty = checkEmptyInput(inputs);
+                    needsAssessmentBtn.disabled = isEmpty;
+                    console.log(isEmpty)
+                    personnelCheckboxes.forEach((checkbox, index) => {
+                        checkbox.addEventListener('change', function(e) {
+                            let personnelType = e.target.value;
+                            const inputFieldId = `${personnelType}`;
+                            personnelType = personnelType.charAt(0).toUpperCase() + personnelType.slice(1);
+                            
+                
+                            let inputField =  document.createElement('div');
+                            inputField.id = inputFieldId;
+                
+                            if (e.target.checked) {
+                                inputField.innerHTML = `
+                                    <div class="form-control">
+                                        <span class="label-text mb-2">${personnelType}
+                                            <p class="italic" style="font-style:italic">(enter number of ${personnelType}s)</p>
 
-                                    <input id=${personnelType} value="" type="number" min="1" name="personnelNumber-${personnelType}" class="input mt-2 input-bordered w-full" />
-                                </div>
-                            `;
-                            personnelNumberContainerMain.appendChild(inputField);
-                        } else {
-                            inputField.innerHTML = '';
+                                        <input id=${personnelType} value="" type="number" min="1" name="personnelNumber-${personnelType}" class="input mt-2 input-bordered w-full" />
+                                    </div>
+                                `;
+                                // Remove the corresponding skeleton
+                                const skeleton = personnelNumbers.querySelector(`#skeleton-${index}`);
+
+                                if (skeleton) {
+                                    skeleton.remove();
+                                }
+
+                                personnelNumbers.appendChild(inputField);
+                            } 
+                            else {
+                                const existingInputField = document.getElementById(inputFieldId);
+                                if (existingInputField) {
+                                    existingInputField.remove();
+                                    
+                                    // Re-add the corresponding skeleton
+                                    let skeleton = document.createElement('div');
+                                    skeleton.id = `skeleton-${index}`;
+                                    skeleton.classList.add('form-control', 'animate-pulse', 'mt-4');
+                                    skeleton.innerHTML = `
+                                        <span class="label-text mb-2">
+                                            <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                                            <p class="italic">
+                                                <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                                            </p>
+                                        </span>
+                                        <div class="h-10 bg-gray-300 rounded w-full"></div>
+                                    `;
+                                    
+                                    personnelNumbers.appendChild(skeleton);
+                                }
                         }
 
-                        let newInputs = personnelNumberContainerMain.querySelectorAll('input');
-                        let isEmpty = checkEmptyInput(newInputs); // check if input field is empty
+                            let newInputs = personnelNumberContainerMain.querySelectorAll('input');
+                            let isEmpty = checkEmptyInput(newInputs); // check if input field is empty
 
-                        needsAssessmentBtn.disabled = isEmpty; // disable or enable the needs assessment button
+                            needsAssessmentBtn.disabled = isEmpty; // disable or enable the needs assessment button
 
-                        // add event listener to input fields to check if they are empty
-                        newInputs.forEach(function(input){
-                            input.addEventListener('input', function(){
-                                // check all input fields to see if they are empty
-                                let isEmpty = checkEmptyInput(newInputs);
-                                needsAssessmentBtn.disabled = isEmpty;
+                            // add event listener to input fields to check if they are empty
+                            newInputs.forEach(function(input){
+                                input.addEventListener('input', function(){
+                                    // check all input fields to see if they are empty
+                                    let isEmpty = checkEmptyInput(newInputs);
+                                    needsAssessmentBtn.disabled = isEmpty;
+                                })
+                                console.log(input.value)
+                                console.log(isEmpty)
                             })
-                            console.log(input.value)
-                            console.log(isEmpty)
-                        })
-                        console.log(newInputs)
-                    });
+                            console.log(newInputs)
+                        });
 
-                    
-                })
-            } 
+                        
+                    })
+                } 
             }
 
             // submit needs assessment form
@@ -537,6 +589,27 @@ function main(){
 
             // handle checkbox change if type is facility or personnel
             function handleCheckboxChange(){
+               let originalInputData = {
+                    sector: needsAssessmentSector.value,
+                    type: needType.value,
+                    projectedPopulation: projectedPopulationSelect.value,
+                    facilityNumbers: {},
+                    personnelNumbers: {}
+                }
+
+                let inputs = personnelNumberContainerMain.querySelectorAll('input');
+                inputs.forEach(input => {
+                    let personnelType = input.name.split('-')[1];
+                    originalInputData.personnelNumbers[personnelType] = input.value;
+                })
+
+                let facilityInputs = facilityNumbersContainerMain.querySelectorAll('input');
+                facilityInputs.forEach(input => {
+                    let facilityType = input.name.split('-')[1];
+                    originalInputData.facilityNumbers[facilityType] = input.value;
+                })
+
+                console.log(originalInputData)
                 if (sectorType.value === 'facility') {
                     // if facilityNumberContainer is not empty, disable the needs assessment button
                     let inputs = facilityNumbersContainerMain.querySelectorAll('input');
@@ -552,9 +625,27 @@ function main(){
                         })
                     })
 
+                    // if inputs is less than 4, append corresponding skeletons to the facilityNumbersContainer
+                    if (inputs.length < 4){
+                        for (let i = inputs.length; i < 4; i++) {
+                            let skeleton = document.createElement('div');
+                            skeleton.id = `skeleton-${i}`;
+                            skeleton.classList.add('form-control', 'animate-pulse', 'mt-4');
+                            skeleton.innerHTML = `
+                                <span class="label-text mb-2">
+                                    <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                                    <p class="italic">
+                                        <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                                    </p>
+                                </span>
+                                <div class="h-10 bg-gray-300 rounded w-full"></div>
+                            `;
+                            facilityNumbersContainer.appendChild(skeleton);
+                        }
+                    }
+
                     // add event listener to facility checkboxes
-                    
-                    facilityCheckboxes.forEach(checkbox => {
+                    facilityCheckboxes.forEach((checkbox, index) => {
                         checkbox.addEventListener('change', function(e) {
                             // find it corresponding div and input
                             let div = document.getElementById(`facilityNumber-${e.target.value}`)
@@ -573,10 +664,10 @@ function main(){
                                         <span class="label-text mb-2">${facilityType}
                                             <p class="italic" style="font-style:italic">(enter number of ${facilityType}s)</p>
 
-                                        <input id=${facilityType} value="" type="number" min="1" name=facilityNumber-${facilityType}" class="input mt-2 input-bordered w-full" />
+                                        <input id=${facilityType.replace(' ,', '')} value="" type="number" min="1" name=facilityNumber-${facilityType}" class="input mt-2 input-bordered w-full" />
                                     </div>
                                 `;
-                                let facilityInput = inputField.querySelector(`input[id=${facilityType}]`)
+                                let facilityInput = inputField.querySelector(`input[id=${facilityType.replace(' ', '')}]`)
 
                                 if (inputs){
                                     inputs.forEach(input => {
@@ -587,7 +678,13 @@ function main(){
                                         console.log(input.id, facilityType)
                                     })
                                 }
-                                facilityNumbersContainerMain.appendChild(inputField);
+                                // remove the corresponding skeleton
+                                let skeleton = document.getElementById(`skeleton-${index}`);
+                                if (skeleton){
+                                    skeleton.remove();
+                                }
+
+                                facilityNumbersContainer.appendChild(inputField);
                             
                             }
                                 
@@ -598,9 +695,24 @@ function main(){
                                 
                                 div.remove()
 
+                                // add the corresponding skeleton
+                                let skeleton = document.createElement('div');
+                                skeleton.id = `skeleton-${index}`;
+                                skeleton.classList.add('form-control', 'animate-pulse', 'mt-4');
+                                skeleton.innerHTML = `
+                                    <span class="label-text mb-2">
+                                        <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                                        <p class="italic">
+                                            <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                                        </p>
+                                    </span>
+                                    <div class="h-10 bg-gray-300 rounded w-full"></div>
+                                `;
+                                facilityNumbersContainer.appendChild(skeleton);
+
                             }
 
-                            let newInputs = personnelNumberContainerMain.querySelectorAll('input');
+                            let newInputs = facilityNumbersContainer.querySelectorAll('input');
                             let isEmpty = checkEmptyInput(newInputs); // check if input field is empty
     
                             needsAssessmentBtn.disabled = isEmpty; // disable or enable the needs assessment button
@@ -637,7 +749,28 @@ function main(){
                         })
                     })
 
-                    personnelCheckboxes.forEach(checkbox => {
+                     // if inputs is less than 4, append corresponding skeletons to the facilityNumbersContainer
+                    if (inputs.length < 4){
+                        for (let i = inputs.length; i < 4; i++) {
+                            let skeleton = document.createElement('div');
+                            skeleton.id = `personnel-skeleton-${i}`;
+                            skeleton.classList.add('form-control', 'animate-pulse', 'mt-4');
+                            skeleton.innerHTML = `
+                                <span class="label-text mb-2">
+                                    <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                                    <p class="italic">
+                                        <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                                    </p>
+                                </span>
+                                <div class="h-10 bg-gray-300 rounded w-full"></div>
+                            `;
+                            
+                            personnelNumbers.appendChild(skeleton);
+                        }
+                    }
+
+                    // add event listener to personnel checkboxes
+                    personnelCheckboxes.forEach((checkbox, index) => {
                         checkbox.addEventListener('change', function(e) {
                             if (e.target.checked){
                                 
@@ -672,7 +805,13 @@ function main(){
                                             console.log(input.id, personnelType)
                                         })
                                     }
-                                    personnelNumberContainerMain.appendChild(inputField);
+                                    // remove the corresponding skeleton
+                                    let skeleton = document.getElementById(`personnel-skeleton-${index}`);
+                                    if (skeleton){
+                                        skeleton.remove();
+                                    }
+                                    console.log('INDEX',index)
+                                    personnelNumbers.appendChild(inputField);
                                 
                                 }
                                 
@@ -682,6 +821,20 @@ function main(){
                                 let div = document.getElementById(`personnelNumber-${e.target.value}`)
                                 
                                 div.remove()
+                                // add the corresponding skeleton
+                                let skeleton = document.createElement('div');
+                                skeleton.id = `personnel-skeleton-${index}`;
+                                skeleton.classList.add('form-control', 'animate-pulse', 'mt-4');
+                                skeleton.innerHTML = `
+                                    <span class="label-text mb-2">
+                                        <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                                        <p class="italic">
+                                            <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                                        </p>
+                                    </span>
+                                    <div class="h-10 bg-gray-300 rounded w-full"></div>
+                                `;
+                                personnelNumbers.appendChild(skeleton);
 
                             }
 

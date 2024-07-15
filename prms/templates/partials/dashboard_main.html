@@ -75,7 +75,12 @@
         <div class="card-bordered shadow-lg card  relative card-item ">
           <div class="card-body p-5">
             <div class="flex">
-              <h2 class="card-title text-lg mb-1 font-bold">Needs Assessment for {{ need.population_projection|truncatewords:0 }}</h2>
+              <div>
+                <h2 class="card-title text-lg mb-1 font-bold">Needs Assessment for {{ need.population_projection|truncatewords:0 }}</h2>
+                <!--manual description-->
+                <p class=" text-gray-500">Assessed need with in the {{need.sector}} sector</p>
+              </div>
+              
               <div class="dropdown dropdown-end absolute right-3 top-3">
                 <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md">
                   <i class="fa-solid fas fa-ellipsis-h"></i>
@@ -91,40 +96,71 @@
               </div>
             </div>
             
-
-            <div class="flex  justify-between">
-              <div>
-        
-                <p class="mb-2 flex">
-                  <span class="font-bold flex gap-2 items-center">
-                    <i class="fa-solid fa-calendar-days"></i>
-                    Year
-                  </span>
-                  <span class="">: 
-                    {{ need.population_projection.projections.all.0.base_year }} - {{ need.population_projection.projections.all.last.projecting_year }}
-                  </span>
-                </p>
-
-                <p class="mb-2 flex">
-                  <span class="font-bold flex gap-2 items-center">
-                    <i class="fa-solid fa-location-dot"></i>
-                    Area Type
-                  </span>
-                  <span class="">
-                    : {{need.population_projection.area_type|title}}
-                  </span>
-                </p>
-                
-
-                
-                <p class=""><span class="font-bold"></span></p>
-                
-              </div>
-              <div>
-                <p class="mb-2"><span class="font-bold">Sector</span>: {{ need.sector|title }}</p>
-                <p class=""><span class="font-bold">Total Needs</span>: {{ need.needs.all.count }}</p>
+            <!--Categories bage for needs type-->
+            <div class="flex items-center gap-2 mt-2">
+              <span>
+                <i class="fa-solid fa-tags"></i>
+                <span class="font-medium">Need Types:</span>
+              </span>
+              <div class="flex gap-2">
+                {% for needs_type in need.needs.all|get_needs_type %}
+                <span class="badge badge-primary">{{ needs_type }}</span>
+                {% endfor %}
               </div>
             </div>
+
+            <div class="grid grid-cols-1 gap-y-2">
+              <div class="flex gap-2">
+                <span>
+                  <i class="fa-solid fa-calendar-days"></i>
+                  <span class="font-medium">Year:</span>
+                </span>
+                <span>{{ need.population_projection.projections.all.0.base_year }} - {{ need.population_projection.projections.last.projecting_year }}</span>
+              </div>
+
+              <div class="flex gap-2">
+                <span>
+                  <i class="fa-solid fa-map-marked-alt"></i>
+                  <span class="font-medium">Area:</span>
+                </span>
+                <span>{{ need.population_projection.content_object.name|title }}</span>
+              </div>
+
+              <div class="flex gap-2">
+                <span>
+                  <i class="fa-solid fa-users"></i>
+                  <span class="font-medium">Base Population:</span>
+                </span>
+                <span>{{ need.population_projection.projections.all.0.base_population }}</span>
+              </div>
+
+              <div class="flex gap-2">
+                <span>
+                  <i class="fa-solid fa-person-arrow-up-from-line"></i>
+                  <span class="font-medium">Projected Population:</span>
+                </span>
+                <span>{{ need.population_projection.projections.last.projected_population }}</span>
+              </div>
+
+              <div class="flex gap-2">
+                <span>
+                  <i class="fa-solid fa-map-marked-alt"></i>
+                  <span class="font-medium">Area Type:</span>
+                </span>
+                <span>{{ need.population_projection.area_type|title }}</span>
+              </div>
+
+              <div class="flex gap-2">
+                <span>
+                  <i class="fa-solid fa-map-marked-alt"></i>
+                  <span class="font-medium">Sector:</span>
+                </span>
+                <span>{{ need.sector }}</span>
+              </div>
+            </div>
+              
+            
+            
 
             <!-- <table class="table table-sm table-zebra w-full">  
               <thead>

@@ -83,6 +83,11 @@ class PopulationProjection(models.Model):
     def __str__(self):
         return f'{self.title}'
     
+    def save(self, *args, **kwargs):
+        # generate title upon save
+        if not self.title:
+            self.title = f'Population projection for {self.content_object.name} {self.area_type}'
+        super().save(*args, **kwargs) # Call the real save() method
     
     def delete(self, *args, **kwargs): # delete all projections when a population projection is deleted
         self.projections.clear()
@@ -106,7 +111,7 @@ class NeedsAssessment(models.Model):
     slug = models.SlugField(unique=True, blank=True, null=True)
 
     def __str__(self):
-        return f'Needs assessment for {self.sector} sector in {self.population_projection.area_type}' 
+        return f'Needs assessment for {self.sector} sector for a {self.population_projection.area_type}' 
     
     # delete all needs
     def delete(self, *args, **kwargs):
@@ -221,6 +226,8 @@ class MapPrediction(models.Model):
     needs_assestment = models.ForeignKey(NeedsAssessment, on_delete=models.CASCADE)
     map_url = models.URLField()
     description = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'Map prediction for {self.population_projection.area_type} '

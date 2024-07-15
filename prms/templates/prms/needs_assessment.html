@@ -1,4 +1,6 @@
 {% load custom_filters %}
+
+{% if population_projections %}  
 <div class="grid px-4 grid-cols-1 md:grid-cols-2 gap-4">
     <div class="card card-bordered shadow-lg rounded-lg p-6">
         <h2 class="text-2xl font-bold mb-4">Needs Assessment</h2>
@@ -25,6 +27,8 @@
                         {% endif %}
                             
                         value="{{ projected_population.slug }}">{{ projected_population }} </option>
+                        {% empty %}
+                        <option value="" disabled selected>No population projection available</option>
                     {% endfor %}
                 </select>
             </div>
@@ -69,14 +73,13 @@
                     <option
                     
                     
-                    {% if facility_needs %}
+                    {% if needs_type == 'facility' %}
                         selected
                     {% endif %}
                             
-
                      value="facility">Facility</option>
                     <option
-                    {% if personnel_needs %}
+                    {% if needs_type == 'personnel' %}
                         selected
                     {% endif %}
                      value="personnel">Personnel</option>  
@@ -90,13 +93,15 @@
                 
             >Assess Needs</button>
         </div>
-
-        <div id="result" class="mt-4">
-            <!-- Results will be displayed here -->
+        <!--Information on selected population projection-->
+        <div id="populationProjectionInfo" class="mt-4">
+            <!-- Population projection information will be displayed here -->
         </div>
+
+        
     </div>
 
-    <div  class="card card-bordered shadow-lg rounded-lg p-6 h-[30rem] overflow-y-scroll">
+    <div  class="card card-bordered shadow-lg rounded-lg p-6">
         <div id="health">
             <!--Facility-->
             <div id="healthFacility">
@@ -165,7 +170,7 @@
                     </div>
                 </div>
                 
-                <div id="facilityNumberContainer" class="form-control mb-4">
+                <div id="facilityNumberContainer" class="form-control mb-4 mt-4">
                     <label class="mb-2">
                         <span class="label-text">Available Number of Facilities</span>
                         <p class="text-sm italic">Select faciltity to enter number of available facilities</p>
@@ -174,23 +179,76 @@
                         <!-- Input fields will be dynamically added here -->
                         
                         {% if facility_types_with_available %}
-
-                            
-                            {% for facility in facility_types_with_available  %}
-                            <div class="form-control" id="facilityNumber-{{facility.facility|lower}}">
-                                <span class="label-text mb-2">{{facility.facility}}
-                                <p class="italic" style="font-style:italic">(enter number of 
-                                    {{facility.facility}}s)</p>
-                                </span>
-                                <input  type="number" min="1" 
-                                id="facilityNumber-{{facility.facility}}"
-                                name="facilityNumber-{{facility.facility}}" value="{{facility.available}}" class="input input-bordered w-full" />
+                          {% for facility in facility_types_with_available %}
+                            <div class="form-control" id="facilityNumber-{{ facility.facility|lower }}">
+                              <span class="label-text mb-2">
+                                {{ facility.facility }}
+                                <p class="italic">(enter number of {{ facility.facility }}s)</p>
+                              </span>
+                              <input type="number" min="1" 
+                                     id="{{ facility.facility }}"
+                                     name="facilityNumber-{{ facility.facility }}" 
+                                     value="{{ facility.available }}" 
+                                     class="input input-bordered w-full" />
                             </div>
-                            {% endfor %}
+                          {% endfor %}
+                        {% else %}
+                          <!-- Input skeleton -->
+                          
+                        {% for i in 4|in_range %}
+                        <div id="skeleton-{{i}}"  class="form-control animate-pulse mt-4 Skeleton">
+                            <span class="label-text mb-2">
+                                <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                                <p class="italic">
+                                <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                                </p>
+                            </span>
+                            <div class="h-10 bg-gray-300 rounded w-full"></div>
+                        </div>
+                        {% endfor %}
+                        
+                          
                             
-                            
+                       
+                          <!-- <div class="form-control animate-pulse mt-4">
+                            <span class="label-text mb-2">
+                              <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                              <p class="italic">
+                                <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                              </p>
+                            </span>
+                            <div class="h-10 bg-gray-300 rounded w-full"></div>
+                          </div>
+
+                          <div class="form-control animate-pulse mt-2">
+                            <span class="label-text mb-2">
+                              <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                              <p class="italic">
+                                <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                              </p>
+                            </span>
+                            <div class="h-10 bg-gray-300 rounded w-full"></div>
+                          </div>
+
+                          <div class="form-control animate-pulse mt-2">
+                            <span class="label-text mb-2">
+                              <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                              <p class="italic">
+                                <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                              </p>
+                            </span>
+                            <div class="h-10 bg-gray-300 rounded w-full"></div>
+                          </div> -->
+                          <!-- Add more skeletons as needed -->
                         {% endif %}
-                            
+                    </div>
+                      
+                </div>
+                <!--alert-->
+                <div id="alert" class="alert alert-warning mt-8">
+                    <div class="flex gap-3 items-baseline">
+                        <i class="fa-solid fa-exclamation-triangle"></i>
+                        <i>Ensure you have selected at least one Facility type and entered the number of available Facilities</i>
                     </div>
                 </div>
             </div>
@@ -267,12 +325,12 @@
                     </div>
                 </div>
                 
-                <div id="personnelNumberContainer" class="form-control mb-4">
+                <div id="personnelNumberContainer" class="form-control mb-4 mt-4">
                     <label class="mb-2">
                         <span class="label-text">Available Number of Personnel</span>
                         <p class="text-sm italic">Select personnel to enter number of available personnel</p>
                     </label>
-                    <div id="personnelNumbers" class="grid grid-cols-2 gap-4">
+                    <div id="personnelNumbers" class="grid grid-cols-2 gap-4 mt-4">
                         <!-- Input fields will be dynamically added here -->
                         {% if personnels_types_with_available %}
                             {% for personnel in personnels_types_with_available  %}
@@ -288,9 +346,31 @@
 
                             </div>
                             {% endfor %}
+                            {% else %}
+                            {% for i in 4|in_range %}
+                            <div id="skeleton-{{i}}"  class="form-control animate-pulse mt-4">
+                                <span class="label-text mb-2">
+                                  <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                                  <p class="italic">
+                                    <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                                  </p>
+                                </span>
+                                <div class="h-10 bg-gray-300 rounded w-full"></div>
+                              </div>
+                            {% endfor %}
                         {% endif %}
                     </div>
                 </div>
+                
+
+                <!--alert-->
+                <div id="alert" class="alert alert-warning mt-8">
+                    <div class="flex gap-2 items-baseline">
+                        <i class="fa-solid fa-exclamation-triangle"></i> <br>
+                        <i>Ensure you have selected at least one Personnel type and entered the number of available Personnels</i>
+                    </div>
+                </div>
+
             </div>
         </div> 
     </div> 
@@ -309,5 +389,30 @@
         
         
 </div>
+{% else %}
+    <div class="flex justify-center items-center h-[20rem] flex-col gap-y-8">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-info-circle text-5xl text-gray-400"></i>
+            <p class="text-center text-gray-400">No population projections available. Create a new population projection to assess needs</p>
+        </div>
+        <button hx-trigger="click" hx-get="{% url 'crud' %}?mode=create" hx-target="#modal-content" hx-swap="innerHTML" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" class="btn btn-primary">
+            + new projection
+        </button>
+    </div>
+{% endif %}
+<script>
+    // listen for changes in the projected population select and make a htmx request to get the population details
+    document.getElementById('projectedPopulationSelect').addEventListener('change', function() {
+        var populationSlug = this.value;
+        var url = `/get-population-projection-details/${populationSlug}`
+        htmx.ajax('GET', url, {target: document.getElementById('population-details')});
+    });
+
+    // make default request to get the population details
+    var populationSlug = document.getElementById('projectedPopulationSelect').value;
+    var url = `/get-population-projection-details/${populationSlug}`
+    htmx.ajax('GET', url, {target: document.getElementById('population-details')});
+    
+</script>
 
 
