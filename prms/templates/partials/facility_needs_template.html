@@ -1,0 +1,25 @@
+{% if facility_needs %}
+<table class="table w-full table-zebra">
+            <thead>
+                <tr>
+                    <th>Facility</th>
+                    <th>Required</th>
+                    <th>Availble</th>
+                    <th>Year</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for facility in facility_needs %}
+                <tr>
+                    <td>{{facility.content_object.type_name}}</td>
+                    <td>{{facility.content_object.required}}</td>
+                    <td>{{facility.content_object.available}}</td>
+                    <td>{{facility.content_object.year}}</td>
+                </tr>
+                
+                {% endfor %}
+            </tbody>
+        </table>
+{% else %}
+<div class="text-center text-gray-500">No health facility data available</div>
+{% endif %}

@@ -1,0 +1,64 @@
+<div class="bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3 mt-2" role="alert">
+    <div class="flex">
+        <div class="flex flex-col gap-3">
+            <!--Area type-->
+            <div>
+                <span class="text-sm font-medium text-gray-700">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Area Type:</span>
+                <span class="text-sm text-gray-500">{{area_type|title}}</span>
+            </div>
+
+            <!--Area-->
+            <div>
+                <span class="text-sm font-medium text-gray-700">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Area:</span>
+                <span class="text-sm text-gray-500">{{area_name|title}}</span>
+            </div>
+
+            <!--Population-->
+            <div>
+                <span class="text-sm font-medium text-gray-700">
+                    <i class="fas fa-users"></i>
+                    Base Population:</span>
+                <span class="text-sm text-gray-500">{{base_population}}</span>
+            </div>
+
+            <div>
+                <span class="text-sm font-medium text-gray-700">
+                    <i class="fa-solid fa-person-arrow-up-from-line"></i>
+                    Projected Population:</span>
+                <span class="text-sm text-gray-500">{{projected_population}}</span>
+            </div>
+
+            <!--Base year-->
+            <div>
+                <span class="text-sm font-medium text-gray-700">
+                    <i class="fas fa-calendar-alt"></i>
+                    Base Year:</span>
+                <span class="text-sm text-gray-500">{{base_year}}</span>
+            </div>
+
+            <!--Projecting year-->
+            <div>
+                <span class="text-sm font-medium text-gray-700">
+                    <i class="fas fa-calendar-alt"></i>
+                    Projecting Year:</span>
+                <span class="text-sm text-gray-500">{{projecting_year}}</span>
+            </div>
+
+            <!--Needs-->
+            <div>
+                <span class="text-sm font-medium text-gray-700">
+                    <i class="fas fa-hands-helping"></i>
+                    Needs:</span>
+                    <br>
+                {% for need in needs_types %}
+                <span class="badge badge-primary">{{need|title}}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<input id="facility_coordinates" type="hidden" name="" value="{{facility_coordinates}}">

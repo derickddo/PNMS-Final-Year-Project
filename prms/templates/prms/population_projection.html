@@ -1,5 +1,6 @@
 {% load custom_filters %}
-<div class="px-4 overflow-y-auto">
+{% load static %}
+<div class="px-4 fade-in">
   <div>
     <div class="w-full lg:flex lg:justify-between">
       <div>
@@ -9,7 +10,7 @@
             <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md"><i class="fa-solid fas fa-ellipsis-h"></i></div>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
               <li><a class="edit" hx-trigger="click" hx-target="#modal-content" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" hx-get="{% url 'crud' %}?mode=update&id={{population_projection.pk}}">Edit</a></li>
-              <li><a hx-target="#modal-content" hx-swap="innerHTML" hx-get="{% url 'crud' %}?mode=delete&id={{population_projection.pk}}"class="delete" data-value="{{population_projection.slug}}" hx-on="htmx:afterOnLoad:my_modal_3.showModal()">Delete</a></li>
+              <li><a href="{% url 'delete_population_projection' population_projection.pk %}" class="deleteBtn">Delete</a></li>
             </ul>
           </div>
         </div>
@@ -20,6 +21,7 @@
           {% endif %}
           <p class="mt-1 text-gray-600 dark:text-white">Projecting from {{base_years.0}} to {{projection_years.last}} for {{population_projection.content_object}} {{population_projection.area_type|title}}.</p>
           <p class="mt-2 text-gray-600 dark:text-white ">Area Type: {{population_projection.area_type|title}}</p>
+          <p class="mt-2 text-gray-600 dark:text-white">Area: {{population_projection.content_object.name|title}}</p>
           <p class="mt-2 text-gray-600 dark:text-white">Created: {{population_projection.timestamp|date}}</p>
         </div>
         
@@ -41,11 +43,20 @@
         </div>
           
     </div>
+    <div id="alertBox4" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-md flex items-center space-x-4 mt-8">
+      <i class="fas fa-info-circle"></i>
+      <span>
+          Note: Population projection is calculated on the basis of one year difference between the base year and the projecting year. E.g., from 2023 to 2024 will be calculated as 2023 to 2024, and so on.
+      </span>
+      <button id="closeAlert4" class="ml-auto text-red-700 hover:text-red-900">
+          <i class="fas fa-times"></i>
+      </button>
+  </div>
     <div class="overflow-x-auto mt-8">
       <h3 class="font-bold text-xl mb-1">Results Of Projection</h3>
       <p class="text-gray-600 dark:text-white mb-4">The table below shows the population projection for the {{population_projection.content_object.name}} {{population_projection.area_type|title}}.</p>
       
-      <table class="table table-md xl:table-lg">
+      <table class="table table-md xl:table-lg ">
           <!-- head -->
           <thead>
             <tr>
@@ -176,7 +187,7 @@
           <ul class="flex gap-8 items-center h-full py-3 px-5">
             <li><a href="{% url 'get_needs_assessment_for_population_projection' population_projection.slug %}?sector=health" class="btn bg-white sectorBtn active">Health</a></li>
             <li><a href="{% url 'get_needs_assessment_for_population_projection' population_projection.slug %}?sector=education" class=" text-white sectorBtn">Education</a></li>
-            <li><a href="{% url 'get_needs_assessment_for_population_projection' population_projection.slug %}?sector=agriculture" class="text-white sectorBtn">Agriculture</a></li>
+            <li><a href="{% url 'get_needs_assessment_for_population_projection' population_projection.slug %}?sector=utility" class="text-white sectorBtn">Utility</a></li>
             <li><a href="{% url 'get_needs_assessment_for_population_projection' population_projection.slug %}?sector=infrastructure" class="text-white sectorBtn">Infrastructure</a></li>
           </ul>
         </nav>
@@ -188,11 +199,55 @@
     </div>
   </div>
 
-</div>
-<script>
-  
-  
+  <!--Map Prediction-->
+  <div class="mt-8">
+    <h2 class="font-bold text-xl">Map Prediction</h2>
+    <p class="mt-2">Map prediction for the {{population_projection.content_object.name}} {{population_projection.area_type|title}}.</p>
 
+    {% for map_prediction in map_predictions %}
+      <div class="card card-bordered w-full mt-8 rounded-md p-4">
+        <div class="flex justify-between mb-10">
+          <div>
+            <h3 class="font-bold text-lg">{{map_prediction}}</h3>
+            <p class="mt-2">{{map_prediction.description}}</p>
+          </div>
+          <div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex gap-2 items-center">
+                <i class="fa-solid fa-arrow-up text-green-500"></i>
+                <p class="text-green-500">Growth Rate</p>
+                <p class="text-green text-green-500">{{ growth_rate|floatformat:2 }}%</p>
+              </div>
+              <div class="flex gap-2 items-center">
+                <i class="fa-solid fa-users"></i>
+                <p>Total Population:</p>
+                <p class="">{{ projected_populations.last }}</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        {% if map_prediction.image %}
+          <img src="{{map_prediction.image.url}}" alt="{{map_prediction}}" class="w-full h-96 object-cover rounded-md">
+        {% else %}
+          <div class="text-center text-gray-500">No image available</div>
+        {% endif %}
+      </div>
+            
+    {% endfor %}
+  </div>
+
+
+</div>
+<script type="module">
+  import {initializeChart} from "{% static 'js/export_chart.js' %}";
+
+  initializeChart()
+    // change url when the page is loaded by htmx
+    
+    let url = "{% url 'population_projection' population_projection.slug %}"
+    history.pushState({}, '', url);
+    
   // make a request to the health sector by default
   htmx.ajax('GET', "{% url 'get_needs_assessment_for_population_projection' population_projection.slug %}?sector=health",{
     target: '#sector',
@@ -200,6 +255,39 @@
     swap: 'innerHTML',  
   })
 
+  document.querySelector('.deleteBtn').addEventListener('click', (e)=>{
+      e.preventDefault()
+      let url = e.target.getAttribute('href')
+      swal({
+          title: "Are you sure?",
+          text: "Once deleted, you will not be able to recover this data!",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+          })
+          .then((willDelete) => {
+              if (willDelete) {
+                htmx.ajax('DELETE', url, {
+                  target: '#main',
+                  historyUpdate: true,
+                  swap: 'innerHTML',
+                })
+                .then(() => {
+                  // sweet alert
+                  swal({
+                      title: "Data Deleted",
+                      text: "Data has been successfully deleted",
+                      icon: "success",
+                      button: "Ok",
+                  })
+                })
+              }
+          });
+  })
+
+
+
+  // make a request to the sector when the button is clicked
   document.querySelectorAll('.sectorBtn').forEach(btn => {
       btn.addEventListener('click', function(e){
         e.preventDefault();
@@ -339,6 +427,8 @@
             });
     });
   })
+
+
 
 
 </script>

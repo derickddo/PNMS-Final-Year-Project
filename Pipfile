@@ -16,6 +16,11 @@ django-allauth = {extras = ["socialaccount"], version = "*"}
 pillow = "*"
 django-widget-tweaks = "*"
 pytest = "*"
+geopy = "*"
+global-land-mask = "*"
+shapely = "*"
+rtree = "*"
+numpy = "*"
 
 [dev-packages]
 

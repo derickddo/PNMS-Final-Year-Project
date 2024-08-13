@@ -1,5 +1,6 @@
 
 
+
     const sidebar = document.querySelector('.fixed.inset-0');
     const toggleButton = document.getElementById('sidebar-toggle');
     const menuButton = document.getElementById('menuButton');
@@ -18,12 +19,5 @@
         }
     });
 
-    
-    
-
-// reload page for popstate
-window.onpopstate = function(event) {
-    location.reload();
-};
  
 

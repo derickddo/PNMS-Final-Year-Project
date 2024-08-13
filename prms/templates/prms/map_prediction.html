@@ -1,0 +1,563 @@
+<!---->
+{% load static %}
+<div class="container mx-auto px-4">
+    <h1 class="text-xl font-bold mb-2">Needs Assessment Map Prediction</h1>
+    <p class="text-sm text-gray-500 mb-4">This page shows the map prediction of the needs assessment</p>
+    <!-- <div class="bg-white rounded-lg shadow p-4">
+        <div id="map"></div>
+    </div> -->
+    <div class="grid grid-cols-2 gap-x-4">
+        <!--Select Needs assessment-->
+        <div class="card card-body card-bordered shadow-md">
+            <label for="needs_assessment" class="block text-sm font-medium text-gray-700">Select Needs Assessment</label>
+            <select id="needs_assessment" name="needs_assessment" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                {% for assessment in needs_assessments %}
+                <option value="{{assessment.pk}}">{{assessment}}</option>
+                {% endfor %}
+            </select>
+
+            <!--Needs assessment details-->
+            <div class="mt-4">
+            <label for="needs_assessment" class="block text-sm font-medium text-gray-700">Needs Assessment Details</label>
+            
+                <div id="needs_assessment_details">
+                    <!--Skeleton-->
+                    <div id="loading" class="animate-pulse mt-4 Skeleton">
+                        <div class="h-8 bg-gray-300 rounded w-full"></div>
+                        <p class="italic">
+                            <div class="h-[15rem] bg-gray-300 rounded w-full mt-1"></div>
+                        </p>
+                    </div> 
+                </div>
+            </div>
+            <!--Needs Info-->
+            <div class="mt-4">
+                <!-- Second Alert Box -->
+                <div id="alertBox2" class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-lg shadow-md flex items-center space-x-4">
+                    <i class="fas fa-info-circle"></i>
+                    <span>
+                        Map predictions are made only for facilities, especially health facilities.
+                    </span>
+                    
+                </div>
+            </div>
+
+            <!--button to scroll to map-->
+            <button class="btn btn-primary mt-4" onclick="document.getElementById('mapContainer').scrollIntoView({behavior: 'smooth'})">   
+                <i class="fas fa-map-marker-alt"></i>
+                Place Facility on Map
+            </button>
+        </div>
+
+        <div class="card card-body card-bordered shadow-md">
+            <!--details for for only health facilities-->
+            <div class="">
+                <h2 for="needs_assessment" class="block text-lg text-gray-700 mb-2 font-bold">Health Facilities Info</h2>
+                <p class="text-sm text-gray-500 mb-4">This section shows the health facilities required, available and surplus</p>
+                
+                <!--daisy ui table of facility and available-->
+                <label for="needs_assessment" class="block text-sm font-medium text-gray-700">Health Facilities Available</label>
+                <div id="table" class="overflow-x-auto mb-4 h-[28rem] overflow-y-auto">
+                    <!--table skeleton-->
+                    <div class="animate-pulse Skeleton mt-4">
+                        <div class="h-8 bg-gray-300 rounded w-full"></div>
+                        <p class="italic">
+                            <div class="h-[28rem] bg-gray-300 rounded w-full mt-1"></div>
+                        </p>
+                    </div>
+                       
+                           
+                </div>
+
+                <!-- daisy ui table of facility and suplus
+                <label for="needs_assessment" class="block text-sm font-medium text-gray-700">Health Facilities Surplus</label>
+                <div class="overflow-x-auto">
+                    <table class="table w-full table-zebra">
+                        <thead>
+                            <tr>
+                                <th>Facility</th>
+                                <th>Surplus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Health Center</td>
+                                <td>5</td>
+                            </tr>
+                            <tr>
+                                <td>Hospital</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>Pharmacy</td>
+                                <td>3</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> -->
+
+            </div>
+
+
+
+        </div>
+    </div>
+    
+    <div id="" class=" transform bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg shadow-md flex items-center space-x-4 mb-4 mt-8">
+        <i class="fas fa-info-circle"></i>
+        <span>
+            Facilities are placed on the map based on the required number of facilities within the needs assessment for only the projecting year.
+        </span>
+        <button id="" class="ml-auto text-yellow-700 hover:text-yellow-900">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!--placing a facility on a map coordinate-->
+    <div id="mapContainer" class="card card-body card-bordered shadow-md mt-8">
+        <h2 class="text-lg text-gray-700 mb-2 font-bold">Place Facility on Map</h2>
+        <p class="text-sm text-gray-500 mb-2">This section shows the map prediction of the needs assessment</p>
+
+        <!--alert-->
+        
+
+        <!--add an alert that facilities a placed randomly on the map on the onset it may place it on area and also outside the area, right click on the maker to move to you specified location-->
+        <div id="alertBox" class=" transform  bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg shadow-md flex items-center space-x-4 mb-4">
+            <i class="fas fa-info-circle"></i>
+            <span>
+                Facilities are placed randomly on the map. Initially, they may be placed inside or outside the area. Right-click on a marker to move it to your specified location.
+            </span>
+            <button id="closeAlert" class="ml-auto text-yellow-700 hover:text-yellow-900">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+
+        <div id="spinner" class="flex items-center justify-center h-[20rem]">
+            <div class="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-500"></div>
+        </div>
+        <div id="map" class="z-100 hidden"></div>
+
+        <div class="mt-4" id="facility_coordinates">
+            
+            <!--table of facilities and their coordinates-->
+            <div class="flex justify-between">
+                <label for="needs_assessment" class="block text-sm font-medium text-gray-700">Facilities and Coordinates</label>
+                <button id="save" class="btn btn-primary">Save</button>
+            </div>
+            
+            <div id="facility_coordinate_details" class="overflow-x-auto mt-4">
+                
+            </div>
+                
+        </div>
+
+    </div>
+    
+    
+
+</div>
+
+<script type="module">
+  import html2canvasPro from "http://cdn.jsdelivr.net/npm/html2canvas-pro@1.5.8/+esm" 
+    
+    let table = document.getElementById('table');
+    let mapContainer = document.getElementById('map');
+    let innerTable 
+    var map = L.map(mapContainer)
+    let facilityCoordinateDetails = document.getElementById('facility_coordinate_details');
+    let saveButton = document.getElementById('save');
+    let facilityCoordinatesAreaName = []
+    
+    // get needs assessment details
+    const needsAssessment = document.getElementById("needs_assessment");
+    let url = '/get-needs-assessment-details/' + needsAssessment.value + '/';
+    fetch(url,{
+        method:'GET'
+    })
+    .then(response => {
+        return response.json()
+    })
+    .then(data => {
+        let needsAssessmentTemplate = data.needs_assessment_template
+        let facilityTemplate = data.facility_needs_template
+        let areaCoordinates = data.area_coordinates
+        let facilityCoordinates = data.facility_coordinates
+        document.getElementById('needs_assessment_details').innerHTML = needsAssessmentTemplate
+        table.innerHTML = facilityTemplate
+        
+        // inintialize the map
+        console.log(areaCoordinates, facilityCoordinates)
+        document.getElementById('spinner').classList.add('hidden');
+        mapContainer.classList.remove('hidden');
+        if (areaCoordinates){
+            mapContainer.innerHTML = ''
+            facilityCoordinateDetails.innerHTML = ''
+            map.remove();
+            map = L.map(mapContainer)
+            swal("Facility Coordinates", "Facility coordinates found", "success");
+            initMap(areaCoordinates, facilityCoordinates)
+        }
+        else{
+            mapContainer.innerHTML = `
+                <div class="text-center text-gray-500 mt-4">
+                    <i class="fas fa-exclamation-triangle text-4xl"></i>
+                    <p class="text-lg">No area coordinates found</p>
+                </div>
+            `
+            facilityCoordinateDetails.innerHTML = `
+                <div class="text-center text-gray-500 mt-4">
+                    <i class="fas fa-exclamation-triangle text-4xl"></i>
+                    <p class="text-lg">No facility coordinates found</p>
+                </div>`
+
+            // sweetalert that this needs assessment has no facility therefore no map can be generated
+            swal("No facility coordinates found", "This needs assessment has no facilities, therefore no map can be generated", "error");
+        }
+    })
+    .catch(error => {
+        console.log(error)
+    })
+
+    needsAssessment.addEventListener('change', function(e) {
+        let url = '/get-needs-assessment-details/' + e.target.value + '/';
+        let needsAssessmentDetails = document.getElementById('needs_assessment_details')
+        needsAssessmentDetails.innerHTML = `
+            <div id="loading" class="animate-pulse mt-4 Skeleton">
+                <div class="h-8 bg-gray-300 rounded w-full"></div>
+                <p class="italic">
+                    <div class="h-[15rem] bg-gray-300 rounded w-full mt-1"></div>
+                </p>
+            </div>
+        `
+        table.innerHTML = `
+            <div class="animate-pulse Skeleton mt-4">
+                <div class="h-8 bg-gray-300 rounded w-full"></div>
+                <p class="italic">
+                    <div class="h-[28rem] bg-gray-300 rounded w-full mt-1"></div>
+                </p>
+            </div>
+        `
+        // uninitalize the map
+
+        document.getElementById('spinner').classList.remove('hidden');
+        mapContainer.classList.add('hidden');
+        fetch(url,{
+            method:'GET'
+        })
+        .then(response => {
+            return response.json()
+        })
+        .then(data => {
+            let needsAssessmentTemplate = data.needs_assessment_template
+            let facilityTemplate = data.facility_needs_template
+            let areaCoordinates = data.area_coordinates
+            let facilityCoordinates = data.facility_coordinates
+            needsAssessmentDetails.innerHTML = needsAssessmentTemplate
+            table.innerHTML = facilityTemplate
+            console.log(areaCoordinates, facilityCoordinates)
+            document.getElementById('spinner').classList.add('hidden');
+            mapContainer.classList.remove('hidden');
+            if (areaCoordinates){
+                mapContainer.innerHTML = ''
+                facilityCoordinateDetails.innerHTML = ''
+                map.remove();
+                map = L.map(mapContainer)
+                swal("Facility Coordinates", "Facility coordinates found", "success");
+                initMap(areaCoordinates, facilityCoordinates)
+            }
+            else{
+                mapContainer.innerHTML = `
+                    <div class="text-center text-gray-500 mt-4">
+                        <i class="fas fa-exclamation-triangle text-4xl"></i>
+                        <p class="text-lg">No area coordinates found</p>
+                    </div>
+                `
+                facilityCoordinateDetails.innerHTML = `
+                    <div class="text-center text-gray-500 mt-4">
+                        <i class="fas fa-exclamation-triangle text-4xl"></i>
+                        <p class="text-lg">No facility coordinates found</p>
+                    </div>`
+
+                // sweetalert that this needs assessment has no facility therefore no map can be generated
+                swal("No facility coordinates found", "This needs assessment has no facilities, therefore no map can be generated", "error");
+            }
+        })
+        
+    })
+    
+    function initMap(areaCoordinates, facilityCoordinates) {
+       
+        // Initialize the map
+        map.setView(areaCoordinates, 10);  // Adjust the center and zoom level as needed
+
+        // Add a tile layer (e.g., OpenStreetMap tiles)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+        // Add Leaflet-Geoman controls
+        map.pm.addControls({
+            position: 'topleft',
+            drawMarker: true,
+            drawPolygon: true,
+            drawPolyline: true,
+            drawCircle: true,
+            drawCircleMarker: true,
+            editMode: true,
+            dragMode: true,
+            cutPolygon: true,
+            removalMode: true
+        });
+
+        // here satellite url
+        let url 
+
+        // Additional code to handle shape files and satellite view
+        var satelliteLayer = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=YOUR_MAPBOX_ACCESS_TOKEN', {
+            maxZoom: 19
+        });
+
+        // Add a control to switch between layers
+        var baseMaps = {
+            "Street Map": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }),
+            "Satellite": satelliteLayer
+        };
+
+        L.control.layers(baseMaps).addTo(map);
+
+        function addFacilityMarkers(facilities) {
+            facilities.forEach(function(facility) {
+                let requiredFacility = facility.required;
+                let facilityName = facility.facility;
+                let facilityCoordinates = [facility.lat, facility.lon];
+                let facilityArea = facility.area_name;
+                
+                for (let i = 0; i < requiredFacility; i++) {
+                    var marker = L.marker([facility.lat, facility.lon]).addTo(map);
+                    marker.bindPopup(`<b>${facility.facility}</b><br>Latitude: ${facility.lat}<br>Longitude: ${facility.lon}<br>
+                    Area:${facility.area_name}`);
+                    // add tooltip
+                    marker.bindTooltip(facilityName, {
+                        permanent: true,
+                        direction: 'right'
+                    }).openTooltip();
+
+                    // update facilityCoordinatesAreaName
+                    facilityCoordinatesAreaName.push({
+                        'facility': facilityName,
+                        'lat': facility.lat,
+                        'lon': facility.lon,
+                        'areaName': facilityArea,
+                        'id': marker._leaflet_id
+                    })
+
+                    // update the facility coordinates details in a table format with facility name, latitude and longitude and area
+
+                    facilityCoordinateDetails.innerHTML += `
+                        <div class="flex justify-between items-center p-4 bg-white shadow-md rounded-lg mb-4">
+                            <div class="flex items-center space-x-4">
+                                <i class="fas fa-map-marker-alt text-red-500"></i>
+                                <span class="font-semibold text-gray-700">${facilityName}</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-500">
+                                    <i class="fas fa-map-pin mr-2 text-blue-500"></i>
+                                    <span class="facilityCoordinate">${facilityCoordinates}</span>
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    <i class="fas fa-chart-area mr-2 text-green-500"></i>
+                                    <span>${facilityArea}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+
+
+
+                    // // click event on marker
+                    // marker.on('click', function(e) {
+                    //     console.log(facilityName, facilityCoordinates, facilityArea)
+                    // });
+
+                    // open menu on right click to move the marker
+                    marker.on('contextmenu', function(e) {
+                        // open context menu
+                        var contextMenu = L.popup()
+                            .setLatLng(e.latlng)
+                            .setContent(`
+                                <div class="flex flex-col gap-2">
+                                    <button id="move" class="btn btn-primary">Move</button>
+                                    <button class="btn btn-danger">Delete</button>
+                                </div>
+                            `)
+                            .openOn(map);
+
+                        // make marker draggable when move button is clicked
+                        document.querySelector('#move').addEventListener('click', function() {
+                            marker.dragging.enable();
+                            contextMenu.remove();
+
+                        });
+
+                        // make un-draggable when maker is moved and is still
+                        marker.on('dragend', function(e) {
+                            marker.dragging.disable();
+                            contextMenu.remove();
+
+                            // update the coordinates
+                            let newCoordinates = marker.getLatLng();
+                            console.log(newCoordinates);
+
+                            // make a request and get the area name of the new coordinates to nominatim api
+                            let url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${newCoordinates.lat}&lon=${newCoordinates.lng}&zoom=18&addressdetails=1`;
+                            fetch(url)
+                            .then(response => {
+                                return response.json();
+                            })
+                            .then(data => {
+                                
+                                let areaName = data.address.village || data.address.town || data.address.city || data.address.county || data.address.state;
+                                
+                                // update maker bind popup
+                                marker.bindPopup(`<b>${facility.facility}</b><br>Latitude: ${newCoordinates.lat}<br>Longitude: ${newCoordinates.lng}<br> 
+                                Area: ${areaName}, ${data.address.state}`);
+
+                                // update the facility coordinates
+                                facilityCoordinates = [newCoordinates.lat, newCoordinates.lng];
+                                // update the facility coordinates details in a table format with facility name, latitude and longitude and area
+                                facilityCoordinateDetails.innerHTML = `
+                                    <div class="flex justify-between items-center p-4 bg-white shadow-md rounded-lg mb-4">
+                                        <div class="flex items-center space-x-4">
+                                            <i class="fas fa-map-marker-alt text-red-500"></i>
+                                            <span class="font-semibold text-gray-700">${facilityName}</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-sm text-gray-500">
+                                                <i class="fas fa-map-pin mr-2 text-blue-500"></i>
+                                                <span class="facilityCoordinate">${facilityCoordinates}</span>
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                <i class="fas fa-chart-area mr-2 text-green-500"></i>
+                                                <span>${areaName}, ${data.address.state}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+
+                                // update the facilityCoordinatesAreaName
+                                facilityCoordinatesAreaName.forEach(function(facilityCoordinate) {
+                                    if (facilityCoordinate.id == marker._leaflet_id) {
+                                        facilityCoordinate.lat = newCoordinates.lat;
+                                        facilityCoordinate.lon = newCoordinates.lng;
+                                        facilityCoordinate.areaName = areaName;
+                                    }
+                                });
+
+                            });
+
+
+                            
+                        });
+
+                        
+                        
+
+                    });
+                    
+                }
+            });
+
+            // move the map to the center of facility coordinates
+            map.setView(facilityCoordinates[0], 18);
+
+            
+        }
+       
+        // Initial facility markers
+        addFacilityMarkers(facilityCoordinates);
+
+        //digitize map
+        map.on('pm:create', function(e) {
+            var layer = e.layer;
+            map.addLayer(layer);
+            console.log(layer.toGeoJSON());
+        });
+
+    }
+
+    // save the facility coordinates
+    saveButton.addEventListener('click', function() {
+        
+        saveButton.innerHTML = `
+            
+            <span class="loading loading-spinner loading-md"></span>
+            saving...
+        `;
+        
+        console.log(facilityCoordinatesAreaName)
+        // take a snapshot of the map without the drawing component
+        html2canvasPro(mapContainer, {
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: null,
+            scale: 2,
+            imageTimeout: 0,
+            logging: true,
+            onclone: function(doc) {
+                const mapElement = doc.getElementById('map');
+                mapElement.style.zIndex = 0;
+                mapElement.style.boxShadow = 'none';
+                mapElement.style.filter = 'none';
+            }
+        }).then(function(canvas) {
+            console.log(canvas); // Log the canvas to check if it's properly generated
+
+            // Proceed with the conversion to a Blob
+            canvas.toBlob(function(blob) {
+                console.log(blob); // Log the blob to ensure it's being created
+                
+                if (blob) {
+                    var formData = new FormData();
+                    formData.append('image', blob, 'map.png');
+                    formData.append('facility_coordinates', JSON.stringify(facilityCoordinatesAreaName));
+                    formData.append('needs_assessment', needsAssessment.value);
+                    
+                    console.log(formData.get('image'), formData.get('facility_coordinates'), formData.get('needs_assessment'));
+
+                    // Send the image to the server
+                    let url = "{% url 'map_prediction' %}";
+                    fetch(url, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.status == 'success') {
+                            swal("Facility Coordinates", "Facility coordinates saved successfully", "success");
+
+                            history.pushState(null, null, data.url);
+                            document.getElementById('main').innerHTML = data.template
+                        }
+                        else {
+                            swal("Facility Coordinates", "Facility coordinates not saved", "error");
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                } else {
+                    console.error("Blob creation failed.");
+                }
+        }, 'image/png', 1);
+
+    saveButton.innerHTML = 'Save';
+});
+
+
+    });
+</script>

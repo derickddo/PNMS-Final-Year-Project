@@ -18,5 +18,12 @@ urlpatterns = [
     path('needs-assessment/<str:slug>/need/<str:needs_type>/delete', views.delete_needs, name='delete_needs'),
     path('get-needs-assement-for-population-projection/<str:slug>', views.get_needs_assessment_for_population_projection, name='get_needs_assessment_for_population_projection'),
     path('get-population-projection-details/<str:slug>', views.get_population_projection_details, name='population_projection_details'),
+    path('education-needs-assessment/', views.education_needs_assessment, name='education_needs_assessment'),
+    path('get-areas/<str:area_type>', views.get_areas, name='get_areas'),
+    path('delete-needs-assessment/<str:slug>/', views.delete_needs_assessment, name='delete_needs_assessment'),
+    path('utility-needs-assessment/', views.utility_needs_assessment, name='utility_needs_assessment'),
+    path('map-prediction/', views.map_prediction, name='map_prediction'),
+    path('map-prediction/<str:slug>/', views.get_map_prediction, name='get_map_prediction'),
+    path('get-needs-assessment-details/<int:pk>/', views.get_needs_assessment_detail, name='needs_assessment_details'),
 ]
    

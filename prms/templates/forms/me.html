@@ -1,80 +1,31 @@
-<!-- needs_assessment.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Needs Assessment</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Capture Div Image</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
-<body class="bg-gray-100">
-
-    <div class="flex">
-        <!-- Sidebar -->
-        <div class="w-64 bg-gray-800 h-screen p-4 text-white">
-            <h1 class="text-3xl font-bold mb-4">PRMS</h1>
-            <nav>
-                <ul>
-                    <li class="mb-2"><a href="#" class="block py-2 px-4 bg-gray-700 rounded">Home</a></li>
-                    <li class="mb-2"><a href="#" class="block py-2 px-4 bg-gray-700 rounded">Projections</a></li>
-                    <li class="mb-2"><a href="#" class="block py-2 px-4 bg-gray-700 rounded">Needs Assessment</a></li>
-                </ul>
-            </nav>
-            <div class="mt-4">
-                <img src="path/to/user-image.jpg" alt="User Image" class="rounded-full w-12 h-12">
-                <span class="ml-2">Gal Gadot</span>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="flex-1 p-6">
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h2 class="text-2xl font-bold mb-4">ASHANTI REGIONAL MAP</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    <img src="path/to/ashanti-regional-map.jpg" alt="Ashanti Regional Map" class="rounded-lg shadow-lg">
-                    <div class="bg-white p-4 rounded-lg shadow-lg">
-                        <h3 class="text-xl font-bold mb-2">Facilities</h3>
-                        <table class="table-auto w-full">
-                            <thead>
-                                <tr>
-                                    <th class="px-4 py-2">Facilities</th>
-                                    <th class="px-4 py-2">Required</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for facility in facilities %}
-                                <tr>
-                                    <td class="border px-4 py-2">{{ facility.name }}</td>
-                                    <td class="border px-4 py-2">{{ facility.required }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-8">
-                <h2 class="font-bold text-xl mb-4">AREA TO LOCATE FACILITIES</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label for="placeName" class="block mb-2">Place name:</label>
-                        <input type="text" id="placeName" class="input input-bordered w-full mb-4">
-                    </div>
-                    <div>
-                        <label for="latitude" class="block mb-2">Latitude:</label>
-                        <input type="text" id="latitude" class="input input-bordered w-full mb-4">
-                    </div>
-                    <div>
-                        <label for="longitude" class="block mb-2">Longitude:</label>
-                        <input type="text" id="longitude" class="input input-bordered w-full mb-4">
-                    </div>
-                </div>
-                <button class="btn btn-primary">Select</button>
-            </div>
-        </div>
+<body>
+    <div id="capture" style="padding: 10px; background: #f5da55; width: 300px; border-radius: 10px;">
+        <h4>Capture this area</h4>
+        <p>This content will be captured as an image.</p>
     </div>
+    
+    <button id="captureButton">Capture Image</button>
+    <img id="capturedImage" src="" alt="Captured Image" style="display: block; margin-top: 20px;">
 
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+    <script>
+        document.getElementById('captureButton').addEventListener('click', function() {
+            html2canvas(document.querySelector("#capture")).then(canvas => {
+                // Convert the canvas to an image
+                const imgData = canvas.toDataURL('image/png');
+                // Display the captured image
+                document.getElementById('capturedImage').src = imgData;
+            }).catch(err => {
+                console.error("Error capturing image:", err);
+            });
+        });
+    </script>
 </body>
 </html>

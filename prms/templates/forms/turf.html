@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet with Geoman, Turf.js, and Satellite View</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link
+  rel="stylesheet"
+  href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css"
+  
+/>
+<script src="https://unpkg.com/shapefile.js/dist/shapefile.js"></script>
+    <style>
+        #map {
+            height: 80vh;
+            width: 100%;
+        }
+        #controls {
+            margin: 10px;
+        }
+        #facilityCounter {
+            font-size: 1.2em;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <button id="toggleSatellite">Toggle Satellite View</button>
+        <button id="exportShapefile">Export to Shapefile</button>
+        <button id="saveMap">Save Map</button>
+        <span id="facilityCounter">Facilities placed: 0</span>
+    </div>
+    <div id="map"></div>
+    
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.js"></script>
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
+    <script>
+         // Function to get area bounds using Nominatim API
+         async function getAreaBounds() {
+            let bounds = await fetch('https://nominatim.openstreetmap.org/search.php?q=Accra&format=json')
+                .then(response => response.json())
+                .then(data => {
+                    return data[0].boundingbox.map(parseFloat);
+                });
+            return L.latLngBounds([bounds[0], bounds[2]], [bounds[1], bounds[3]]);
+        }
+
+        // Main async function to initialize the map
+        async function initMap() {
+            // Get the bounds and initialize the map
+            var accraBounds = await getAreaBounds();
+
+            // Initialize the Leaflet map within the bounds
+            var map = L.map('map', {
+                maxBounds: accraBounds,
+                maxBoundsViscosity: 1.0
+            }).fitBounds(accraBounds);
+
+            var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }).addTo(map);
+
+            var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                maxZoom: 19
+            });
+
+            var isSatellite = false;
+            var maxFacilities = 5; // Change this to your required number of facilities
+            var currentFacilities = 0;
+
+            // Toggle between OSM and satellite view
+            document.getElementById('toggleSatellite').addEventListener('click', function() {
+                if (isSatellite) {
+                    map.removeLayer(satelliteLayer);
+                    map.addLayer(osmLayer);
+                } else {
+                    map.removeLayer(osmLayer);
+                    map.addLayer(satelliteLayer);
+                }
+                isSatellite = !isSatellite;
+            });
+
+            // Initialize Leaflet Geoman
+            map.pm.addControls({
+                position: 'topleft',
+                drawMarker: true,
+                drawPolyline: false,
+                drawPolygon: false,
+                drawRectangle: false,
+                drawCircle: false,
+                editMode: true,
+                dragMode: false,
+                removeMode: true
+            });
+
+            // Custom icon for facilities
+            var facilityIcon = L.icon({
+                iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+
+            // Function to update the facility counter
+            function updateFacilityCounter() {
+                document.getElementById('facilityCounter').textContent = 'Facilities placed: ' + currentFacilities;
+            }
+
+            // Function to check if a point is on land
+            function isOnLand(lat, lng) {
+                var point = turf.point([lng, lat]);
+                var land = turf.polygon([
+                    [
+                        [-180, -90],
+                        [180, -90],
+                        [180, 90],
+                        [-180, 90],
+                        [-180, -90]
+                    ]
+                ]);
+                return turf.booleanPointInPolygon(point, land);
+            }
+
+            // Handle the draw events
+            map.on('pm:create', function(e) {
+                if (currentFacilities >= maxFacilities) {
+                    map.pm.disableDraw('Marker');
+                    alert('Maximum number of facilities reached');
+                    return;
+                }
+
+                var layer = e.layer;
+                var latlng = layer.getLatLng();
+                if (!isOnLand(latlng.lat, latlng.lng)) {
+                    alert('Facility must be placed on land.');
+                    map.removeLayer(layer);
+                    return;
+                }
+
+                layer.setIcon(facilityIcon);
+                layer.bindPopup("Facility #" + (currentFacilities + 1)).openPopup();
+                currentFacilities++;
+                updateFacilityCounter();
+
+                // Handle removing facilities
+                layer.on('pm:remove', function() {
+                    currentFacilities--;
+                    if (currentFacilities < maxFacilities) {
+                        map.pm.enableDraw('Marker');
+                    }
+                    updateFacilityCounter();
+                });
+            });
+
+            // Function to automatically place facilities
+            function autoPlaceFacilities(count) {
+                var bounds = map.getBounds();
+                for (var i = 0; i < count; i++) {
+                    // Generate random coordinates within the bounds on land
+                    var lat = bounds.getSouth() + Math.random() * (bounds.getNorth() - bounds.getSouth());
+                    var lng = bounds.getWest() + Math.random() * (bounds.getEast() - bounds.getWest());
+                    while (!isOnLand(lat, lng)) {
+                        lat = bounds.getSouth() + Math.random() * (bounds.getNorth() - bounds.getSouth());
+                        lng = bounds.getWest() + Math.random() * (bounds.getEast() - bounds.getWest());
+                    }
+
+                    // Create a marker and add it to the map
+                    var marker = L.marker([lat, lng], { icon: facilityIcon }).addTo(map);
+                }
+                updateFacilityCounter();
+            }
+
+            // Automatically place facilities (example: place 3 facilities)
+            autoPlaceFacilities(3);
+
+            // Export to Shapefile
+            document.getElementById('exportShapefile').addEventListener('click', function() {
+                var geojson = {
+                    type: "FeatureCollection",
+                    features: map.pm.getGeomanLayers().map(layer => layer.toGeoJSON())
+                };
+                var options = {
+                    folder: 'shapefiles',
+                    types: {
+                        point: 'points',
+                        polygon: 'polygons',
+                        line: 'lines'
+                    }
+                };
+                shpwrite.download(geojson, options);
+            });
+
+            // Save the map (for demonstration, we'll just log the geojson)
+            document.getElementById('saveMap').addEventListener('click', function() {
+                var geojson = {
+                    type: "FeatureCollection",
+                    features: map.pm.getGeomanLayers().map(layer => layer.toGeoJSON())
+                };
+                console.log('Saved GeoJSON:', JSON.stringify(geojson));
+                alert('Map saved successfully!');
+            });
+        }
+
+        // Call the main async function to initialize the map
+        initMap();
+    </script>
+</body>
+</html>

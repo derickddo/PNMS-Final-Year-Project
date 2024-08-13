@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.dispatch import receiver
+import datetime
 
 # Create your models here.
 class User(AbstractUser):
@@ -68,6 +69,8 @@ class PopulationProjection(models.Model):
         ('district', 'District'),
         ('town', 'Town')
     ]
+    
+        
     growth_rate = models.FloatField()
     area_type = models.CharField(max_length=50, choices=AREA_TYPE_CHOICES)
     title = models.CharField(max_length=50)
@@ -79,6 +82,7 @@ class PopulationProjection(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
     object_id = models.IntegerField(null=True, blank=True)
     content_object = GenericForeignKey('content_type', 'object_id')
+    is_education_enrollment = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.title}'
@@ -97,21 +101,32 @@ class PopulationProjection(models.Model):
     class Meta:
         db_table = 'population_projection'
 
-
-class NeedsAssessment(models.Model):
-    SECTORS_CHOICES = [
-        ('health', 'Health'),
-        ('education', 'Education'),
-        ('water', 'Water'),
-        ('sanitation', 'Sanitation'),
-    ]
-    population_projection = models.ForeignKey(PopulationProjection, on_delete=models.CASCADE)
-    sector = models.CharField(max_length=50, choices=SECTORS_CHOICES)
-    needs = models.ManyToManyField('Needs', related_name='needs')
+class Sector(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField(blank=True, null=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
 
     def __str__(self):
-        return f'Needs assessment for {self.sector} sector for a {self.population_projection.area_type}' 
+        return self.name
+    
+    def save(self, *args, **kwargs):
+        # generate slug upon save
+        if not self.slug:
+            self.slug = self.name.lower().replace(' ', '-')
+        super().save(*args, **kwargs) # Call the real save() method
+    
+    class Meta:
+        db_table = 'sector'
+
+
+class NeedsAssessment(models.Model):
+    population_projection = models.ForeignKey(PopulationProjection, on_delete=models.CASCADE)
+    needs = models.ManyToManyField('Needs', related_name='needs')
+    slug = models.SlugField(unique=True, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Needs assessment for {self.population_projection.content_object.name} {self.population_projection.area_type}'
     
     # delete all needs
     def delete(self, *args, **kwargs):
@@ -199,6 +214,7 @@ class Needs(models.Model):
         ('others', 'Others')
     ]
     needs_type = models.CharField(max_length=50, choices=NEEDS_TYPE_CHOICES, default='facility')
+    sector = models.ForeignKey(Sector, on_delete=models.CASCADE, null=True, blank=True)
     # generic one to many relationship to all needs
     object_id = models.IntegerField() # id of the needs type
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True) # type of the needs
@@ -208,29 +224,43 @@ class Needs(models.Model):
         return f'needs for {self.needs_type}'
 
     def delete(self, *args, **kwargs):
-        # delete all generic relations
         self.content_object.delete()
-        self.content_type.delete()
-        self.object_id.delete()
         super().delete(*args, **kwargs)  
 
     class Meta:
         db_table = 'needs'
 
 
+class FacilityCoordinatesAndAreaName(models.Model):
+    facility_name = models.CharField(max_length=50)
+    area_name = models.CharField(max_length=50)
+    lattitude = models.FloatField()
+    longitude = models.FloatField()
 
+    def __str__(self):
+        return self.facility_name
+    
+    class Meta:
+        db_table = 'facility_coordinates_and_area_name'
 
 
 class MapPrediction(models.Model):
-    population_projection = models.ForeignKey(PopulationProjection, on_delete=models.CASCADE)
-    needs_assestment = models.ForeignKey(NeedsAssessment, on_delete=models.CASCADE)
-    map_url = models.URLField()
-    description = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+    needs_assessment = models.ForeignKey(NeedsAssessment, on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField()
+    facility_coordinates_and_area_name = models.ManyToManyField(FacilityCoordinatesAndAreaName, related_name='facility_coordinates_and_area_name')
+    slug = models.SlugField(unique=True, default=None)
 
     def __str__(self):
-        return f'Map prediction for {self.population_projection.area_type} '
+        return f'Map prediction for {self.needs_assessment} '
+
+    # delete all facility coordinates and area name
+    def delete(self, *args, **kwargs):
+        for facility in self.facility_coordinates_and_area_name.all():
+            facility.delete()
+        super().delete(*args, **kwargs)
     
     class Meta:
         db_table = 'map_prediction'

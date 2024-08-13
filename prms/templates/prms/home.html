@@ -1,5 +1,5 @@
 {% extends "base.html" %} 
-
+{% load static %}
 {% block content %}
 <!-- Main navigation container -->
 <nav class="bg-base-200 p-4">
@@ -47,8 +47,8 @@
 <!-- Main navigation container ends -->
 
 <!--Hero Section-->
-<section class="bg-zinc-50 dark:bg-neutral-800">
-  <div class="container mx-auto px-4 py-12 lg:py-20">
+<section class="bg-zinc-100 h-[45rem] dark:bg-neutral-800">
+  <div class="container mx-auto px-[10%] py-12 lg:py-20">
     <div class="flex flex-col items-center justify-center text-center">
       <h1 class="text-4xl font-bold text-black dark:text-white lg:text-5xl">
         Welcome to PRMS
@@ -65,42 +65,349 @@
           Get Started
       </a>
       </div>
+
+      <!--Hero image-->
+      <div class="mt-12">
+        <img
+          src="{% static 'img/hero.PNG' %}"
+          alt="Hero Image"
+          class="w-full h-auto shadow-lg rounded-lg"
+        />
+      </div>
     </div>
   </div>
 </section>
 <!--Hero Section ends-->
 
 <!-- Features Section -->
-<section class="bg-white dark:bg-neutral-900">
-  <div class="container mx-auto px-4 py-12 lg:py-20">
+<section class="bg-base-200 dark:bg-neutral-800">
+  <div class="container mx-auto px-[10%] py-[4rem]">
     <div class="flex flex-col items-center justify-center text-center">
-      <h2 class="text-3xl font-bold text-black dark:text-white lg:text-4xl">
+      <h2 class="text-3xl font-bold text-black dark:text-white lg:text-4xl mt-[8rem]">
         Features
       </h2>
-      <p class="mt-4 text-lg text-black dark:text-white lg:text-xl">
-        Some of the features of PRMS
+      <p class="mt-4 text-sm text-black dark:text-white lg:text-lg">
+        PRMS offers a wide range of features to help you with your population projection, resource allocation and map prediction needs.
       </p>
-      <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <div class="flex flex-col items-center justify-center">
-          <div class="bg-primary rounded-full p-4">
-            <span class="[&>svg]:w-8 text-white">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 24 24">
-                <path
-                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118"
-                  clip-rule="evenodd" />
-              </svg>
-            </span>
-          </div>
-          <h3 class="mt-4 text-xl font-semibold text-black dark:text-white lg:text-2xl">
+      <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div class="flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-neutral-900 rounded-lg shadow-lg">
+          <i class="fas fa-chart-line text-5xl text-primary"></i>
+          <h3 class="mt-4 text-xl font-bold text-black dark:text-white">
             Population Projection
           </h3>
-          <p class="mt-2 text-base text-black dark:text-white lg:text-lg">
-            Predict the population of a region in the future
+          <p class="mt-4 text-base text-black dark:text-white">
+            PRMS helps you project the population of a given area using the latest demographic data.
           </p>
         </div>
-        
+        <div class="flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-neutral-900 rounded-lg shadow-lg">
+          <i class="fas fa-map-marked-alt text-5xl text-primary"></i>
+          <h3 class="mt-4 text-xl font-bold text-black dark:text-white">
+            Map Prediction
+          </h3>
+          <p class="mt-4 text-base text-black dark:text-white">
+            PRMS helps you predict the future state of a given area using the latest demographic data.
+          </p>
+        </div>
+        <div class="flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-neutral-900 rounded-lg shadow-lg">
+          <i class="fas fa-map-marker-alt text-5xl text-primary"></i>
+          <h3 class="mt-4 text-xl font-bold text-black dark:text-white">
+            Resource Allocation
+          </h3>
+          <p class="mt-4 text-base text-black dark:text-white">
+            PRMS helps you allocate resources to areas based on their projected population.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Features Section ends -->
 
+<!--Feature details-->
+<section class="bg-white dark:bg-neutral-800">
+  <div class="container mx-auto px-[10%] py-[4rem]">
+    <div class="flex flex-col items-center justify-center text-center">
+      <h2 class="text-3xl font-bold text-black dark:text-white lg:text-4xl">
+        Feature Details
+      </h2>
+      <p class="mt-4 text-sm text-gray-500 dark:text-white lg:text-lg">
+        PRMS offers a wide range of features to help you with your population projection, resource allocation and map prediction needs.
+      </p>
+    </div>
+    <div class="mt-12">
+      <!--Population Projection-->
+      <div class="grid grid-cols-2 place-items-center place-content-between">
+        <div class="">
+          <h3 class="text-xl font-bold text-black dark:text-white">
+            Population Projection
+          </h3>
+          <p class="mt-4 text-base text-gray-500 dark:text-white">
+            PRMS helps you project the population of a given area using the latest demographic data.
+          </p>
+        </div>
+        <div class="bg-zinc-100 rounded-sm p-4 shadow-lg">
+          <img
+            src="{% static 'img/projection.svg' %}"
+            alt="Population Projection"
+            class="w-[25rem]"
+          />
+        </div>
+
+      </div>
+
+      <!--Needs assessment-->
+      <div class="grid grid-cols-2 place-items-center place-content-between mt-[10rem] gap-x-8">
+        <div class="bg-zinc-100 rounded-sm p-4 shadow-lg w-full">
+          <img
+            src="{% static 'img/assess.svg' %}"
+            alt="Needs Assessment"
+            class="w-[25rem]"
+          />
+        </div>
+        <div class="">
+          <h3 class="text-xl font-bold text-black dark:text-white">
+            Needs Assessment
+          </h3>
+          <p class="mt-4 text-base text-gray-500 dark:text-white">
+            PRMS helps you assess the needs of a given area based on its projected population.
+          </p>
+        </div>
+      </div>
+
+      <!--Map Prediction-->
+      <div class="grid grid-cols-2 place-items-center place-content-between mt-[10rem]">
+        <div class="">
+          <h3 class="text-xl font-bold text-black dark:text-white">
+            Map Prediction
+          </h3>
+          <p class="mt-4 text-base text-gray-500 dark:text-white">
+            PRMS helps you predict the future state of a given area using the latest demographic data.
+          </p>
+        </div>
+        <div class="bg-zinc-100 rounded-sm p-4 shadow-lg">
+          <img
+            src="{% static 'img/map.svg' %}"
+            alt="Map Prediction"
+            class="w-[25rem]"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--Feature details ends-->
+
+<!--About Section-->
+<section class="bg-zinc-100 dark:bg-neutral-800">
+  <div class="container mx-auto px-[10%] py-[4rem]">
+    <div class="flex flex-col items-center justify-center text-center">
+      <h2 class="text-3xl font-bold text-black dark:text-white lg:text-4xl">
+        About PRMS
+      </h2>
+      <p class="mt-4 text-sm text-black dark:text-white lg:text-lg">
+        PRMS is a Population Projection, Resource Allocation and Map Prediction System that helps you project the population of a given area, allocate resources to areas based on their projected population and predict the future state of a given area using the latest demographic data.
+      </p>
+    </div>
+  </div>
+</section>
+<!--About Section ends-->
+
+<!--News letter-->
+<section class="bg-white dark:bg-neutral-800">
+  <div class="container mx-auto px-[10%] py-[4rem]">
+    <div class="flex flex-col items-center justify-center text-center">
+      <h2 class="text-3xl font-bold text-black dark:text-white lg:text-4xl">
+        Subscribe to our Newsletter
+      </h2>
+      <p class="mt-4 text-sm text-gray-500 dark:text-white lg:text-lg">
+        Subscribe to our newsletter to get the latest updates on PRMS.
+      </p>
+      <div class="mt-8">
+        <form action="#" method="POST">
+          <div class="flex items-center">
+            <input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Enter your email address"
+              class="w-full py-3 px-4 rounded-lg shadow-lg"
+            />
+            <button
+              type="submit"
+              class="btn btn-primary ml-4"
+            >
+              Subscribe
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--Future features and tools-->
+<section class="bg-base-200 dark:bg-neutral-800">
+  <div class="container mx-auto px-[10%] py-[4rem]">
+    <div class="flex flex-col items-center justify-center text-center">
+      <h2 class="text-3xl font-bold text-black dark:text-white lg:text-4xl">
+        Future Features and Tools
+      </h2>
+      <p class="mt-4 text-sm text-black dark:text-white lg:text-lg">
+        PRMS is constantly evolving. Here are some of the features and tools we are working on.
+      </p>
+      <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div class="flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-neutral-900 rounded-lg shadow-lg">
+          <i class="fas fa-chart-line text-5xl text-primary"></i>
+          <h3 class="mt-4 text-xl font-bold text-black dark:text-white">
+            Data Visualization
+          </h3>
+          <p class="mt-4 text-base text-black dark:text-white">
+            PRMS will offer data visualization tools to help you visualize demographic data.
+          </p>
+        </div>
+        <div class="flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-neutral-900 rounded-lg shadow-lg">
+          <i class="fas fa-map-marked-alt text-5xl text-primary"></i>
+          <h3 class="mt-4 text-xl font-bold text-black dark:text-white">
+            Machine Learning
+          </h3>
+          <p class="mt-4 text-base text-black dark:text-white">
+            PRMS will offer machine learning tools to help you predict future demographic trends.
+          </p>
+        </div>
+        <div class="flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-neutral-900 rounded-lg shadow-lg">
+          <i class="fas fa-map-marker-alt text-5xl text-primary"></i>
+          <h3 class="mt-4 text-xl font-bold text-black dark:text-white">
+            Geospatial Analysis
+          </h3>
+          <p class="mt-4 text-base text-black dark:text-white">
+            PRMS will offer geospatial analysis tools to help you analyze demographic data.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--Testimonials-->
+<section class="bg-white dark:bg-neutral-800">
+  <div class="container mx-auto px-[10%] py-[4rem]">
+    <div class="flex flex-col items-center justify-center text-center">
+      <h2 class="text-3xl font-bold text-black dark:text-white lg:text-4xl">
+        Testimonials
+      </h2>
+      <p class="mt-4 text-sm text-gray-500 dark:text-white lg:text-lg">
+        Here's what our users have to say about PRMS.
+      </p>
+      <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div class="flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-neutral-900 rounded-lg shadow-lg">
+          <i class="fas fa-user text-5xl text-primary"></i>
+          <h3 class="mt-4 text-xl font-bold text-black dark:text-white">
+            John Doe
+          </h3>
+          <p class="mt-4 text-base text-black dark:text-white">
+            "PRMS has helped me project the population of my city accurately. I highly recommend it."
+          </p>
+        </div>
+        <div class="flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-neutral-900 rounded-lg shadow-lg">
+          <i class="fas fa-user text-5xl text-primary"></i>
+          <h3 class="mt-4 text-xl font-bold text-black dark:text-white">
+            Jane Doe
+          </h3>
+          <p class="mt-4 text-base text-black dark:text-white">
+            "PRMS has helped me allocate resources to areas based on their projected population. It's a game changer."
+          </p>
+        </div>
+        <div class="flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-neutral-900 rounded-lg shadow-lg">
+          <i class="fas fa-user text-5xl text-primary"></i>
+          <h3 class="mt-4 text-xl font-bold text-black dark:text-white">
+            Alice Doe
+          </h3>
+          <p class="mt-4 text-base text-black dark:text-white">
+            "PRMS has helped me predict the future state of my city accurately. I'm impressed."
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Promo
+<section class=" ">
+  <div class="container mx-auto px-[10%] py-[4rem]">
+    <div class="flex flex-col items-center justify-center text-center  dark:bg-neutral-900 bg-primary rounded-lg p-8">
+      <h2 class="text-3xl font-bold text-white lg:text-4xl">
+        Get Started with PRMS
+      </h2>
+      <p class="mt-4 text-sm text-white lg:text-lg">
+        Sign up today to start using PRMS and take your population projection, resource allocation and map prediction to the next level.
+      </p>
+      <div class="mt-8">
+        <a href="{% url 'account_login' %}"
+          type="button"
+          data-twe-ripple-init
+          data-twe-ripple-color="light"
+          class="inline-block rounded bg-white px-6 py-3 text-lg font-medium leading-normal text-primary shadow-primary-3 transition duration-150 ease-in-out hover:bg-primary-accent-300 hover:shadow-primary-2 focus:bg-primary-accent-300 focus:shadow-primary-2 focus:outline-none focus:ring-0 active:bg-primary-600 active:shadow-primary-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong">
+          Get Started
+      </a>
+      </div>
+    </div>
+  </div>
+</section> -->
+<!--report an issue-->
+<section class="bg-white dark:bg-neutral-800">
+  <div class="container mx-auto px-[10%] py-[4rem]">
+    <div class="flex flex-col items-center justify-center text-center">
+      <h2 class="text-3xl font-bold text-black dark:text-white lg:text-4xl">
+        Report an Issue
+      </h2>
+      <p class="mt-4 text-sm text-gray-500 dark:text-white lg:text-lg">
+        If you encounter any issues while using PRMS, please report them to us.
+      </p>
+      <div class="mt-8">
+        <a href="#"
+          type="button"
+          data-twe-ripple-init
+          data-twe-ripple-color="light"
+          class="inline-block rounded bg-primary px-6 py-3 text-lg font-medium leading-normal text-white shadow-primary-3 transition duration-150 ease-in-out hover:bg-primary-accent-300 hover:shadow-primary-2 focus:bg-primary-accent-300 focus:shadow-primary-2 focus:outline-none focus:ring-0 active:bg-primary-600 active:shadow-primary-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong">
+          Report an Issue
+      </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--footer with socials-->
+<footer class="bg-base-200 dark:bg-neutral-900">
+  <div class="container mx-auto px-[10%] py-[4rem]">
+    <div class="flex flex-col items-center justify-center text-center">
+      <h2 class="text-3xl font-bold text-black dark:text-white lg:text-4xl">
+        Follow Us
+      </h2>
+      <p class="mt-4 text-sm text-gray-500 dark:text-white lg:text-lg">
+        Follow us on social media to get the latest updates on PRMS.
+      </p>
+      <div class="mt-8 flex space-x-4">
+        <a href="#"
+          class="text-3xl text-black dark:text-white"
+        >
+          <i class="fab fa-facebook"></i>
+        </a>
+        <a href="#"
+          class="text-3xl text-black dark:text-white"
+        >
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="#"
+          class="text-3xl text-black dark:text-white"
+        >
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="#"
+          class="text-3xl text-black dark:text-white"
+        >
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
 {% endblock %}

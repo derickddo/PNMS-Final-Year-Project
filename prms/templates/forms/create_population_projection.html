@@ -90,7 +90,7 @@
                 disabled 
             {% endif %} 
             type="text" id="districtSelect" name="district" placeholder="Search District..." class="input input-bordered w-full">
-            <div id="districtDropdown" class="absolute top-full left-0 w-full mt-1 bg-base-100 border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto hidden">
+            <div id="districtDropdown" class="absolute top-full left-0 w-full mt-1 bg-base-100 border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto hidden z-50">
                 <ul id="districtDropdownList" class="menu menu-compact"></ul>
             </div>
         </div>
@@ -185,4 +185,5 @@
     {% endif %}
          type="hidden" name="hidden" id="hidden">
 </form>
+
 

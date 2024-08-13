@@ -1,61 +1,307 @@
 {% load custom_filters %}
+{% load static %}
 
 {% if population_projections %}  
-<div class="grid px-4 grid-cols-1 md:grid-cols-2 gap-4">
+<div class="grid px-4 grid-cols-1 md:grid-cols-2 gap-4 fade-in">
     <div class="card card-bordered shadow-lg rounded-lg p-6">
         <h2 class="text-2xl font-bold mb-4">Needs Assessment</h2>
         
         <div id="needs-assessment-form">
-            <div class="form-control mb-4">
-                <label class="label">
-                    <span class="label-text">Select Projected Population</span>
-                </label>
-                <select 
-                
-                {% if needs_assessment %}
-                    disabled
-                {% endif %}
+            <!-- Population projection selection -->
+            <div id="population-projection">
+                <div class="form-control mb-4">
+                    <label class="label">
+                        <span class="label-text">Select Projected Population</span>
+                    </label>
+                    <select 
                     
-                 name="projected_population" id="projectedPopulationSelect" class="select select-bordered w-full">
-                    {% for projected_population in population_projections %}
-                        <option 
+                    {% if needs_assessment %}
+                        disabled
+                    {% endif %}
                         
-                        {% if needs_assessment %}
-                            {% if needs_assessment.population_projection == projected_population %}
-                                selected
-                            {% endif %} 
-                        {% endif %}
+                     name="projected_population" id="projectedPopulationSelect" class="select select-bordered w-full">
+                        {% for projected_population in population_projections %}
+                        
+                            <option 
                             
-                        value="{{ projected_population.slug }}">{{ projected_population }} </option>
-                        {% empty %}
-                        <option value="" disabled selected>No population projection available</option>
-                    {% endfor %}
-                </select>
+                            {% if needs_assessment %}
+                                {% if needs_assessment.population_projection == projected_population %}
+                                    selected
+                                {% endif %} 
+                            {% endif %}
+                                
+                            value="{{ projected_population.slug }}">{{ projected_population }} </option>
+                            {% empty %}
+                            <option value="" disabled selected>No population projection available</option>
+                        
+                        {% endfor %}
+                    </select>
+                </div>
+    
+                <div id="population-details">
+                    <!-- Additional population details will be displayed here -->
+
+                    <!--Loading-->
+                    <div id="loading" class="animate-pulse mt-4 Skeleton">
+                        <div class="h-8 bg-gray-300 rounded w-full"></div>
+                        <p class="italic">
+                            <div class="h-[10rem] bg-gray-300 rounded w-full mt-1"></div>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3 mt-6 mb-4" role="alert">
+                    <div class="flex">
+                        <div class="py-1">
+                        <svg class="fill-current h-6 w-6 text-blue-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9 12h2v2H9v-2zm0-8h2v6H9V4zm0 12a8 8 0 110-16 8 8 0 010 16z"/></svg>
+                        </div>
+                        <div>
+                        <p class="font-bold">Info</p>
+                        <p class="text-sm">Ensure you have selected a population projection before assessing needs.</p>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
 
-            <div id="population-details">
-                <!-- Additional population details will be displayed here -->
+            <!-- Project Population for education enrollment -->
+            <div id="education-enrolment">
+                
+                
+                {% comment %}
+                    if there exit an education enrolment projection, the form will be disabled
+                {% endcomment %}
+                {% if education_enrollment_projections %}
+                    <div class="form-control mb-4">
+                        <label class="label">
+                            <span class="label-text">Select Projected Population for Education Enrollment</span>
+                        </label>
+                        <select 
+                        {% if needs_assessment %}
+                            disabled
+                        {% endif %} 
+                        name="education_enrollment" id="educationEnrollmentSelect" class="select select-bordered w-full">
+                            {% for projected_population in education_enrollment_projections %}
+                                <option 
+                                {% if needs_assessment %}
+                                    {% if needs_assessment.education_enrollment == projected_population %}
+                                        selected
+                                    {% endif %} 
+                                {% endif %}
+                                    
+                                value="{{ projected_population.slug }}">
+                                <p>{{ projected_population }}</p>
+                             </option>
+                                {% empty %}
+                                <option value="" disabled selected>No population projection available</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    {% else %}
+                    <div>
+                        <div class="bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3" role="alert">
+                            <div class="flex">
+                                <div class="py-1">
+                                <svg class="fill-current h-6 w-6 text-blue-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9 12h2v2H9v-2zm0-8h2v6H9V4zm0 12a8 8 0 110-16 8 8 0 010 16z"/></svg>
+                                </div>
+                                <div>
+                                <p class="font-bold">Info</p>
+                                <p class="text-sm">Since you're assessing needs in the the education sector, there is a need to project population for education enrollment.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <!--Base year selection-->
+                            <div class="form-control mb-4">
+                                <label class="label">
+                                    <span class="label-text">Select Base Year</span>
+                                </label>
+                                <select 
+                                {% if base_year %}
+                                    disabled
+                                {% endif %}
+    
+                                name="base_year" id="baseYearSelect" class="select select-bordered w-full">
+                                    {% for i in 1|generate_base_years %}:
+                                        
+                                        <option 
+                                        {% if base_year %}
+                                            {% if base_year == year %}
+                                                selected
+                                            {% endif %}
+                                        {% endif %}
+                                            value="{{ i }}">{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+    
+                            <!--Projection year selection-->
+                            <div class="form-control mb-4">
+                                <label class="label">
+                                    <span class="label-text">Select Projection Year</span>
+                                </label>
+                                <select 
+                                {% if projection_year %}
+                                    disabled
+                                {% endif %}
+                                name="projection_year" id="projectionYearSelect" class="select select-bordered w-full">
+                                    {% for i in 1|generate_projecting_years %}
+                                        <option 
+                                        {% if projection_year %}
+                                            {% if projection_year == year %}
+                                                selected
+                                            {% endif %}
+                                        {% endif %}
+                                            value="{{ i }}">{{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+    
+                        </div>
+    
+                        <!--Area type radio buttons ['region', 'district', 'town']-->
+    
+                        <div class="form-control mb-4">
+                            <label class="label">
+                                <span class="label-text">Select Area Type</span>
+                            </label>
+                            <div class="flex flex-col space-y-5">
+                                <label class="flex items-center space-x-2">
+                                    <input type="radio" name="areaType" value="region" class="radio radio-primary" 
+                                    {% if area_type %}
+                                        {% if area_type == 'region' %}
+                                            checked
+                                        {% endif %}
+                                    {% endif %}
+                                    />
+                                    <span class="label-text">Region</span>
+                                </label>
+                                <label class="flex items-center space-x-2">
+                                    <input type="radio" name="areaType" value="district" class="radio radio-primary" 
+                                    {% if area_type %}
+                                        {% if area_type == 'district' %}
+                                            checked
+                                        {% endif %}
+                                    {% endif %}
+                                    />
+                                    <span class="label-text">District</span>
+                                </label>
+                                <label class="flex items-center space-x-2">
+                                    <input type="radio" name="areaType" value="town" class="radio radio-primary" 
+                                    {% if area_type %}
+                                        {% if area_type == 'town' %}
+                                            checked
+                                        {% endif %}
+                                    {% endif %}
+                                    />
+                                    <span class="label-text">Town</span>
+                                </label>
+                            </div>
+                        </div>
+    
+                        <!--Area Search and selection-->
+                        <div class="form-control mb-4 relative">
+                            <label class="label">
+                                <span class="label-text">Select Area</span>
+                            </label>
+                            <input 
+                            type="text" name="area" id="area" class="input input-bordered w-full" 
+                            />
+                            <!--Dropdown of area-->
+                            <div id="areaDropdown" class="mt-2 bg-base-100 border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto hidden z-50 absolute top-full left-0 w-full">
+                                
+                            </div>
+                        </div>
+    
+                        
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <!--Base Population-->
+                            <div class="form-control mb-4">
+                                <label class="label">
+                                    <span class="label-text">Base Population</span>
+                                </label>
+                                <input 
+                                {% if base_population %}
+                                    disabled
+                                {% endif %}
+                                type="number" name="base_population" id="basePopulation" class="input input-bordered w-full" placeholder="Enter base population"
+                                min="1"
+                                {% if base_population %}
+                                    value="{{ base_population }}"
+                                {% endif %}
+                                />
+                            </div>
+    
+                            <!--Growth rate-->
+                            <div class="form-control mb-4">
+                                <label class="label">
+                                    <span class="label-text">Growth Rate (%)</span>
+                                </label>
+                                <input 
+                                {% if growth_rate %}
+                                    disabled
+                                {% endif %}
+                                type="number" name="growth_rate" id="growthRate" class="input input-bordered w-full" placeholder="Enter growth rate" min="0" step="any"
+                                
+                                {% if growth_rate %}
+                                    value="{{ growth_rate }}"
+                                {% endif %}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                        
+                {% endif %}
+                
+                <!--Info about education enrolment projection-->
+                <div id="educationEnrolmentInfo" class="mt-4">
+                    <!-- Education enrolment information will be displayed here -->
+                </div>
+
+                <!--Other info-->
+                <div class="form-control mb-4 mt-4">
+                    <label class="label">
+                        <span class="label-text">Other Information</span>
+                    </label>
+                    <textarea 
+                    {% if other_info %}
+                        disabled
+                    {% endif %}
+                    name="other_info" id="otherInfo" class="textarea textarea-bordered w-full" placeholder="Enter other information... (optional)">{{ other_info }}</textarea>
+                </div>
+               
+
+                
             </div>
 
+
+            <!-- Sector selection -->
             <div class="form-control mb-4">
                 <label class="label">
                     <span class="label-text">Select Sector</span>
                 </label>
                 <select 
+                {% if sector %}
+                    disabled
+                {% endif %}
+                    
                      id="sectorSelection" name="sector" class="select select-bordered w-full">
+
                     <option
                      
-                    {% if needs_assessment.sector == 'Health' %}
+                    {% if sector == 'health' %}
                         selected
                     {% endif %}
                          value="health">Health</option>
                     <option
-                    {% if needs_assessment.sector == 'Education' %}
+                    {% if sector == 'education' %}
                         selected
                     {% endif %}
                      value="education">Education</option>
                     <option 
-                    {% if needs_assessment.sector == 'Utility' %}
+                    {% if needs_assessment.sector == 'utility' %}
                         selected
                     {% endif %}
                     value="utility">Utility</option>
@@ -63,10 +309,10 @@
             </div>
 
             
-            
+            <!-- Health Type selection -->
             <div id="healthTypeContainer" class="form-control mb-4">
                 <label class="label">
-                    <span class="label-text">Select Health Type</span>
+                    <span class="label-text">Select Need Type</span>
                 </label>
                 <select      
                  id="sectorType" name="sectorType" class="select select-bordered w-full" >
@@ -86,15 +332,109 @@
                 </select>
             </div>
 
-            
-            
+            <!-- Education Type selection -->
+            <div id="educationTypeContainer" class="form-control mb-4">
+                <label class="label">
+                    <span class="label-text">Select Need Type</span>
+                </label>
+                <select      
+                 id="educationSectorType" name="sectorType" class="select select-bordered w-full" >
+                    <option
+                    
+                    
+                    {% if needs_type == 'classroom' %}
+                        selected
+                    {% endif %}
+                            
+                     value="classroom">Classroom</option>
+                    <option
+                    {% if needs_type == 'dual_desk' %}
+                        selected
+                    {% endif %}
+                     value="dual_desk">Dual Desk</option>
+                </select>
+            </div>
 
+            <!-- Utility Type selection -->
+            <div id="utilityTypeContainer">
+                <!--Info on utility sector as alert-->
+                <div class="bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3 mt-6 mb-4" role="alert">
+                    <div class="flex">
+                        <div class="py-1">
+                        <svg class="fill-current h-6 w-6 text-blue-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9 12h2v2H9v-2zm0-8h2v6H9V4zm0 12a8 8 0 110-16 8 8 0 010 16z"/></svg>
+                        </div>
+                        <div>
+                        <p class="font-bold">Info</p>
+                        <p class="text-sm">Utility sector includes water, electricity and sanitation</p>
+                        <!--info on water, electricity and sanitation-->
+
+                        </div>
+                    </div>
+                </div>
+                
+
+                <div class="form-control mb-4">
+                    <label class="label">
+                        <span class="label-text">Select Need Type</span>
+                    </label>
+                    <select      
+                    id="utilitySectorType" name="sectorType" class="select select-bordered w-full" >
+                        <option
+                        
+                        
+                        {% if needs_type == 'water' %}
+                            selected
+                        {% endif %}
+                                
+                        value="water">Water</option>
+                        <option
+                        {% if needs_type == 'electricity' %}
+                            selected
+                        {% endif %}
+                        value="electricity">Electricity</option>
+
+                        <!--sanitation-->
+                            <option 
+                            {% if needs_type == 'sanitation' %}
+                                selected
+                            {% endif %}
+                            value="sanitation">Sanitation</option>
+                    </select>
+                </div>
+
+                <!--sanitation type-->
+                <div id="sanitationTypeContainer" class="form-control mb-4 hidden">
+                    <label class="label">
+                        <span class="label-text">Select Sanitation Type</span>
+                    </label>
+                    <select
+                    {% if sanitation_type %}
+                        disabled
+                    {% endif %}
+                    id="sanitationType" name="sanitationType" class="select select-bordered w-full" >
+                        <option
+                        {% if sanitation_type == 'toilet' %}
+                            selected
+                        {% endif %}
+                        value="toilet">Toilet</option>
+                        <option
+                        {% if sanitation_type == 'waste_disposal' %}
+                            selected
+                        {% endif %}
+                        value="wasteDisposal">Waste Disposal</option>
+                    </select>
+                </div>
+            </div>
+
+            
+            <!-- Needs assessment button -->
             <button id="needsAssessmentBtn" type="submit" class="btn mt-4 btn-primary w-full disabled:cursor-not-allowed" disabled
                 
             >Assess Needs</button>
         </div>
+
         <!--Information on selected population projection-->
-        <div id="populationProjectionInfo" class="mt-4">
+        <div id="populationProjectionInfo" class="mt-4 mb-2">
             <!-- Population projection information will be displayed here -->
         </div>
 
@@ -102,6 +442,7 @@
     </div>
 
     <div  class="card card-bordered shadow-lg rounded-lg p-6">
+        <!--Health-->
         <div id="health">
             <!--Facility-->
             <div id="healthFacility">
@@ -170,7 +511,7 @@
                     </div>
                 </div>
                 
-                <div id="facilityNumberContainer" class="form-control mb-4 mt-4">
+                <div id="facilityNumberContainer" class="form-control mb-4 mt-2">
                     <label class="mb-2">
                         <span class="label-text">Available Number of Facilities</span>
                         <p class="text-sm italic">Select faciltity to enter number of available facilities</p>
@@ -244,11 +585,81 @@
                     </div>
                       
                 </div>
-                <!--alert-->
-                <div id="alert" class="alert alert-warning mt-8">
-                    <div class="flex gap-3 items-baseline">
-                        <i class="fa-solid fa-exclamation-triangle"></i>
-                        <i>Ensure you have selected at least one Facility type and entered the number of available Facilities</i>
+                
+
+                <!--Info about health facilities-->
+                <div id="facilityTypeDetails" class="mt-4">
+                    <div class=" h-[22rem] overflow-y-auto">
+                        <h2 class="text-2xl font-bold mb-2">Facility Type Details</h2>
+                        <!--Hospital-->
+                        <div id="hospital" class="form-control">
+                            <label class="">
+                                <span class="font-bold text-lg">Hospital</span>
+                            </label>
+                            <blockquote>
+                                <p>Hospitals are health care institutions providing patient treatment with specialized medical and nursing staff and medical equipment.</p>
+                            </blockquote>
+                            <!--total standard for a hospital-->
+                            <p class="mt-2 font-bold">Total standard for a hospital</p>
+                            <ul>
+                                <li>Up to 200,000</li>
+                            </ul>
+                            <!--image of hospital-->
+                            <img src="{% static 'img/hospital.jpeg' %}" alt="" class="rounded-md mt-2">
+                        </div>
+
+                        <!--CHPS-->
+                        <div id="chps" class=" mt-4">
+                            <label class="">
+                                <span class="font-bold text-lg">CHPS</span>
+                            </label>
+                            <blockquote class="mt-2">
+                                <p>CHPS are health care institutions providing patient treatment with specialized medical and nursing staff and medical equipment.</p>
+                            </blockquote>
+                            <!--total standard for a CHPS-->
+                            <p class="mt-2 font-bold">Total standard for a CHPS</p>
+                            <ul>
+                                <li>5,000</li>
+                            </ul>
+                            <!--image of CHPS-->
+                            <img src="{% static 'img/chps.jpeg' %}" alt="" class="rounded-md mt-2">
+                        </div>
+
+                        <!--Health Center-->
+                        <div id="health-center" class=" mt-4">
+                            <label class="">
+                                <span class="font-bold text-lg">Health Center</span>
+                            </label>
+                            <blockquote class="mt-2">
+                                <p>Health Centers are health care institutions providing patient treatment with specialized medical and nursing staff and medical equipment.</p>
+                            </blockquote>
+                            <!--total standard for a health center-->
+                            <p class="mt-2 font-bold">Total standard for a health center</p>
+                            <ul>
+                                <li>Up to 25,000</li>
+                               
+                            </ul>
+                            <!--image of health center-->
+                            <img src="{% static 'img/health_center.jpeg' %}" alt="" class="rounded-md mt-2">
+                        </div>
+
+                        <!--Clinic-->
+                        <div id="clinic" class=" mt-4">
+                            <label class="">
+                                <span class="font-bold text-lg">Clinic</span>
+                            </label>
+                            <blockquote class="mt-2">
+                                <p>Clinics are health care institutions providing patient treatment with specialized medical and nursing staff and medical equipment.</p>
+                            </blockquote>
+                            <!--total standard for a clinic-->
+                            <p class="mt-2 font-bold">Total standard for a clinic</p>
+                            <ul>
+                                <li>Up to 5,000</li>
+                                
+                            </ul>
+                            <!--image of clinic-->
+                            <img src="{% static 'img/clinic.jpeg' %}" alt="" class="rounded-md mt-2">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -330,7 +741,7 @@
                         <span class="label-text">Available Number of Personnel</span>
                         <p class="text-sm italic">Select personnel to enter number of available personnel</p>
                     </label>
-                    <div id="personnelNumbers" class="grid grid-cols-2 gap-4 mt-4">
+                    <div id="personnelNumbers" class="grid grid-cols-2 gap-4 mt-2">
                         <!-- Input fields will be dynamically added here -->
                         {% if personnels_types_with_available %}
                             {% for personnel in personnels_types_with_available  %}
@@ -359,20 +770,755 @@
                               </div>
                             {% endfor %}
                         {% endif %}
+
+                    
                     </div>
                 </div>
                 
 
                 <!--alert-->
-                <div id="alert" class="alert alert-warning mt-8">
+                <!-- <div id="alert" class="alert alert-warning mt-2">
                     <div class="flex gap-2 items-baseline">
                         <i class="fa-solid fa-exclamation-triangle"></i> <br>
                         <i>Ensure you have selected at least one Personnel type and entered the number of available Personnels</i>
+                    </div>
+                </div> -->
+
+                <!--Info about health personnel-->
+                <div id="personnelTypeDetails" class="mt-4">
+                    <div class=" h-[22rem] overflow-y-auto">
+                        <h2 class="text-2xl font-bold mb-2">Personnel Type Details</h2>
+                        <!--Doctor-->
+                        <div id="doctor" class="form-control">
+                            <label class="">
+                                <span class="font-bold text-lg">Doctor</span>
+                            </label>
+                            <blockquote>
+                                <p>Doctors are health care professionals who diagnose and treat diseases and injuries.</p>
+                            </blockquote>
+                            <!--total standard for a doctor-->
+                            <p class="mt-2 font-bold">Total standard for a doctor</p>
+                            <ul>
+                                <li>Ratio: 1:1,320</li>
+                            </ul>
+                            <!--image of doctor-->
+                            <img src="{% static 'img/doctor.jpg' %}" alt="" class="rounded-md mt-2">
+                        </div>
+
+                        <!--Nurse-->
+                        <div id="nurse" class=" mt-4">
+                            <label class="">
+                                <span class="font-bold text-lg">Nurse</span>
+                            </label>
+                            <blockquote class="mt-2">
+                                <p>Nurses are health care professionals who diagnose and treat diseases and injuries.</p>
+                            </blockquote>
+                            <!--total standard for a nurse-->
+                            <p class="mt-2 font-bold">Total standard for a nurse</p>
+                            <ul>
+                                <li>Ratio: 1:1000</li>
+                            </ul>
+                            <!--image of nurse-->
+                            <img src="{% static 'img/nurse.jpeg' %}" alt="" class="rounded-md mt-2 w-full">
+                        </div>
+
+                        <!--Midwife-->
+                        <div id="midwife" class=" mt-4">
+                            <label class="">
+                                <span class="font-bold text-lg">Midwife</span>
+                            </label>
+                            <blockquote class="mt-2">
+                                <p>Midwives are health care professionals who diagnose and treat diseases and injuries.</p>
+                            </blockquote>
+                            <!--total standard for a midwife-->
+                            <p class="mt-2 font-bold">Total standard for a midwife</p>
+                            <ul>
+                                <li>Up to 15,000</li>
+                            </ul>
+                            <!--image of midwife-->
+                            <img src="{% static 'img/mid.jpeg' %}" alt="" class="rounded-md mt-2">
+                        </div>
+
+                        <!--Pharmacist-->
+                        <div id="pharmacist" class="mt-4">
+
+                        </div>
                     </div>
                 </div>
 
             </div>
         </div> 
+
+        <!--Education for pre-school, primary and JHS-->
+        <div id="education">
+            <!--School-->
+            <div id="classroom">
+                <h2 class="text-2xl font-bold mb-4">Education</h2>
+                <div id="educationTypeContainer" class="form-control mb-4">
+                    <label class="mb-2">
+                        <span class="label-text">Select Classroom Type</span>
+                    </label>
+                    <div class="flex flex-col space-y-5">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="educationType" value="pre-school" class="checkbox checkbox-primary education-checkbox" 
+                            {% if education_needs %}
+                                {% for education in education_needs %}
+                                    {% if education.content_object.type_name == 'Pre-School' %}
+                                        checked 
+                                    {% endif %}  
+                                {% endfor %}
+                            {% endif %}
+                            />
+                            <span class="label-text">Pre-School Classroom</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="educationType" value="primary" class="checkbox checkbox-primary education-checkbox" 
+                            {% if education_needs %}
+                                {% for education in education_needs %}
+                                    {% if education.content_object.type_name == 'Primary' %}
+                                        checked 
+                                    {% endif %}  
+                                {% endfor %}
+                            {% endif %}
+                            />
+                            <span class="label-text">Primary Classroom</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="educationType" value="jhs" class="checkbox checkbox-primary education-checkbox" 
+                            {% if education_needs %}
+                                {% for education in education_needs %}
+                                    {% if education.content_object.type_name == 'JHS' %}
+                                        checked 
+                                    {% endif %}  
+                                {% endfor %}
+                            {% endif %}
+                            />
+                            <span class="label-text">JHS Classroom</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="schoolNumberContainer" class="form-control mb-4 mt-4">
+                    <label class="mb-2">
+                        <span class="label-text">Available Number of classrooms</span>
+                        <p class="text-sm italic">Select classroom type to enter number of available classrooms</p>
+                    </label>
+                    <div id="schoolNumbers" class="grid grid-cols-2 gap-4 mt-4">
+                        <!-- Input fields will be dynamically added here -->
+                        {% if school_types_with_available %}
+                            {% for school in school_types_with_available %}
+                            <div class="form-control" id="schoolNumber-{{school.school_type|lower}}">
+                                <span class="label-text mb-2">{{school.school_type}}
+                                <p class="italic" style="font-style:italic">(enter number of 
+                                    {{school.school_type}}s)</p>
+                                </span>
+                                <input type="number" min="1" />
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            {% for i in 3|in_range %}
+                            <div id="schoolSkeleton-{{i}}"  class="form-control animate-pulse mt-4">
+                                <span class="label-text mb-2">
+                                  <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                                  <p class="italic">
+                                    <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                                  </p>
+                                </span>
+                                <div class="h-10 bg-gray-300 rounded w-full"></div>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Info Alert with Tailwind CSS -->
+                <div class="bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3" role="alert">
+                    <div class="flex">
+                        <div class="py-1">
+                        <svg class="fill-current h-6 w-6 text-blue-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9 12h2v2H9v-2zm0-8h2v6H9V4zm0 12a8 8 0 110-16 8 8 0 010 16z"/></svg>
+                        </div>
+                        <div>
+                        <p class="font-bold">Info</p>
+                        <p class="text-sm">Ensure you have selected at least one School type and entered the number of available Schools.</p>
+                        </div>
+                    </div>
+                </div>
+  
+
+                <!--Info about education type for [pre-school, primary, jhs]-->
+                <div id="educationTypeDetails" class="mt-4">
+                    <div class=" h-[18rem] overflow-y-auto">
+                        <h2 class="text-2xl font-bold mb-4">Education Type Details</h2>
+                        <!--Pre-School-->
+                        <div id="pre-school" class="form-control">
+                            <label class="">
+                                <span class="font-bold text-lg">Pre-School</span>
+                            </label>
+                            <blockquote>
+                                <p>Pre-Schools are educational establishments or learning spaces offering early childhood education to children before they begin compulsory education at primary school.</p>
+                            </blockquote>
+                            <!--total standard for a class-->
+                            <p class="mt-2 font-bold">Total standard for a class</p>
+                            <ul>
+                                <li>Minimum: 40</li>
+                                <li>Maximum: 50</li>
+                            </ul>
+                          
+                            <!--image of classroom-->
+                            <img src="{% static 'img/pre_sch.jpeg' %}" alt="" class="rounded-md mt-2">
+
+                        </div>
+
+                        <!--Primary-->
+                        <div id="primary" class=" mt-4">
+                            <label class="">
+                                <span class="font-bold text-lg">Primary</span>
+                            </label>
+                            <blockquote class="mt-2">
+                                <p>Primary schools are educational establishments or learning spaces offering education to children between the ages of 6 and 12 years.</p>
+                            </blockquote>
+
+                            <!--total standard for a class-->
+                            <p class="mt-2 font-bold">Total standard for a class</p>
+                            <ul>
+                                <li>Minimum: 40</li>
+                                <li>Maximum: 45</li>
+                            </ul>
+                            <!--image of classroom-->
+                            <img src="{% static 'img/pri_sch.jpg' %}" alt="" class="rounded-md mt-2">
+                        </div>
+
+                        <!-- JHS -->
+                        <div id="jhs" class=" mt-4">
+                            <label class="">
+                                <span class="font-bold text-lg">JHS</span>
+                            </label>
+                            <blockquote class="mt-2">
+                                <p>JHS are educational establishments or learning spaces offering education to children between the ages of 12 and 15 years.</p>
+                            </blockquote>
+                            <!--total standard for a class-->
+                            <p class="mt-2 font-bold">Total standard for a class</p>
+                            <ul>
+                                <li>Minimum: 35</li>
+                                <li>Maximum: 40</li>
+                            </ul>
+                            <!--image of classroom-->
+                            <img src="{% static 'img/ghana_sch.jpg' %}" alt="" class="rounded-md mt-2">
+                        </div>
+                    </div>
+                        
+                </div>
+
+            </div>
+
+            <!--dual desk for primary and JHS-->
+            <div id="dual-desk">
+                <h2 class="text-2xl font-bold mb-4">Dual Desk</h2>
+                <div id="dualDeskTypeContainer" class="form-control mb-4">
+                    <label class="mb-2">
+                        <span class="label-text">Select Dual Desk Type</span>
+                    </label>
+                    <div class="flex flex-col space-y-5">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="dualDeskType" value="primary" class="checkbox checkbox-primary dual-desk-checkbox" 
+                            {% if dual_desk_needs %}
+                                {% for dual_desk in dual_desk_needs %}
+                                    {% if dual_desk.content_object.type_name == 'Primary' %}
+                                        checked 
+                                    {% endif %}  
+                                {% endfor %}
+                            {% endif %}
+                            />
+                            <span class="label-text">Primary (Dual Desk)</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="dualDeskType " value="jhs" class="checkbox checkbox-primary dual-desk-checkbox" 
+                            {% if dual_desk_needs %}
+                                {% for dual_desk in dual_desk_needs %}
+                                    {% if dual_desk.content_object.type_name == 'JHS' %}
+                                        checked 
+                                    {% endif %}  
+                                {% endfor %}
+                            {% endif %}
+                            />
+                            <span class="label-text ">JHS (Dual Desk)</span>
+
+                        </label>
+                        
+                    </div>
+                </div>
+
+                <div id="dualDeskNumberContainer" class="form-control mb-4 mt-4">
+                    <label class="mb-2">
+                        <span class="label-text">Available Number of Dual Desks</span>
+                        <p class="text-sm italic">Select dual desk type to enter number of available dual desks</p>
+                    </label>
+                    <div id="dualDeskNumbers" class="grid grid-cols-2 gap-4 mt-4">
+                        <!-- Input fields will be dynamically added here -->
+                        {% if dual_desk_types_with_available %}
+                            {% for dual_desk in dual_desk_types_with_available %}
+                            <div class="form-control" id="dualDeskNumber-{{dual_desk.dual_desk_type|lower}}">
+                                <span class="label-text mb-2">{{dual_desk.dual_desk_type}}
+                                <p class="italic" style="font-style:italic">(enter number of 
+                                    {{dual_desk.dual_desk_type}}s)</p>
+                                </span>
+                                <input type="number" min="1" />
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            {% for i in 2|in_range %}
+                            <div id="dualDeskSkeleton-{{i}}"  class="form-control animate-pulse mt-4">
+                                <span class="label-text
+                                mb-2">
+                                  <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                                  <p class="italic">
+                                    <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                                  </p>
+                                </span>
+                                <div class="h-10 bg-gray-300 rounded w-full"></div>
+
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!--alert-->
+                <div class="bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3" role="alert">
+                    <div class="flex">
+                        <div class="py-1">
+                        <svg class="fill-current h-6 w-6 text-blue-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9 12h2v2H9v-2zm0-8h2v6H9V4zm0 12a8 8 0 110-16 8 8 0 010 16z"/></svg>
+                        </div>
+                        <div>
+                        <p class="font-bold">Info</p>
+                        <p class="text-sm">Ensure you have selected at least one Dual Desk type and entered the number of available Dual Desks</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Info about dual desk type for [primary, jhs]-->
+                <div id="dualDeskTypeDetails" class="mt-4">
+                    <div class=" h-[28rem] overflow-y-auto">
+                        <h2 class="text-2xl font-bold mb-4">Dual Desk Type Details</h2>
+                        <!--Primary-->
+                        <div id="primary" class="form-control">
+                            <label class="">
+                                <span class="font-bold text-lg">Primary</span>
+                            </label>
+                            <blockquote>
+                                <p>Primary dual desks are educational furniture designed for primary school students.</p>
+                            </blockquote>
+                            <!--Standard-->
+                            <p class="mt-2 font-bold">Standard</p>
+                            <ul>
+                                <li>Ratio: 2:1</li>
+                            </ul>
+                            <!--Image of primary dual desk-->
+                            <img src="{% static 'img/desk.jpeg' %}" alt="" class="rounded-md mt-2">
+                        </div>
+
+                        <!--JHS-->
+                        <div id="jhs" class=" mt-4">
+                            <label class="">
+                                <span class="font-bold text-lg">JHS</span>
+                            </label>
+                            <blockquote class="mt-2">
+                                <p>JHS dual desks are educational furniture designed for JHS students.</p>
+                            </blockquote>
+                            <p class="mt-2 font-bold">Standard</p>
+                            <ul>
+                                <li>Ratio: 2:1</li>
+                            </ul>
+                            <!--Image of JHS dual desk-->
+                            <img src="{% static 'img/desk_2.jpg' %}" alt="" class="rounded-md mt-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+       
+        </div>
+
+        <div id="utility">
+            <!--Water-->
+            <div id="water">
+                <!--Water Source-->
+                <div id="waterSource">
+                    <h2 class="text-2xl font-bold mb-4">Water Source</h2>
+                    <div id="waterSourceTypeContainer" class="form-control mb-4">
+                        <label class="mb-2">
+                            <span class="label-text">Select Water Source Type</span>
+                        </label>
+                        <div class="flex flex-col space-y-5">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="waterSourceType" value="borehole" class="checkbox checkbox-primary water-source-checkbox" 
+                                {% if water_needs %}
+                                    {% for water in water_needs %}
+                                        {% if water.content_object.type_name == 'Borehole' %}
+                                            checked 
+                                        {% endif %}  
+                                    {% endfor %}
+                                {% endif %}
+                                />
+                                <span class="label-text">Borehole</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="waterSourceType" value="pipe-borne" class="checkbox checkbox-primary water-source-checkbox" 
+                                {% if water_needs %}
+                                    {% for water in water_needs %}
+                                        {% if water.content_object.type_name == 'Pipe Borne' %}
+                                            checked 
+                                        {% endif %}  
+                                    {% endfor %}
+                                {% endif %}
+                                />
+                                <span class="label-text">Pipe Borne</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="waterSourceType" value="well" class="checkbox checkbox-primary water-source-checkbox" 
+                                {% if water_needs %}
+                                    {% for water in water_needs %}
+                                        {% if water.content_object.type_name == 'Well' %}
+                                            checked 
+                                        {% endif %}  
+                                    {% endfor %}
+                                {% endif %}
+                                />
+                                <span class="label-text">Well</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Water Quantity-->
+                <div id="waterQuantity">
+                    <h2 class="text-2xl font-bold mb-4">Water Quantity</h2>
+                    <div id="waterQuantityContainer" class="form-control mb-4 mt-4">
+                        <label class="mb-2">
+                            <span class="label-text">Available Water Quantity</span>
+                            <p class="text-sm italic">Select water source type to enter available water quantity</p>
+                        </label>
+                        <div id="waterQuantities" class="grid grid-cols-2 gap-4 mt-4">
+                            <!-- Input fields will be dynamically added here -->
+                            {% if water_types_with_available %}
+                                {% for water in water_types_with_available %}
+                                <div class="form-control" id="waterQuantity-{{water.water_source_type|lower}}">
+                                    <span class="label-text mb-2">{{water.water_source_type}}
+                                    <p class="italic" style="font-style:italic">(enter available water quantity in litres)</p>
+                                    </span>
+                                    <input type="number" min="1" />
+                                </div>
+                                {% endfor %}
+                                {% else %}
+                                {% for i in 3|in_range %}
+                                <div id="waterSkeleton-{{i}}"  class="form-control animate-pulse mt-4">
+                                    <span class="label-text mb-2">
+                                    <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                                    <p class="italic">
+                                        <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                                    </p>
+                                    </span>
+                                    <div class="h-10 bg-gray-300 rounded w-full"></div>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!--alert-->
+                <div class="bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3" role="alert">
+                    <div class="flex">
+                        <div class="py-1">
+                        <svg class="fill-current h-6 w-6 text-blue-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9 12h2v2H9v-2zm0-8h2v6H9V4zm0 12a8 8 0 110-16 8 8 0 010 16z"/></svg>
+                        </div>
+                        <div>
+                        <p class="font-bold">Info</p>
+                        <p class="text-sm">Ensure you have selected at least one Water Source type and entered the available water quantity</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Info about water source type for [borehole, pipe-borne, well]-->
+                <div id="waterSourceTypeDetails" class="mt-4">
+                    <div class=" h-[22rem] overflow-y-auto">
+                        <h2 class="text-2xl font-bold mb-4">Water Source Type Details</h2>
+                        <!--Borehole-->
+                        <div id="borehole" class="form-control">
+                            <label class="">
+                                <span class="font-bold text-lg">Borehole</span>
+                            </label>
+                            <blockquote>
+                                <p>Boreholes are narrow shafts bored in the ground, either vertically or horizontally, to extract water.</p>
+                            </blockquote>
+                            <!--total standard for a borehole-->
+                            <p class="mt-2 font-bold">Total standard for a borehole</p>
+                            <ul>
+                                <li>Minimum: 10,000 litres</li>
+                                <li>Maximum: 20,000 litres</li>
+                            </ul>
+                            <!--image of borehole-->
+                            <img src="{% static 'img/borehole.jpg' %}" alt="" class="rounded-md mt-2">
+                        </div>
+
+                        <!--Pipe Borne-->
+                        <div id="pipe-borne" class=" mt-4">
+                            <label class="">
+                                <span class="font-bold text-lg">Pipe Borne</span>
+                            </label>
+                            <blockquote class="mt-2">
+                                <p>Pipe Borne water is water that is supplied through pipes to homes and other buildings.</p>
+                            </blockquote>
+                            <!--total standard for a pipe-borne water-->
+                            <p class="mt-2 font-bold">Total standard for a pipe-borne water</p>
+                            <ul>
+                                <li>Minimum: 10,000 litres</li>
+                                <li>Maximum: 20,000 litres</li>
+                            </ul>
+                            <!--image of pipe-borne water-->
+                            <img src="{% static 'img/pipe.jpg' %}" alt="" class="rounded-md mt-2">
+                        </div>
+
+                        <!--Well-->
+                        <div id="well" class=" mt-4">
+                            <label class="">
+                                <span class="font-bold text-lg">Well</span>
+                            </label>
+                            <blockquote class="mt-2">
+                                <p>Wells are holes or shafts sunk into the earth to obtain water.</p>
+                            </blockquote>
+                            <!--total standard for a well-->
+                            <p class="mt-2 font-bold">Total standard for a well</p>
+                            <ul>
+                                <li>Minimum: 10,000 litres</li>
+                                <li>Maximum: 20,000 litres</li>
+                            </ul>
+                            <!--image of well-->
+                            <img src="{% static 'img/well.jpeg' %}" alt="" class="rounded-md mt-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!--Sanitation-->
+            <div id="sanitation">
+                <!--Toilet-->
+                <div id="toilet">
+                    <h2 class="text-2xl font-bold mb-4">Toilet</h2>
+                    <div id="toiletTypeContainer" class="form-control mb-4">
+                        <label class="mb-2">
+                            <span class="label-text">Select Toilet Type</span>
+                        </label>
+                        <div class="flex flex-col space-y-5">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="toiletType" value="public" class="checkbox checkbox-primary toilet-checkbox" 
+                                {% if sanitation_needs %}
+                                    {% for sanitation in sanitation_needs %}
+                                        {% if sanitation.content_object.type_name == 'Public' %}
+                                            checked 
+                                        {% endif %}  
+                                    {% endfor %}
+                                {% endif %}
+                                />
+                                <span class="label-text">Public</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="toiletType" value="private" class="checkbox checkbox-primary toilet-checkbox" 
+                                {% if sanitation_needs %}
+                                    {% for sanitation in sanitation_needs %}
+                                        {% if sanitation.content_object.type_name == 'Private' %}
+                                            checked 
+                                        {% endif %}  
+                                    {% endfor %}
+                                {% endif %}
+                                />
+                                <span class="label-text ">Private - Water Closet (One household is to one (1) toilet facility)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="toiletNumberContainer" class="form-control mb-4 mt-4">
+                        <label class="mb-2">
+                            <span class="label-text">Available Number of Toilets</span>
+                            <p class="text-sm italic">Select toilet type to enter number of available toilets</p>
+                        </label>
+                        <div id="toiletNumbers" class="grid grid-cols-2 gap-4 mt-4">
+                            <!-- Input fields will be dynamically added here -->
+                            {% if toilet_types_with_available %}
+                                {% for toilet in toilet_types_with_available %}
+                                <div class="form-control" id="toiletNumber-{{toilet.toilet_type|lower}}">
+                                    <span class="label-text mb-2">{{toilet.toilet_type}}
+                                    <p class="italic" style="font-style:italic">(enter number of 
+                                        {{toilet.toilet_type}}s)</p>
+                                    </span>
+                                    <input type="number" min="1" />
+                                </div>
+                                {% endfor %}
+                                {% else %}
+                                {% for i in 2|in_range %}
+                                <div id="toiletSkeleton-{{i}}"  class="form-control animate-pulse mt-4">
+                                    <span class="label-text mb-2">
+                                    <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                                    <p class="italic">
+                                        <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                                    </p>
+                                    </span>
+                                    <div class="h-10 bg-gray-300 rounded w-full"></div>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!--alert-->
+                    <div class="bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3" role="alert">
+                        <div class="flex">
+                            <div class="py-1">
+                            <svg class="fill-current h-6 w-6 text-blue-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9 12h2v2H9v-2zm0-8h2v6H9V4zm0 12a8 8 0 110-16 8 8 0 010 16z"/></svg>
+                            </div>
+                            <div>
+                            <p class="font-bold">Info</p>
+                            <p class="text-sm">Ensure you have selected at least one Toilet type and entered the number of available Toilets</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Info about toilet type for [public, private]-->
+                    <div id="toiletTypeDetails" class="mt-6">
+                        <div class=" h-[37rem] overflow-y-auto">
+                            <h2 class="text-2xl font-bold mb-4">Toilet Type Details</h2>
+                            <!--Public-->
+                            <div id="public" class="form-control">
+                                <label class="">
+                                    <span class="font-bold text-lg">Public</span>
+                                </label>
+                                <blockquote>
+                                    <p>Public toilets are toilets that are accessible to the general public.</p>
+                                </blockquote>
+                                <!--total standard for a public toilet-->
+                                <p class="mt-2 font-bold">Total standard for a public toilet</p>
+                                <ul>
+                                    <li>Ratio: 1:5000</li>
+                                </ul>
+                                <!--image of public toilet-->
+                                <img src="{% static 'img/pub_toil.jpeg' %}" alt="" class="rounded-md mt-2">
+                            </div>
+
+                            <!--Private-->
+                            <div id="private" class=" mt-4">
+                                <label class="">
+                                    <span class="font-bold text-lg">Private</span>
+                                </label>
+                                <blockquote class="mt-2">
+                                    <p>Private toilets are toilets that are accessible to a specific group of people.</p>
+                                </blockquote>
+                                <!--total standard for a private toilet-->
+                                <p class="mt-2 font-bold">Total standard for a private toilet</p>
+                                <ul>
+                                    <li>Ratio: 1 per household</li>
+                                </ul>
+                                <!--image of private toilet-->
+                                <img src="{% static 'img/private_toil.jpeg' %}" alt="" class="rounded-md mt-2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Skip containers-->
+                <div id="skipContainer">
+                    <h2 class="text-2xl font-bold mb-4">Skip Container</h2>
+                    <div id="skipContainerTypeContainer" class="form-control mb-4">
+                        <label class="mb-2">
+                            <span class="label-text">Select Skip Container Type</span>
+                        </label>
+                        <div class="flex flex-col space-y-5">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="skipContainerType" value="public" class="checkbox checkbox-primary skip-container-checkbox" 
+                                {% if skip_container_needs %}
+                                    {% for skip_container in skip_container_needs %}
+                                        {% if skip_container.content_object.type_name == 'Public' %}
+                                            checked 
+                                        {% endif %}  
+                                    {% endfor %}
+                                {% endif %}
+                                />
+                                <span class="label-text">Public</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="skipContainerNumberContainer" class="form-control mb-4 mt-4">
+                        <label class="mb-2">
+                            <span class="label-text">Available Number of Skip Containers</span>
+                            <p class="text-sm italic">Select skip container type to enter number of available skip containers</p>
+                        </label>
+
+                        <div id="skipContainerNumbers" class="grid grid-cols-2 gap-4 mt-4">
+                            <!-- Input fields will be dynamically added here -->
+                            {% if skip_container_types_with_available %}
+                                {% for skip_container in skip_container_types_with_available %}
+                                <div class="form-control" id="skipContainerNumber-{{skip_container.skip_container_type|lower}}">
+                                    <span class="label-text mb-2">{{skip_container.skip_container_type}}
+                                    <p class="italic" style="font-style:italic">(enter number of 
+                                        {{skip_container.skip_container_type}}s)</p>
+                                    </span>
+                                    <input type="number" min="1" />
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                {% for i in 1|in_range %}
+                                <div id="skipSkeleton-{{i}}"  class="form-control animate-pulse mt-4">
+                                    <span class="label-text mb-2">
+                                    <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                                    <p class="italic">
+                                        <div class="h-3 bg-gray-300 rounded w-1/2 mt-1"></div>
+                                    </p>
+                                    </span>
+                                    <div class="h-10 bg-gray-300 rounded w-full"></div>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!--alert-->
+                    <div class="bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3" role="alert">
+                        <div class="flex">
+                            <div class="py-1">
+                            <svg class="fill-current h-6 w-6 text-blue-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9 12h2v2H9v-2zm0-8h2v6H9V4zm0 12a8 8 0 110-16 8 8 0 010 16z"/></svg>
+                            </div>
+                            <div>
+                            <p class="font-bold">Info</p>
+                            <p class="text-sm">Ensure you have selected at least one Skip Container type and entered the number of available Skip Containers</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!--Info about skip container type for [public]-->
+                    <div id="skipContainerTypeDetails" class="mt-4">
+                        <div class="overflow-y-auto">
+                            <h2 class="text-2xl font-bold mb-4">Skip Container Type Details</h2>
+                            <!--Public-->
+                            <div id="public" class="form-control">
+                                <label class="">
+                                    <span class="font-bold text-lg">Public</span>
+                                </label>
+                                <blockquote>
+                                    <p>Public skip containers are large containers used for storing waste materials.</p>
+                                </blockquote>
+                                <!--total standard for a public skip container-->
+                                <p class="mt-2 font-bold">Total standard for a public skip container</p>
+                                <ul>
+                                    <li>Ratio: 1:5000</li>
+                                </ul>
+                                <!--image of public skip container-->
+                                <img src="{% static 'img/skip.jpeg' %}" alt="" class="rounded-md mt-2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                              
     </div> 
     
     <input type="hidden" id="needs_assessment_slug" name="" value="{{needs_assessment.slug}}">
@@ -392,27 +1538,112 @@
 {% else %}
     <div class="flex justify-center items-center h-[20rem] flex-col gap-y-8">
         <div class="flex items-center gap-2">
-            <i class="fa-solid fa-info-circle text-5xl text-gray-400"></i>
-            <p class="text-center text-gray-400">No population projections available. Create a new population projection to assess needs</p>
+            <i class="fa-solid fa-info-circle text-5xl text-red-500"></i>
+            <p class="text-gray-400">No population projections available. <br>Create a new population projection to assess needs</br></p>
         </div>
         <button hx-trigger="click" hx-get="{% url 'crud' %}?mode=create" hx-target="#modal-content" hx-swap="innerHTML" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" class="btn btn-primary">
             + new projection
         </button>
     </div>
 {% endif %}
-<script>
+<script type="module">
+    import { main } from "{% static 'js/needs_assessment.js' %}";
+    
+    main()
+    if (true){
+    let area = document.getElementById('area')
+    let areaDropdown = document.getElementById('areaDropdown')
+    let areaTypes = document.querySelectorAll('input[name="areaType"]')
+    let projectedPopulationSelect = document.getElementById('projectedPopulationSelect')
+    var populationSlug = document.getElementById('projectedPopulationSelect');
+
     // listen for changes in the projected population select and make a htmx request to get the population details
-    document.getElementById('projectedPopulationSelect').addEventListener('change', function() {
-        var populationSlug = this.value;
-        var url = `/get-population-projection-details/${populationSlug}`
-        htmx.ajax('GET', url, {target: document.getElementById('population-details')});
-    });
+    if(projectedPopulationSelect){
+        projectedPopulationSelect.addEventListener('change', function() {
+            var populationSlug = this.value;
+            var url = `/get-population-projection-details/${populationSlug}`
+            htmx.ajax('GET', url, {target: document.getElementById('population-details')});
+        });
+    }
 
     // make default request to get the population details
-    var populationSlug = document.getElementById('projectedPopulationSelect').value;
-    var url = `/get-population-projection-details/${populationSlug}`
-    htmx.ajax('GET', url, {target: document.getElementById('population-details')});
+    if (populationSlug){
+        var url = `/get-population-projection-details/${populationSlug.value}`
+        htmx.ajax('GET', url, {target: document.getElementById('population-details')});
+    }
+
+    // listen to radio button changes and make a request to get the area dropdown
+    if(areaTypes){
+        areaTypes.forEach((radio) => {
+            radio.addEventListener('change', function() {
+                var areaType = this.value;
+                var url = `/get-areas/${areaType}`
+                htmx.ajax('GET', url, {target: document.getElementById('areaDropdown')});
+
+                document.getElementById('area').placeholder = `Select ${areaType}`;
+            });
+        });
+    }
+    // listen to the area input field focus and remove hidden class from the dropdown
+
+    
+
+    // listen to dropdown item click and set the value of the input field
+    if (areaDropdown){
+        areaDropdown.addEventListener('click', function(e) {
+            if (e.target.tagName === 'LI') {
+                area.value = e.target.textContent;
+                areaDropdown.classList.add('hidden');
+            }
+        });
+    }
+
+    // hide the dropdown when the user clicks outside the dropdown and the input field
+    if(area){
+        document.addEventListener('click', function(e) {
+            if (!document.getElementById('area').contains(e.target) && !document.getElementById('areaDropdown').contains(e.target)) {
+                document.getElementById('areaDropdown').classList.add('hidden');
+            }
+        });
+    }
+
+    // filter area dropdown by the input field value
+    
+    if (area){
+        area.addEventListener('input', function() {
+            var input = this.value.toLowerCase();
+            var dropdownItems = document.getElementById('areaDropdown').querySelectorAll('li');
+            dropdownItems.forEach((item) => {
+                if (item.textContent.toLowerCase().includes(input)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        area.addEventListener('focus', function() {
+            if (areaDropdown){
+                areaDropdown.classList.remove('hidden');
+            }
+        });
+    }
+
+
+    // select region as default area type
+    if (document.querySelector('input[value="region"]')){
+        document.querySelector('input[value="region"]').click();
+    }
+}
+    
+ 
+
     
 </script>
+
+
+
+
+
 
 

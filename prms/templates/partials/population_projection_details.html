@@ -1,41 +1,41 @@
 <!--Population Projection Details-->
-<label class="label-text">Population Projection Details</label>
-<div class="bg-gray-300 card card-bordered p-4 rounded-md mb-2 mt-2">
-    <h3 class="font-bold">Needs Assessment for {{area}} {{area_type|title}}</h3>
-    <div class="flex flex-col mt-2 gap-2">
-        <div class="flex gap-2">
-            <p class="font-medium flex gap-2 items-center">
-                <i class="fa-solid fa-calendar-days"></i>
-                Year:</p>
-            <p>{{from_year}} - {{to_year}}</p>
-        </div>
-        <div class="flex gap-2 ">
-            <p class="font-medium flex gap-2 items-center">
-                <i class="fa-solid fa-location-dot"></i>
-                Area Type:
-            </p>
-            <p>{{area_type|title}}</p>
-        </div>
-        <div class="flex gap-2">
-            <p class="font-medium flex gap-2 items-center">
-                <i class="fa-solid fa-map-marked-alt"></i>
-                Area:</p>
-            <p>{{area}}</p>
-        </div>
-        <!--base population-->
-        <div class="flex gap-2">
-            <p class="font-medium flex gap-2 items-center">
-                <i class="fa-solid fa-users"></i>
-                Base Population:</p>
-            <p>{{base_population}}</p>
-        </div>
-
-        <!--projected population-->
-        <div class="flex gap-2">
-            <p class="font-medium flex gap-2 items-center">
-                <i class="fa-solid fa-person-arrow-up-from-line" aria-hidden="true"></i>
-                Projected Population:</p>
-            <p>{{projected_population}}</p>
+<div class="mt-4 ">
+    <label class="label label-text text-gray-700">Population Projection Details</label>
+    <div class="bg-white shadow-md rounded-lg p-6 mt-2">
+        <a hx-target="#main" hx-swap="innerHTML" hx-push-url="true" hx-get="{% url 'population_projection' population_projection.slug %}" class="text-md font-bold btn-link cursor-pointer">Population Projection for {{area}} {{area_type|title}}</a>
+        <div class="space-y-4 mt-4">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-calendar-days text-blue-500"></i>
+                <p class="font-medium text-gray-600">Year:</p>
+                <p class="text-gray-800">{{from_year}} - {{to_year}}</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-location-dot text-blue-500"></i>
+                <p class="font-medium text-gray-600">Area Type:</p>
+                <p class="text-gray-800">{{area_type|title}}</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-map-marked-alt text-blue-500"></i>
+                <p class="font-medium text-gray-600">Area:</p>
+                <p class="text-gray-800">{{area}}</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-users text-blue-500"></i>
+                <p class="font-medium text-gray-600">Base Population:</p>
+                <p class="text-gray-800">{{base_population}}</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-person-arrow-up-from-line text-blue-500"></i>
+                <p class="font-medium text-gray-600">Projected Population:</p>
+                <p class="text-gray-800">{{projected_population}}</p>
+            </div>
+            {% if is_education_enrollment %}
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-graduation-cap text-blue-500"></i>
+                <p class="font-medium text-gray-600">Education Enrollment:</p>
+                <p class="bg-blue-100 text-blue-700 font-semibold py-1 px-3 rounded-full">{{is_education_enrollment}}</p>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

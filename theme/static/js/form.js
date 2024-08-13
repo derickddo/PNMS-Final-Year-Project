@@ -192,43 +192,24 @@ modalContent.addEventListener('htmx:afterSettle', (e) => {
                 slug: slugify(title.value),
                 id: objectId
             }
-            fetch('http://127.0.0.1:8000/create-population-projection/',
-            {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            }).then(response => response.json())
-            .then(data => {
-                history.pushState('data', 'Title', '/population-projection/' + data.slug);
-                document.getElementById('main').innerHTML = data.rendered_template;
-                // make main innerHtml smooth and scrollable
-                document.getElementById('my_modal_3').classList.add('hidden')
-                projectButton.innerText = 'Update';
-                projectButton.disabled = false
-                initializeChart(); // reinitialize chart after htmx settle 
-
-
+            console.log(data)
+            htmx.ajax('PUT', '/create-population-projection/', {
+                historyEventName: 'create-population-projection',
+                target: '#main',
+                values: data,
+                
+            })
+            .then((response) => {
                 // sweet alert
-                 swal({
+                swal({
                     title: "Success!",
                     text: "Population projection updated successfully!",
                     icon: "success",
                     button: "OK",
-                    position: 'top-end',
                     timer: 3000
                 });
+                document.getElementById('my_modal_3').close()
             })
-            .catch((error) => {
-                console.error('Error:', error);
-                document.getElementById('alert').classList.remove('hidden')
-                document.getElementById('alert').classList.add('flex')
-                document.getElementById('alert-message').innerText = 'An error occurred. Please try again.'
-                projectButton.innerText = 'Update';
-                projectButton.disabled = false
-                
-            });
 
         });
             
@@ -459,32 +440,24 @@ modalContent.addEventListener('htmx:afterSettle', (e) => {
 
 
             console.log(data)
-            fetch('http://127.0.0.1:8000/create-population-projection/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },  
-                body: JSON.stringify(data),
-            }).then(response => response.json())
-            .then(data => {
+
+            htmx.ajax('POST', '/create-population-projection/', {
+                historyEventName: 'create-population-projection',
+                target: '#main',
+                values: data,
                 
-                history.pushState('data', 'Title', '/population-projection/' + data.slug);
-                document.getElementById('main').innerHTML = data.rendered_template;
-                // make main innerHtml smooth and scrollable
-                document.getElementById('my_modal_3').classList.add('hidden')
-                document.getElementById('main').classList.add('smooth')
-                projectButton.innerText = 'Project';
-                projectButton.disabled = false;
-                initializeChart(); // reinitialize chart after htmx settle  
             })
-            .catch((error) => {
-                console.error('Error:', error);
-                document.getElementById('alert').classList.remove('hidden')
-                document.getElementById('alert').classList.add('flex')
-                document.getElementById('alert-message').innerText = 'An error occurred. Please try again.'
-                projectButton.innerText = 'Project';
-                projectButton.disabled = false;
-            });
+            .then((response) => {
+                // sweet alert
+                swal({
+                    title: "Success!",
+                    text: "Population projection created successfully!",
+                    icon: "success",
+                    button: "OK",
+                    timer: 3000
+                });
+                document.getElementById('my_modal_3').close()
+            })
         });    
     
 

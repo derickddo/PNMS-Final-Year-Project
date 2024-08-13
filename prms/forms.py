@@ -19,26 +19,3 @@ class CustomSignupForm(SignupForm):
         user.save()
         return user
 
-
-class NeedsAssessmentForm(forms.ModelForm):
-    class Meta:
-        model = NeedsAssessment
-        fields = ['population_projection', 'sector', 'description']
-        widgets = {
-            'population_projection': forms.Select(),
-            'sector': forms.Select(),
-            'description': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Enter a description of the needs assessment'}),
-        }
-
-    population_projection = forms.ModelChoiceField(
-        queryset=PopulationProjection.objects.all(),
-        label='Select Population Projection'
-    )
-    sector = forms.ChoiceField(
-        choices=NeedsAssessment.SECTORS_CHOICES,
-        label='Select Sector'
-    )
-    description = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 4, 'placeholder': 'Enter a description of the needs assessment'}),
-        label='Needs Assessment Description'
-    )

@@ -1,0 +1,11 @@
+<!--Areas list-->
+
+
+<ul class="list-none  p-2 menu menu-compact">
+    {% for area in areas %}
+    <!-- Area options will be dynamically added here -->
+    <li class="hover:bg-gray-300 py-3 px-4 cursor-default rounded-md">{{ area.name|title }}</li>
+    {% endfor %} 
+</ul>
+
+    

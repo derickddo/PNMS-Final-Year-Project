@@ -1,6 +1,6 @@
 <div class="fixed inset-0 top-0  z-50  h-full overflow-y-auto px-4 md:left-0 w-64  transition duration-200 ease-in-out transform -translate-x-full md:translate-x-0 dark:bg-base-300 bg-blue-950 ">
     
-        <a id="logo" href="#" class="flex  items-center space-x-2 px-4 mt-5">
+        <a id="logo" href="#" hx-get="{% url 'home' %}" hx-push-url="true" hx-target="#main-content" class="flex   items-center space-x-2 px-4 mt-5">
             <svg class="h-8 w-8" fill="#fff" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 10l-6 6-6-6"></path>
             </svg>
@@ -8,7 +8,7 @@
         </a>
         <div class="h-[calc(100%-5rem)] flex flex-col justify-between">
             <nav class="mt-10 space-y-2">
-                <a href="#" hx-get="{% url 'dashboard' %}" hx-target="#main" hx-swap="innerHTML" hx-push-url="true" class="flex gap-4 items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-white">
+                <a href="#" hx-get="{% url 'dashboard' %}" hx-target="#main" hx-swap="innerHTML" hx-push-url="true" hx-replace-url="true" class="flex gap-4 items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-white">
                     <i class="fa-solid fa-tachometer-alt"></i> <!-- Dashboard Icon -->
                     Dashboard
                 </a>
@@ -20,18 +20,21 @@
                     <i class="fa-solid fa-clipboard-list"></i> <!-- Needs Assessment Icon -->
                     Needs Assessment
                 </a>
-                <a href="#" class="flex gap-4 items-center py py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-white">
+                <a href="#" hx-get="{% url 'map_prediction' %}" hx-target="#main" hx-push-url="true" class="flex gap-4 items-center py py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-white">
                     <i class="fa-solid fa-map-marked-alt"></i> <!-- Map Prediction Icon -->
                     Map Prediction
                 </a>
-                <a href="#" class="flex gap-4 items-center py py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-white">
+                
+            </nav>
+            
+            <div class="w-full relative">
+                <hr class="mb-8">
+                <a href="#" class="flex gap-4 items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-white">
                     <i class="fa-solid fa-sign-out-alt"></i> <!-- Logout Icon -->
                     Logout
                 </a>
-            </nav>
-            <div class="w-full relative">
                 <details class="dropdown w-full bottom-0">
-                    <summary class="btn btn-outline w-full flex text-white justify-between">Settings<i class="fa-solid fa-gear"></i></summary>
+                    <summary class="flex gap-4 tems-center  py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white text-white cursor-pointer"><i class="fa-solid fa-gear"></i>Settings</summary>
                     <ul class="menu dropdown-content w-full bg-base-100 rounded-box z-[1]  p-2 shadow absolute left-0 bottom-full mb-2">
                         <li data-set-theme="dark"><a><i class="fa-solid fa-moon"></i>Dark</a></li>
                         <li data-set-theme="light"><a><i class="fa-solid fa-sun"></i>Light</a></li>
