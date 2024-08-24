@@ -37,6 +37,7 @@ class Population(models.Model):
 class Region(models.Model):
     name = models.CharField(max_length=30)
     map_url = models.URLField()
+    related_model = GenericRelation('PopulationProjection', related_query_name='region')
 
     def __str__(self):
         return self.name
@@ -53,6 +54,7 @@ class District(models.Model):
     name = models.CharField(max_length=50)
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
     map_url = models.URLField()
+    related_model = GenericRelation('PopulationProjection', related_query_name='district')
 
     def __str__(self):
         return self.name
@@ -83,6 +85,7 @@ class PopulationProjection(models.Model):
     object_id = models.IntegerField(null=True, blank=True)
     content_object = GenericForeignKey('content_type', 'object_id')
     is_education_enrollment = models.BooleanField(default=False)
+
 
     def __str__(self):
         return f'{self.title}'
@@ -146,6 +149,7 @@ class FacilityType(models.Model):
     suplus = models.IntegerField(null=True, blank=True)
     available = models.PositiveBigIntegerField(null=True, blank=True)
     population = models.PositiveBigIntegerField(null=True, blank=True)
+    related_model = GenericRelation('Needs', related_query_name='facility_type')
 
     def __str__(self):
         return self.type_name
@@ -162,6 +166,7 @@ class PersonnelType(models.Model):
     suplus = models.IntegerField(null=True, blank=True)
     available = models.PositiveBigIntegerField(null=True, blank=True)
     population = models.PositiveBigIntegerField(null=True, blank=True)
+    related_model = GenericRelation('Needs', related_query_name='personnel_type')
 
     def __str__(self):
         return self.type_name
@@ -178,6 +183,7 @@ class EquipmentType(models.Model):
     suplus = models.IntegerField(null=True, blank=True)
     available = models.PositiveBigIntegerField(null=True, blank=True)
     population = models.PositiveBigIntegerField(null=True, blank=True)
+    related_model = GenericRelation('Needs', related_query_name='equipment_type')
 
     def __str__(self):
         return self.type_name
@@ -194,6 +200,7 @@ class FurnitureType(models.Model):
     suplus = models.IntegerField(null=True, blank=True)
     available = models.PositiveBigIntegerField(null=True, blank=True)
     population = models.PositiveBigIntegerField(null=True, blank=True)
+    related_model = GenericRelation('Needs', related_query_name='furniture_type')
 
     def __str__(self):
         return self.type_name
@@ -275,3 +282,19 @@ class Projection(models.Model):
         return f'{self.base_year} to {self.projecting_year}'
     class Meta:
         db_table = 'projection'
+
+
+class Report(models.Model):
+    title = models.CharField(max_length=50)
+    report_file = models.FileField(upload_to='reports/')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True) 
+    slug = models.SlugField(unique=True, default=None)
+
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        db_table = 'report'
+
+

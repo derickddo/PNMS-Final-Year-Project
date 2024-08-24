@@ -9,8 +9,8 @@
 
 {% block content %}
 <div class="flex justify-center items-center min-h-screen py-16 bg-gray-100">
-    <div class="p-8 rounded-lg shadow-xl bg-white md:w-[28rem] w-[24rem]">
-        <h1 class="text-3xl font-semibold text-center mb-8 text-gray-800">{% trans "Sign Up" %}</h1>
+    <div class="p-8  rounded-lg shadow-xl bg-white md:w-[28rem] w-[22rem]">
+        <h1 class="text-3xl font-semibold text-center mb-5 text-gray-800">{% trans "Sign Up" %}</h1>
         
         {% setvar link %}
             <a href="{{ login_url }}" class="text-blue-600 hover:underline">
@@ -33,21 +33,43 @@
                             <label for="{{ field.id_for_label }}" class="label text-gray-700">
                                 <span class="label-text">{{ field.label }}</span>
                             </label>
-                            {% render_field field class="input input-bordered p-2 rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500" %}
-                            {% if field.help_text %}
-                                <p class="text-xs text-gray-500">{{ field.help_text }}</p>
+                            {% if field.errors %}
+                                {% render_field field|add_class:"input input-bordered p-2 rounded-lg border-red-500 text-red-500" %}
+                            {% else %}
+                                {% render_field field|add_class:"input input-bordered p-2 rounded-lg border-gray-300" %}
                             {% endif %}
+                            
                             {% for error in field.errors %}
-                                <p class="text-xs text-red-500">{{ error }}</p>
+                                <p class="text-xs text-red-500 mt-2">{{ error }}</p>
                             {% endfor %}
                         </div>
                     {% endfor %}
+
                 </div>
-                
+
+                <div id="password-requirements" class="mt-4 space-y-2 text-sm text-gray-600">
+                    <p class="flex items-center" id="requirement1">
+                        <i class="fas fa-times text-red-500 mr-2"></i>
+                        Your password can’t be too similar to your other personal information.
+                    </p>
+                    <p class="flex items-center" id="requirement2">
+                        <i class="fas fa-times text-red-500 mr-2"></i>
+                        Your password must contain at least 8 characters.
+                    </p>
+                    <p class="flex items-center" id="requirement3">
+                        <i class="fas fa-times text-red-500 mr-2"></i>
+                        Your password can’t be a commonly used password.
+                    </p>
+                    <p class="flex items-center" id="requirement4">
+                        <i class="fas fa-times text-red-500 mr-2"></i>
+                        Your password can’t be entirely numeric.
+                    </p>
+                </div>
+
                 {{ redirect_field }}
                 
                 <div class="mt-8 flex justify-center">
-                    <button type="submit" class="w-full btn btn-primary py-2 text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md">
+                    <button type="submit" class="w-full btn py-2 text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md">
                         <i class="fas fa-user-plus mr-2"></i> {% trans "Sign Up" %}
                     </button>
                 </div>
@@ -57,9 +79,75 @@
         {% if SOCIALACCOUNT_ENABLED %}
             <div class="divider">OR</div>
             <a href="{% provider_login_url 'google'%}" type="button" class="btn btn-icon hover:bg-red-500 flex items-center justify-center py-2 rounded-lg shadow-md bg-red-600 text-white">
-                <i class="fab fa-google mr-3"></i> Continue with Google
+                <i class="fab fa-google mr-3 text-lg"></i> Continue with Google
             </a>
         {% endif %}
+
+        <div class="mt-6 text-center text-sm text-gray-600">
+            By signing up, you agree to our <a href="#" class="text-blue-600 hover:underline">Terms and Conditions</a> and <a href="#" class="text-blue-600 hover:underline">Privacy Policy</a>.
+        </div>
     </div>
 </div>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const passwordField = document.querySelector('input[name="password1"]');
+    const requirements = [
+        {
+            id: 'requirement1',
+            test: (value) => !/your-other-personal-information/.test(value)  // Placeholder regex; replace with real validation
+        },
+        {
+            id: 'requirement2',
+            test: (value) => value.length >= 8
+        },
+        {
+            id: 'requirement3',
+            test: (value) => !/common-passwords/.test(value)  // Placeholder regex; replace with real validation
+        },
+        {
+            id: 'requirement4',
+            test: (value) => !/^\d+$/.test(value)
+        }
+    ];
+
+    passwordField.addEventListener('input', function() {
+        const password = passwordField.value;
+        
+        if (password === '') {
+            // Revert back to the original state if the field is empty
+            requirements.forEach(req => {
+                const element = document.getElementById(req.id);
+                element.classList.add('text-red-500');
+                element.classList.remove('text-green-500');
+                element.querySelector('i').classList.add('text-red-500');
+                element.querySelector('i').classList.remove('text-green-500');
+                element.querySelector('i').classList.add('fa-times');
+                element.querySelector('i').classList.remove('fa-check');
+            });
+        } else {
+            requirements.forEach(req => {
+                const element = document.getElementById(req.id);
+                if (req.test(password)) {
+                    element.classList.remove('text-red-500');
+                    element.classList.add('text-green-500');
+                    element.querySelector('i').classList.remove('text-red-500');
+                    element.querySelector('i').classList.add('text-green-500');
+                    element.querySelector('i').classList.remove('fa-times');
+                    element.querySelector('i').classList.add('fa-check');
+                } else {
+                    element.classList.add('text-red-500');
+                    element.classList.remove('text-green-500');
+                    element.querySelector('i').classList.add('text-red-500');
+                    element.querySelector('i').classList.remove('text-green-500');
+                    element.querySelector('i').classList.add('fa-times');
+                    element.querySelector('i').classList.remove('fa-check');
+                }
+            });
+        }
+    });
+});
+
+
+</script>
 {% endblock content %}

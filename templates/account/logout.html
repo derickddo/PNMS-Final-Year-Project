@@ -4,27 +4,24 @@
     {% trans "Sign Out" %}
 {% endblock head_title %}
 {% block content %}
-<div class=" flex flex-col h-[100vh] justify-center items-center">
-    <div class="w-[30rem] p-8 rounded-md bg-base-300 h-fit">
+<div class="flex flex-col h-screen justify-center items-center bg-gray-100">
+    <div class="max-w-md p-8 rounded-lg bg-white shadow-lg md:w-[30rem] w-[22rem]">
         
-        <h1 class="text-3xl font-bold mb-4">
+        <h1 class="text-3xl font-extrabold mb-4 text-gray-800">
             {% trans "Sign Out" %}
         </h1>
-        <p class="text-gray-700 mb-8">
+        <p class="text-gray-600 mb-8 text-center">
             {% trans 'Are you sure you want to sign out?' %}
         </p>
-        <form method="post" accept="{% url 'account_logout' %}" class="flex flex-row gap-4" no_visible_fields=True>
+        <form method="post" action="{% url 'account_logout' %}" class="flex flex-col gap-4">
             {% csrf_token %}
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn  py-2 px-4 text-lg font-semibold rounded-lg shadow-md bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300">
                 {% trans 'Sign Out' %}
             </button>
-            <a href="{{ request.META.HTTP_REFERER }}" type="submit" class="btn btn-error">
+            <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-error py-2 px-4 text-lg font-semibold rounded-lg shadow-md bg-red-600 hover:bg-red-700 text-white transition-colors duration-300">
                 {% trans 'Cancel' %}
             </a>
         </form>
     </div>
-  
 </div>
-  
 {% endblock content %}
-

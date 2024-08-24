@@ -4,23 +4,31 @@ from .models import Region, District, PopulationProjection, Projection, Populati
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .population_projection_methods import calculate_projections, calculate_growth_rate, calculate_facilities_required, facility_standards, personnel_standards, calculate_personnel_required, calculate_classrooms_required, classroom_standards, calculate_dual_desks_required, dual_desk_standards, calculate_water_sources_required, water_source_standards, calculate_toilets_required, toilet_standards, calculate_skip_containers_required, skip_container_standards
-from django.template.loader import get_template
+from django.template.loader import get_template, render_to_string
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.core.serializers import serialize
+
 from django.utils.text import slugify
 import urllib.parse
 import random
 from global_land_mask import globe
 from geopy.geocoders import Nominatim
-from shapely.geometry import Point, Polygon
-import numpy as np
-from rtree import index
 import random
 # import messages 
 from django.contrib import messages
 
+# email verification required
+from allauth.account.decorators import verified_email_required
+from openai import OpenAI
+import google.generativeai as genai
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import time
 
+import os
+import matplotlib
+from ratelimit import limits, RateLimitException
 
 
 
@@ -32,6 +40,8 @@ def home(request):
 
 
 # dashboard view
+# redirect to verify email page
+@verified_email_required
 @login_required(login_url='account_login')
 @csrf_exempt
 def dashboard(request):
@@ -60,6 +70,10 @@ def dashboard(request):
             return render(request, 'partials/dashboard_main.html', context)
     return render(request, 'prms/dashboard.html', context)
 
+
+# user profile
+def profile(request, username):
+    return render(request, 'prms/profile.html')
 
 # crud view for population projections
 def crud(request):
@@ -163,6 +177,7 @@ def get_growth_rate(area_type, region,
     
 # create population projection view
 @csrf_exempt
+@verified_email_required
 @login_required(login_url='account_login')
 def create_or_update_population_projection(request):
     data = request.body.decode('utf-8')
@@ -266,6 +281,8 @@ def create_or_update_population_projection(request):
     return render(request, 'prms/population_projection.html', context)
 
 import requests
+import time
+import time
 
 def get_geojson_from_nominatim(area_name):
     url = 'https://nominatim.openstreetmap.org/search'
@@ -289,6 +306,8 @@ def get_geojson_from_nominatim(area_name):
 
 
 # get population projection view
+@verified_email_required
+@login_required(login_url='account_login')
 def get_population_projection(request, slug):
     population_projection = PopulationProjection.objects.get(slug=slug)
     projections = population_projection.projections.all()
@@ -387,7 +406,12 @@ def get_needs_assessment_for_population_projection(request, slug):
         dual_desk_needs = needs_assessment.needs.filter(needs_type='dual desk', sector=sector)
 
         water_needs = needs_assessment.needs.filter(needs_type='water source', sector=sector)
-        print(water_needs)
+        
+
+        skip_container_needs = needs_assessment.needs.filter(needs_type='skip container', sector=sector)
+
+        toilet_needs = needs_assessment.needs.filter(needs_type='toilet', sector=sector)
+
         # needs for sector found
         needs_for_sector = needs_assessment.needs.filter(sector=sector)
 
@@ -400,40 +424,498 @@ def get_needs_assessment_for_population_projection(request, slug):
             'dual_desk_needs': dual_desk_needs,
             'classroom_needs': classroom_needs,
             'needs':needs_for_sector,
-            'water_needs':water_needs
+            'water_needs':water_needs,
+            'skip_container_needs':skip_container_needs,
+            'toilet_needs':toilet_needs
 
         } 
 
     return render(request, 'partials/health_sector.html', context)
 
+def generate_plot(data, plot_type, filename, title, x_label, y_label):
+    plt.figure(figsize=(10, 6))
+    if plot_type == 'line':
+        sns.lineplot(data=data, x=x_label, y=y_label, marker='o', label=y_label)
+    elif plot_type == 'bar':
+        sns.barplot(data=data, x=x_label, y=y_label, palette='viridis', hue=y_label)
+    
+    plt.title(title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.legend()
+    plt.grid()
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
+
+
+
+
+
+def generate_report_sections(request, model, sections):
+    results = {}
+    for section_name, section_details in sections.items():
+        context = json.dumps(section_details['context'])
+        prompt = section_details['prompt']
+
+        try:
+            response = model.generate_content(f'Data: {context} {prompt}')
+            results[section_name] = response.text
+        except Exception as e:
+            print(f"An error occurred for {section_name}: {e}")
+            messages.error(request, f"An error occurred for {section_name}: {e}")
+            time.sleep(60)
+            response = model.generate_content(f'Data: {context} {prompt}')
+            print(response.text)
+            results[section_name] = response.text
+    
+    return results
+
+
+
+
+
+    
+
+
+
 # generate report view
 def generate_report(request, slug):
+
+   
+
+    # matplotlib.use('Agg')
+    # plt.ioff()
+
     population_projection = PopulationProjection.objects.get(slug=slug)
-    projections = population_projection.projections.all()
-    projection_years = projections.values_list('projecting_year', flat=True).order_by('projecting_year')
-    base_years = projections.values_list('base_year', flat=True).order_by('base_year')
-    base_populations = projections.values_list('base_population', flat=True).order_by('base_population')
-    projected_populations = projections.values_list('projected_population', flat=True).order_by('projected_population')
+    projections = population_projection.projections.all().values(
+        'base_year', 'projecting_year', 'base_population', 'projected_population'
+    )
+    
 
-    custom_range = range(len(projection_years))
 
-    contex = {
-        'population_projection' :population_projection,
-        'projection_years':projection_years,
-        'base_years':base_years,
-        'projected_populations':projected_populations,
-        'base_populations':base_populations,
-        'range':custom_range,
+    population_projection_contex = {
+        'title': population_projection.title,
+        'description': population_projection.description,
+        'area_type': population_projection.area_type,
+        'area': population_projection.content_object.name,
+        'projections':list(projections),
         'growth_rate': population_projection.growth_rate
     }
 
-    # Render the report template
-    rendered_template = get_template('prms/report.html').render(contex)
-    # convert the rendered template to pdf
+    population_projection_to_plot = {
+        'base_year': [i['base_year'] for i in projections],
+        'projecting_year':[i['projecting_year'] for i in projections],
+        'base_population':[i['base_population'] for i in projections],
+        'projected_population':[i['projected_population'] for i in projections]
+    }
+    df = pd.DataFrame(population_projection_to_plot)
+
+    # remove indexes
+    df.reset_index(drop=True, inplace=True)
+
+    # change column names
+    df.columns = ['Base Year', 'Projecting Year', 'Base Population', 'Projected Population']
+
+
+    
+    # # line chart
+    # generate_plot(data=df, plot_type='line', filename='theme/static/plot_img/population_projection_line.png', title='Population Projection', x_label='Projecting Year', y_label='Projected Population')
     
 
+    # # bar plot
+    # generate_plot(data=df, plot_type='bar', filename='theme/static/plot_img/population_projection_bar.png', title='Population Projection', x_label='Projecting Year', y_label='Projected Population')
+    needs_assessment = None
+    try:
+        needs_assessment = NeedsAssessment.objects.get(population_projection=population_projection)
+    except NeedsAssessment.DoesNotExist:
+        messages.error(request, 'No needs assessment found for this population projection')
+
+    if needs_assessment:
+        facility_needs = needs_assessment.needs.filter(needs_type='facility').values(
+            'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
+        )
+        personnel_needs = needs_assessment.needs.filter(needs_type='personnel').values(
+            'personnel_type__type_name', 'personnel_type__required', 'personnel_type__standard', 'personnel_type__new_need', 'personnel_type__suplus', 'personnel_type__available', 'personnel_type__population', 'personnel_type__year'
+        )
+        classroom_needs = needs_assessment.needs.filter(needs_type='classroom').values(
+            'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
+        )
+        dual_desk_needs = needs_assessment.needs.filter(needs_type='dual desk').values(
+            'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
+        )
+        water_needs = needs_assessment.needs.filter(needs_type='water source').values(
+            'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
+        )
+        skip_container_needs = needs_assessment.needs.filter(needs_type='skip container').values(
+            'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
+        )
+        
+        formatted_facility_needs = []
+        if facility_needs:
+            for need in facility_needs:
+                formatted_facility_needs.append({
+                    'facility_type':need['facility_type__type_name'],
+                    'required':need['facility_type__required'],
+                    'standard':need['facility_type__standard'],
+                    'new need':need['facility_type__new_need'],
+                    'suplus':need['facility_type__suplus'],
+                    'available':need['facility_type__available'],
+                    'population':need['facility_type__population'],
+                    'year':need['facility_type__year']
+
+                })
+        
+        formatted_personnel_needs = []
+        if personnel_needs:
+            for need in personnel_needs:
+                formatted_personnel_needs.append({
+                    'personnel_type':need['personnel_type__type_name'],
+                    'required':need['personnel_type__required'],
+                    'standard':need['personnel_type__standard'],
+                    'new need':need['personnel_type__new_need'],
+                    'suplus':need['personnel_type__suplus'],
+                    'available':need['personnel_type__available'],
+                    'population':need['personnel_type__population'],
+                    'year':need['personnel_type__year']
+
+                })
+            
+        formatted_classroom_needs = []
+        if classroom_needs:
+            for need in classroom_needs:
+                formatted_classroom_needs.append({
+                    'facility_type':need['facility_type__type_name'],
+                    'required':need['facility_type__required'],
+                    'standard':need['facility_type__standard'],
+                    'new need':need['facility_type__new_need'],
+                    'suplus':need['facility_type__suplus'],
+                    'available':need['facility_type__available'],
+                    'population':need['facility_type__population'],
+                    'year':need['facility_type__year']
+
+                })
+        
+        formatted_dual_desk_needs = []
+        if dual_desk_needs:
+            for need in dual_desk_needs:
+                formatted_dual_desk_needs.append({
+                    'facility_type':need['facility_type__type_name'],
+                    'required':need['facility_type__required'],
+                    'standard':need['facility_type__standard'],
+                    'new need':need['facility_type__new_need'],
+                    'suplus':need['facility_type__suplus'],
+                    'available':need['facility_type__available'],
+                    'population':need['facility_type__population'],
+                    'year':need['facility_type__year']
+
+                })
+        
+        formatted_water_needs = []
+        if water_needs:
+            for need in water_needs:
+                formatted_water_needs.append({
+                    'facility_type':need['facility_type__type_name'],
+                    'required':need['facility_type__required'],
+                    'standard':need['facility_type__standard'],
+                    'new need':need['facility_type__new_need'],
+                    'suplus':need['facility_type__suplus'],
+                    'available':need['facility_type__available'],
+                    'population':need['facility_type__population'],
+                    'year':need['facility_type__year']
+
+                })
+        
+        formatted_skip_container_needs = []
+        if skip_container_needs:
+            for need in skip_container_needs:
+                formatted_skip_container_needs.append({
+                    'facility_type':need['facility_type__type_name'],
+                    'required':need['facility_type__required'],
+                    'standard':need['facility_type__standard'],
+                    'new need':need['facility_type__new_need'],
+                    'suplus':need['facility_type__suplus'],
+                    'available':need['facility_type__available'],
+                    'population':need['facility_type__population'],
+                    'year':need['facility_type__year']
+
+                })
+
+        # dataframes for needs
+        df_facility_needs = pd.DataFrame(formatted_facility_needs)
+        df_personnel_needs = pd.DataFrame(formatted_personnel_needs)
+        df_classroom_needs = pd.DataFrame(formatted_classroom_needs)
+        df_dual_desk_needs = pd.DataFrame(formatted_dual_desk_needs)
+        df_water_needs = pd.DataFrame(formatted_water_needs)
+        df_skip_container_needs = pd.DataFrame(formatted_skip_container_needs)
+
+        needs_assessment_context = {
+            'facility_needs':formatted_facility_needs,
+            'personnel_needs':formatted_personnel_needs,
+            'classroom_needs':formatted_classroom_needs,
+            'dual_desk_needs':formatted_dual_desk_needs,
+            'water_needs':formatted_water_needs,
+            'skip_container_needs':formatted_skip_container_needs
+        }
+
+
+    sections = {
+        'overview': {
+            'context': population_projection_contex,
+            'prompt': "Generate A report's introduction based on the data provided. Do not add any topic just generate the paragraph."
+        },
+        'population_projection_data': {
+            'context': population_projection_contex,
+            'prompt': "Generate A report's population projection data based on the data provided. Do not add any topic just generate the paragraph."
+        },
+        'population_projection_analysis': {
+            'context': population_projection_contex,
+            'prompt': "Generate A report's population projection analysis based on the data provided. Do not add any topic just generate the paragraph."
+        },
+        'conclusion': {
+            'context': population_projection_contex,
+            'prompt': "Generate A report's conclusion based on the data provided. Do not add any topic just generate the paragraph."
+        },
+        
+        'needs_assessment_overview': {
+            'context': needs_assessment_context,
+            'prompt': "Generate A report's introduction based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+        },
+        'facility_needs': {
+            'context': needs_assessment_context,
+            'prompt': "Generate A report's facility needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+        },
+        'personnel_needs': {
+            'context': needs_assessment_context,
+            'prompt': "Generate A report's personnel needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+        },
+        'classroom_needs': {
+            'context': needs_assessment_context,
+            'prompt': "Generate A report's classroom needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+        },
+        'dual_desk_needs': {
+            'context': needs_assessment_context,
+            'prompt': "Generate A report's dual desk needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+        },
+        'water_needs': {
+            'context': needs_assessment_context,
+            'prompt': "Generate A report's water needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+        },
+        'skip_container_needs': {
+            'context': needs_assessment_context,
+            'prompt': "Generate A report's skip container needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+        },
+        'needs_assessment_conclusion': {
+            'context': needs_assessment_context,
+            'prompt': "Generate A report's conclusion based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+        }
+
+
+    }
+    image_paragraph = 'The line chart and bar chart below shows the population projection from the base year to the projecting year. The base population is represented by the blue line, while the projected population is represented by the orange line. The bar plot shows the projected population for each projecting year. The population projection is based on the growth rate of the population over the years.'
+
+
+
+    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    
+    report_sections = generate_report_sections(request, model, sections)
+    overview = report_sections['overview']
+    population_projection_data = report_sections['population_projection_data']
+    population_projection_analysis = report_sections['population_projection_analysis']
+    conclusion = report_sections['conclusion']
+
+    needs_assessment_overview = report_sections['needs_assessment_overview']
+    facility_needs = report_sections['facility_needs']
+    personnel_needs = report_sections['personnel_needs']
+    classroom_needs = report_sections['classroom_needs']
+    dual_desk_needs = report_sections['dual_desk_needs']
+    water_needs = report_sections['water_needs']
+    skip_container_needs = report_sections['skip_container_needs']
+    needs_assessment_conclusion = report_sections['needs_assessment_conclusion']
+
+       
+    
+    
+
+    
+
+
+
+
+
+    
+
+    #     # change column names
+    #     df_facility_needs.columns = ['Facility Type', 'Required', 'Standard', 'New Need', 'Suplus', 'Available', 'Population', 'Year']
+    #     df_personnel_needs.columns = ['Personnel Type', 'Required', 'Standard', 'New Need', 'Suplus', 'Available', 'Population', 'Year']
+    #     # df_classroom_needs.columns = ['Facility Type', 'Required', 'Standard', 'New Need', 'Suplus', 'Available', 'Population', 'Year']
+    #     # df_dual_desk_needs.columns = ['Facility Type', 'Required', 'Standard', 'New Need', 'Suplus', 'Available', 'Population', 'Year']
+    #     # df_water_needs.columns = ['Facility Type', 'Required', 'Standard', 'New Need', 'Suplus', 'Available', 'Population', 'Year']
+    #     # df_skip_container_needs.columns = ['Facility Type', 'Required', 'Standard', 'New Need', 'Suplus', 'Available', 'Population', 'Year']
+
+
+       
+
+    # map_prediction = None
+    # try:  
+    #     map_prediction = MapPrediction.objects.get(needs_assessment=needs_assessment)
+    # except MapPrediction.DoesNotExist:
+    #     messages.error(request, 'No map prediction found for this needs assessment')
+        
+
+    # # get facility needs for map
+    # if map_prediction:
+    #     facility_needs_for_map = needs_assessment.needs.filter(needs_type='facility')
+
+    #     facility_coordinates_and_area_name = map_prediction.facility_coordinates_and_area_name.all()
+    #     formatted_map_prediction = []
+    #     if map_prediction:
+    #         for need in facility_needs_for_map:
+    #             for facility in facility_coordinates_and_area_name:
+    #             # check if the year is not the last year because we are only interested in the last year as the projection year
+    #                 if need.content_object.year != population_projection.projections.last().projecting_year: 
+    #                     continue
+    #                 if need.content_object.type_name == facility.facility_name:
+    #                     formatted_map_prediction.append({
+    #                         'facility_type':facility.facility_name,
+    #                         'required':need.content_object.required,
+    #                         'standard':need.content_object.standard,
+    #                         'new_need':need.content_object.new_need,
+    #                         'suplus':need.content_object.suplus,
+    #                         'available':need.content_object.available,
+    #                         'population':need.content_object.population,
+    #                         'latitude':facility.lattitude,
+    #                         'longitude':facility.longitude,
+    #                         'area_name':facility.area_name
+    #                     })
+    #                 else:
+    #                     formatted_map_prediction.append({
+    #                         'facility_type':need.content_object.type_name,
+    #                         'required':need.content_object.required,
+    #                         'standard':need.content_object.standard,
+    #                         'new_need':need.content_object.new_need,
+    #                         'suplus':need.content_object.suplus,
+    #                         'available':need.content_object.available,
+    #                         'population':need.content_object.population,
+    #                         'info':'This facility was not placed on the map'
+    #                     })
+
+
+
+    # # print(f"MAP: {formatted_map_prediction}")
+   
+        
+
+    
+
+    
+
+    # # insight on context data with openai
+    # # client = OpenAI(
+    # #     api_key = os.environ.get('OPENAI_API_KEY')
+    # # )
+    # # try:
+    # #     population_projection_response = client.chat.completions.create(
+    # #         model="gpt-3.5-turbo",
+    # #         messages=[
+    # #             {
+    # #                 "role": "user", 
+    # #                 "content": f"I want to know the insights on the population projection {population_projection_contex}"
+    # #             }
+    # #         ]
+    # #     )
+    # #     print(population_projection_response.choices[0].text)
+    # # except Exception as e:
+    # #     messages.error(request, f"An error occured: {e}")
+    
+    
+    
+    df_facility_needs_html = df_facility_needs.to_html(
+        classes='table table-bordered table-striped table-hover',
+        border=0,
+        index=False
+    )
+    df_facility_needs_html = df_facility_needs_html.replace('style="text-align: right;"', '')
+
+    df_population_projection = df.to_html(
+        classes='table table-bordered table-striped table-hover',
+        border=0,
+        index=False
+    )
+    df_population_projection = df_population_projection.replace('style="text-align: right;"', '')
+
+    df_personnel_needs_html = df_personnel_needs.to_html(
+        classes='table table-bordered table-striped table-hover',
+        border=0,
+        index=False
+    )
+    df_personnel_needs_html = df_personnel_needs_html.replace('style="text-align: right;"', '')
+
+    df_classroom_needs_html = df_classroom_needs.to_html(
+        classes='table table-bordered table-striped table-hover',
+        border=0,
+        index=False
+    )
+    df_classroom_needs_html = df_classroom_needs_html.replace('style="text-align: right;"', '')
+
+    df_dual_desk_needs_html = df_dual_desk_needs.to_html(
+        classes='table table-bordered table-striped table-hover',
+        border=0,
+        index=False
+    )
+
+    df_dual_desk_needs_html = df_dual_desk_needs_html.replace('style="text-align: right;"', '')
+
+    df_water_needs_html = df_water_needs.to_html(
+        classes='table table-bordered table-striped table-hover',
+        border=0,
+        index=False
+    )
+
+    df_water_needs_html = df_water_needs_html.replace('style="text-align: right;"', '')
+
+    df_skip_container_needs_html = df_skip_container_needs.to_html(
+        classes='table table-bordered table-striped table-hover',
+        border=0,
+        index=False
+    )
+
+    df_skip_container_needs_html = df_skip_container_needs_html.replace('style="text-align: right;"', '')
+
+    template_context = {
+        'population_projection':population_projection,
+        'df':df_population_projection,
+        'df_facility_needs':df_facility_needs_html,
+        'df_personnel_needs':df_personnel_needs_html,
+        'df_classroom_needs':df_classroom_needs_html,
+        'df_dual_desk_needs':df_dual_desk_needs_html,
+        'df_water_needs':df_water_needs_html,
+        'df_skip_container_needs':df_skip_container_needs_html,
+        'needs_assessment':needs_assessment,
+        'overview':overview if overview else None,  
+        'population_projection_data':population_projection_data if population_projection_data else None,
+        'population_projection_analysis':population_projection_analysis if population_projection_analysis else None,
+        'conclusion':conclusion if conclusion else None, 
+        'needs_assessment_overview':needs_assessment_overview if needs_assessment_overview else None,
+        'image_paragraph':image_paragraph,
+        'facility_needs':facility_needs if facility_needs else None,
+        'personnel_needs':personnel_needs if personnel_needs else None,
+        'classroom_needs':classroom_needs if classroom_needs else None,
+        'dual_desk_needs':dual_desk_needs if dual_desk_needs else None,
+        'water_needs':water_needs if water_needs else None,
+        'skip_container_needs':skip_container_needs if skip_container_needs else None,
+     'needs_assessment_conclusion':needs_assessment_conclusion if needs_assessment_conclusion else None,  
+    }
+
+
     # Return the response
-    return HttpResponse(rendered_template)
+    if request.htmx:
+        return render(request, 'prms/report.html', template_context)
+    
+    child_template = get_template('prms/report.html').render(template_context)
+
+    return render(request, 'prms/dashboard.html', {'child_template':child_template})
 
 
 # delete population projection view
@@ -469,6 +951,8 @@ def get_population_projection_form(request):
 
 
 # create needs assessment view
+@verified_email_required
+@login_required(login_url='account_login')
 def create_needs_assesment(request):
     population_projections = PopulationProjection.objects.all()
     required_facilities = []
@@ -794,6 +1278,8 @@ def create_needs_assesment(request):
 
 
 @csrf_exempt
+@verified_email_required
+@login_required(login_url='account_login')
 def education_needs_assessment(request):
 
     if request.method == 'POST':
@@ -1157,6 +1643,8 @@ def education_needs_assessment(request):
             return render(request, 'prms/population_projection.html', context)
 
 @csrf_exempt
+@verified_email_required
+@login_required(login_url='account_login')
 def utility_needs_assessment(request):
     data = request.body.decode('utf-8')
     data = urllib.parse.parse_qs(data)
@@ -1580,6 +2068,7 @@ def get_needs_assessment_context(request, slug):
     dual_desk_needs = education_needs.filter(needs_type='dual desk')
     water_needs = needs_assessment.needs.filter(needs_type='water source')
     skip_container_needs = needs_assessment.needs.filter(needs_type='skip container')
+    toilet_needs = needs_assessment.needs.filter(needs_type='toilet')
 
     context = {
         'population_projections':population_projections,
@@ -1592,12 +2081,15 @@ def get_needs_assessment_context(request, slug):
         'slug':slug,
         'needs_assessment':needs_assessment,
         'water_needs':water_needs,
-        'skip_container_needs': skip_container_needs
+        'skip_container_needs': skip_container_needs,
+        'toilet_needs':toilet_needs
     }
     return context
 
 
 # get needs assessment view
+@verified_email_required
+@login_required(login_url='account_login')
 def get_needs_assessment(request, slug):
     population_projections = PopulationProjection.objects.all()
     needs_assessment = NeedsAssessment.objects.get(slug=slug)
@@ -1826,6 +2318,8 @@ def delete_needs_assessment(request, slug):
 
 # needs assessment view
 @csrf_exempt
+@verified_email_required
+@login_required(login_url='account_login')
 def needs_assessment(request, slug=None):
     all_population_projections = PopulationProjection.objects.filter(user=request.user).all()
     
@@ -1860,13 +2354,18 @@ def needs_assessment(request, slug=None):
 
 # map prediction
 @csrf_exempt
+@verified_email_required
+@login_required(login_url='account_login')
 def map_prediction(request):
-    needs_assessments = NeedsAssessment.objects.all()
+    population_projections = PopulationProjection.objects.filter(user=request.user).all()
+    needs_assessments = NeedsAssessment.objects.filter(population_projection__in=population_projections).all()
     
+    print(needs_assessments)
     context = {
         'needs_assessments':needs_assessments
     }
     if request.htmx:
+        
         return render(request, 'prms/map_prediction.html', context)
 
     if request.method == 'POST':
@@ -1935,7 +2434,8 @@ def map_prediction(request):
 
     
     
-
+@verified_email_required
+@login_required(login_url='account_login')
 def get_map_prediction(request, slug):
     map_prediction = MapPrediction.objects.get(slug=slug)
     needs_assessment = map_prediction.needs_assessment
@@ -1957,31 +2457,32 @@ def get_map_prediction(request, slug):
         'projecting_year':projecting_year,
     }
 
-    if request.method == 'DELETE':
-        map_prediction.delete()
-        user = request.user
-        population_projections = PopulationProjection.objects.filter(user=user).all()
-        needs_assessments = NeedsAssessment.objects.all()
-        map_predictions = MapPrediction.objects.filter(user=user).all()
-        # filter out needs assessments that are not in the population projections
-        needs = []
-        for need in needs_assessments:
-            if need.population_projection in population_projections:
-                needs.append(need)
-        
-
-        context = {
-            'population_projections':population_projections,
-            'needs_assessments':needs,
-            'map_predictions':map_predictions
-        }
-        dashboard_template = get_template('prms/dashboard.html').render(context)
-        url = '/dashboard/'
-        return JsonResponse({'message':'success', 'status':'success', 'template':dashboard_template, 'url':url})
+    
 
     child_template = get_template('prms/get_map_prediction.html').render(context)
     if request.htmx:
-        return render(request, 'prms/get_map_prediction.html', context)
+        if request.method == 'GET':
+            return render(request, 'prms/get_map_prediction.html', context)
+        elif request.method == 'DELETE':
+            map_prediction.delete()
+            user = request.user
+            population_projections = PopulationProjection.objects.filter(user=user).all()
+            needs_assessments = NeedsAssessment.objects.all()
+            map_predictions = MapPrediction.objects.filter(user=user).all()
+            # filter out needs assessments that are not in the population projections
+            needs = []
+            for need in needs_assessments:
+                if need.population_projection in population_projections:
+                    needs.append(need)
+            
+
+            dashboard_context = {
+                'population_projections':population_projections,
+                'needs_assessments':needs,
+                'map_predictions':map_predictions
+            }
+        
+            return render(request, 'prms/dashboard.html',  dashboard_context)
     return render(request, 'prms/dashboard.html', {'child_template': child_template})
 
 def get_needs_assessment_detail(request, pk):
@@ -2010,9 +2511,9 @@ def get_needs_assessment_detail(request, pk):
         try:
             temp_response = requests.get(url=here_geo_url)
         except requests.HTTPError as e :
-            messages.error(request, f'Network error, {e}')
+            messages.error(request, f'Network error')
         except requests.ConnectionError as e:
-            messages.error(request, f'Connection error, {e}')
+            messages.error(request, f'Connection error')
         if temp_response.status_code == 200:
             temp_response = temp_response.json()
             if temp_response.get('items'):
@@ -2093,3 +2594,32 @@ def get_needs_assessment_detail(request, pk):
         'area_coordinates':context['area_coordinates'] if 'area_coordinates' in context else None
     })
 
+
+
+def search(request):
+    from django.db.models import Q
+     
+    query = request.GET.get('q', '')
+    if len(query) < 3:
+        return JsonResponse({'results': []})
+
+    population_projection_results = PopulationProjection.objects.filter(
+        Q(title__icontains=query) | Q(area_type__icontains=query) | 
+        Q(slug__icontains=query)
+    ).values('id', 'title', 'area_type', 'slug')
+
+    needs_assessment_results = NeedsAssessment.objects.filter(
+        Q(slug__icontains=query) | Q(population_projection__title__icontains=query)
+    ).values('id', 'slug', 'population_projection__title')
+
+    map_prediction_results = MapPrediction.objects.filter(
+        Q(slug__icontains=query) | Q(needs_assessment__population_projection__title__icontains=query) |
+        Q(needs_assessment__population_projection__area_type__icontains=query)
+        
+    ).values('id', 'slug', 'needs_assessment__population_projection__title', 'needs_assessment__population_projection__area_type')
+
+    return JsonResponse({
+        'population_projections': list(population_projection_results),
+        'needs_assessments': list(needs_assessment_results),
+        'map_predictions': list(map_prediction_results)
+    }, safe=True)

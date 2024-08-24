@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('profile/<str:username>/', views.profile, name='profile'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('regions/', views.get_regions, name='regions'),
     path('districts/', views.get_districts, name='districts'),
@@ -25,5 +26,6 @@ urlpatterns = [
     path('map-prediction/', views.map_prediction, name='map_prediction'),
     path('map-prediction/<str:slug>/', views.get_map_prediction, name='get_map_prediction'),
     path('get-needs-assessment-details/<int:pk>/', views.get_needs_assessment_detail, name='needs_assessment_details'),
+    path('search/', views.search, name='search'),
 ]
    

@@ -2,11 +2,10 @@
 {% load static %}
 <div class="container mx-auto px-4">
     <h1 class="text-xl font-bold mb-2">Needs Assessment Map Prediction</h1>
-    <p class="text-sm text-gray-500 mb-4">This page shows the map prediction of the needs assessment</p>
-    <!-- <div class="bg-white rounded-lg shadow p-4">
-        <div id="map"></div>
-    </div> -->
-    <div class="grid grid-cols-2 gap-x-4">
+    <p class="text-gray-500 mb-4">This page shows the map prediction of the needs assessment</p>
+    
+    {% if needs_assessments %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!--Select Needs assessment-->
         <div class="card card-body card-bordered shadow-md">
             <label for="needs_assessment" class="block text-sm font-medium text-gray-700">Select Needs Assessment</label>
@@ -18,145 +17,117 @@
 
             <!--Needs assessment details-->
             <div class="mt-4">
-            <label for="needs_assessment" class="block text-sm font-medium text-gray-700">Needs Assessment Details</label>
-            
+                <label for="needs_assessment_details" class="block text-sm font-medium text-gray-700">Needs Assessment Details</label>
                 <div id="needs_assessment_details">
                     <!--Skeleton-->
                     <div id="loading" class="animate-pulse mt-4 Skeleton">
                         <div class="h-8 bg-gray-300 rounded w-full"></div>
                         <p class="italic">
-                            <div class="h-[15rem] bg-gray-300 rounded w-full mt-1"></div>
+                            <div class="h-[15rem] bg-gray-300 rounded w-full mt-1 flex justify-center items-center">
+                                <!--Spinner-->
+                                <div class="loading loading-spinner loading-lg"></div>
+                            </div>
                         </p>
                     </div> 
                 </div>
             </div>
+
             <!--Needs Info-->
             <div class="mt-4">
                 <!-- Second Alert Box -->
                 <div id="alertBox2" class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-lg shadow-md flex items-center space-x-4">
                     <i class="fas fa-info-circle"></i>
-                    <span>
-                        Map predictions are made only for facilities, especially health facilities.
-                    </span>
-                    
+                    <span>Map predictions are made only for facilities, especially health facilities.</span>
                 </div>
             </div>
 
             <!--button to scroll to map-->
-            <button class="btn btn-primary mt-4" onclick="document.getElementById('mapContainer').scrollIntoView({behavior: 'smooth'})">   
+            <button class="btn btn-primary mt-4 w-full md:w-auto" onclick="document.getElementById('mapContainer').scrollIntoView({behavior: 'smooth'})">   
                 <i class="fas fa-map-marker-alt"></i>
                 Place Facility on Map
             </button>
         </div>
 
         <div class="card card-body card-bordered shadow-md">
-            <!--details for for only health facilities-->
+            <!--details for health facilities-->
             <div class="">
                 <h2 for="needs_assessment" class="block text-lg text-gray-700 mb-2 font-bold">Health Facilities Info</h2>
-                <p class="text-sm text-gray-500 mb-4">This section shows the health facilities required, available and surplus</p>
+                <p class="text-sm text-gray-500 mb-4">This section shows the health facilities required, available, and surplus</p>
                 
-                <!--daisy ui table of facility and available-->
+                <!--Table for available health facilities-->
                 <label for="needs_assessment" class="block text-sm font-medium text-gray-700">Health Facilities Available</label>
                 <div id="table" class="overflow-x-auto mb-4 h-[28rem] overflow-y-auto">
                     <!--table skeleton-->
                     <div class="animate-pulse Skeleton mt-4">
                         <div class="h-8 bg-gray-300 rounded w-full"></div>
                         <p class="italic">
-                            <div class="h-[28rem] bg-gray-300 rounded w-full mt-1"></div>
+                            <div class="h-[28rem] bg-gray-300 rounded w-full mt-1 flex justify-center items-center">
+                                <!--Spinner-->
+                                <div class="loading loading-spinner loading-lg"></div>
+                            </div>
                         </p>
                     </div>
-                       
-                           
                 </div>
-
-                <!-- daisy ui table of facility and suplus
-                <label for="needs_assessment" class="block text-sm font-medium text-gray-700">Health Facilities Surplus</label>
-                <div class="overflow-x-auto">
-                    <table class="table w-full table-zebra">
-                        <thead>
-                            <tr>
-                                <th>Facility</th>
-                                <th>Surplus</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Health Center</td>
-                                <td>5</td>
-                            </tr>
-                            <tr>
-                                <td>Hospital</td>
-                                <td>2</td>
-                            </tr>
-                            <tr>
-                                <td>Pharmacy</td>
-                                <td>3</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div> -->
-
             </div>
-
-
-
         </div>
     </div>
-    
-    <div id="" class=" transform bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg shadow-md flex items-center space-x-4 mb-4 mt-8">
+
+    <!--Alert Box-->
+    <div id="alertBox" class="transform bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg shadow-md flex items-center space-x-4 mb-4 mt-8">
         <i class="fas fa-info-circle"></i>
-        <span>
-            Facilities are placed on the map based on the required number of facilities within the needs assessment for only the projecting year.
-        </span>
+        <span>Facilities are placed on the map based on the required number of facilities within the needs assessment for only the projecting year.</span>
         <button id="" class="ml-auto text-yellow-700 hover:text-yellow-900">
             <i class="fas fa-times"></i>
         </button>
     </div>
 
-    <!--placing a facility on a map coordinate-->
+    <!--Placing a facility on a map coordinate-->
     <div id="mapContainer" class="card card-body card-bordered shadow-md mt-8">
         <h2 class="text-lg text-gray-700 mb-2 font-bold">Place Facility on Map</h2>
         <p class="text-sm text-gray-500 mb-2">This section shows the map prediction of the needs assessment</p>
 
-        <!--alert-->
-        
-
-        <!--add an alert that facilities a placed randomly on the map on the onset it may place it on area and also outside the area, right click on the maker to move to you specified location-->
-        <div id="alertBox" class=" transform  bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg shadow-md flex items-center space-x-4 mb-4">
+        <!--Alert-->
+        <div id="alertBox" class="transform bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg shadow-md flex items-center space-x-4 mb-4">
             <i class="fas fa-info-circle"></i>
-            <span>
-                Facilities are placed randomly on the map. Initially, they may be placed inside or outside the area. Right-click on a marker to move it to your specified location.
-            </span>
+            <span>Facilities are placed randomly on the map. Initially, they may be placed inside or outside the area. Right-click on a marker to move it to your specified location.</span>
             <button id="closeAlert" class="ml-auto text-yellow-700 hover:text-yellow-900">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        
 
+        <!--Map Container-->
         <div id="spinner" class="flex items-center justify-center h-[20rem]">
             <div class="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-500"></div>
         </div>
         <div id="map" class="z-100 hidden"></div>
 
         <div class="mt-4" id="facility_coordinates">
-            
-            <!--table of facilities and their coordinates-->
+            <!--Table of facilities and their coordinates-->
             <div class="flex justify-between">
                 <label for="needs_assessment" class="block text-sm font-medium text-gray-700">Facilities and Coordinates</label>
                 <button id="save" class="btn btn-primary">Save</button>
             </div>
             
             <div id="facility_coordinate_details" class="overflow-x-auto mt-4">
-                
+                <!-- Facility coordinates details go here -->
             </div>
-                
         </div>
-
     </div>
     
-    
+    {% else %}
+    <div class="flex flex-col justify-center items-center mt-8">
+        <span class="">
+            <i class="fas fa-exclamation-triangle text-4xl text-gray-500"></i>
+            No needs assessment data found for map prediction
+        </span>
 
+        <button class="btn btn-primary mt-2">
+            <a hx-get="{% url 'create_need_assessment' %}">Create Needs Assessment</a>
+        </button>
+    </div>
+    {% endif %}
 </div>
+
 
 <script type="module">
   import html2canvasPro from "http://cdn.jsdelivr.net/npm/html2canvas-pro@1.5.8/+esm" 
@@ -206,9 +177,11 @@
                 </div>
             `
             facilityCoordinateDetails.innerHTML = `
-                <div class="text-center text-gray-500 mt-4">
+                <div class="text-center text-gray-500 mt-8">
                     <i class="fas fa-exclamation-triangle text-4xl"></i>
-                    <p class="text-lg">No facility coordinates found</p>
+                    <p class="text-lg">
+                        <i class="fas fa-exclamation-triangle text-4xl"></i>
+                        No facility coordinates found</p>
                 </div>`
 
             // sweetalert that this needs assessment has no facility therefore no map can be generated
@@ -226,7 +199,10 @@
             <div id="loading" class="animate-pulse mt-4 Skeleton">
                 <div class="h-8 bg-gray-300 rounded w-full"></div>
                 <p class="italic">
-                    <div class="h-[15rem] bg-gray-300 rounded w-full mt-1"></div>
+                    <div class="h-[15rem] bg-gray-300 rounded w-full mt-1 flex justify-center items-center">
+                        <!--Spinner-->
+                        <div class="loading loading-spinner loading-lg"></div>
+                        </div>
                 </p>
             </div>
         `
@@ -234,7 +210,10 @@
             <div class="animate-pulse Skeleton mt-4">
                 <div class="h-8 bg-gray-300 rounded w-full"></div>
                 <p class="italic">
-                    <div class="h-[28rem] bg-gray-300 rounded w-full mt-1"></div>
+                    <div class="h-[28rem] bg-gray-300 rounded w-full mt-1 flex justify-center items-center">
+                        <!--Spinner-->
+                        <div class="loading loading-spinner loading-lg"></div>
+                        </div>
                 </p>
             </div>
         `

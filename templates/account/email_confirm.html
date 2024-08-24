@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account %}
+
+{% load widget_tweaks %}
+{% block content %}
+<div class="flex flex-col h-screen p-6 bg-gray-100">
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">
+            {% trans "Confirm Email Address" %}
+        </h1>
+
+        {% if confirmation %}
+            {% user_display confirmation.email_address.user as user_display %}
+            {% if can_confirm %}
+                <div class="mb-6 text-gray-700">
+                    {% blocktrans with confirmation.email_address.email as email %}
+                        Please confirm that <a href="mailto:{{ email }}" class="text-blue-600 hover:underline">{{ email }}</a> is an email address for user {{ user_display }}.
+                    {% endblocktrans %}
+                </div>
+                {% url 'account_confirm_email' confirmation.key as action_url %}
+                <form action="{{ action_url }}" method="post" class="flex justify-center">
+                    {% csrf_token %}
+                    {{ redirect_field }}
+                    <button type="submit" class="btn btn-primary px-4 py-2 rounded-lg shadow-md bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors">
+                        {% trans 'Confirm' %}
+                    </button>
+                </form>
+            {% else %}
+                <div class="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                    {% blocktrans %}
+                        Unable to confirm {{ confirmation.email_address.email }} because it is already confirmed by a different account.
+                    {% endblocktrans %}
+                </div>
+            {% endif %}
+        {% else %}
+            {% url 'account_email' as email_url %}
+            <div class="p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg">
+                {% blocktrans %}
+                    This email confirmation link expired or is invalid. Please <a href="{{ email_url }}" class="text-blue-600 hover:underline">issue a new email confirmation request</a>.
+                {% endblocktrans %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

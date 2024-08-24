@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load allauth i18n %}
+{% load widget_tweaks %}
+{% block head_title %}
+    {% trans "Email Addresses" %}
+{% endblock head_title %}
+
+{% block content %}
+<div class="flex flex-col h-screen p-6 bg-gray-100">
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">
+            {% trans "Email Addresses" %}
+        </h1>
+
+        {% if emailaddresses %}
+            <p class="text-gray-700 mb-4">
+                {% trans 'The following email addresses are associated with your account:' %}
+            </p>
+            
+            {% url 'account_email' as email_url %}
+            <form action="{{ email_url }}" method="post" class="space-y-4">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    {% for radio in emailaddress_radios %}
+                        {% with emailaddress=radio.emailaddress %}
+                            <div class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <input type="radio" id="{{ radio.id }}" name="email" value="{{ emailaddress.email }}" class="mr-4" {% if radio.checked %}checked{% endif %}>
+                                <label for="{{ radio.id }}" class="flex-1">
+                                    <div class="text-gray-800">{{ emailaddress.email }}</div>
+                                    <div class="flex space-x-2 mt-1">
+                                        {% if emailaddress.verified %}
+                                            <span class="px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
+                                                {% translate "Verified" %}
+                                            </span>
+                                        {% else %}
+                                            <span class="px-2 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full">
+                                                {% translate "Unverified" %}
+                                            </span>
+                                        {% endif %}
+                                        {% if emailaddress.primary %}
+                                            <span class="px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-full">
+                                                {% translate "Primary" %}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </label>
+                            </div>
+                        {% endwith %}
+                    {% endfor %}
+                </div>
+                
+                <div class="flex justify-between mt-4">
+                    <button type="submit" name="action_primary" class="btn  px-4 py-2 rounded-lg shadow-md bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors">
+                        {% trans 'Make Primary' %}
+                    </button>
+                    <button type="submit" name="action_send" class="btn  px-4 py-2 rounded-lg shadow-md bg-gray-600 hover:bg-gray-700 text-white font-medium transition-colors">
+                        {% trans 'Re-send Verification' %}
+                    </button>
+                    <button type="submit" name="action_remove" class="btn px-4 py-2 rounded-lg shadow-md bg-red-600 hover:bg-red-700 text-white font-medium transition-colors">
+                        {% trans 'Remove' %}
+                    </button>
+                </div>
+            </form>
+        {% else %}
+            {% include "account/snippets/warn_no_email.html" %}
+        {% endif %}
+
+        {% if can_add_email %}
+            <h2 class="text-2xl font-semibold mt-8 mb-4 text-gray-800">
+                {% trans "Add Email Address" %}
+            </h2>
+            {% url 'account_email' as action_url %}
+            <form action="{{ action_url }}" method="post" class="flex gap-2">
+                {% csrf_token %}
+                {% render_field form.email class="input input-bordered p-2 rounded-lg border-gray-300 w-full" %}
+                <button type="submit" name="action_add" class="btn px-4 py-2 rounded-lg shadow-md bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors">
+                    {% trans "Add Email" %}
+                </button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
+{% block extra_body %}
+    <script type="text/javascript">
+    (function() {
+        var message = "{% trans 'Do you really want to remove the selected email address?' %}";
+        var actions = document.getElementsByName('action_remove');
+        if (actions.length) {
+            actions[0].addEventListener("click", function(e) {
+                if (!confirm(message)) {
+                    e.preventDefault();
+                }
+            });
+        }
+    })();
+    </script>
+{% endblock extra_body %}

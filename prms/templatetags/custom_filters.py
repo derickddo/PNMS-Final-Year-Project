@@ -75,5 +75,10 @@ def generate_projecting_years(value):
 
 @register.filter(name='subtract')
 def subtract(value, arg):
-    print(value, arg)
     return int(value) - int(arg)
+
+@register.filter(name='get_distinct_needs_type_from_needs')
+def get_distinct_needs_type_from_needs(value):
+    distinct_type = set([need.content_object.type_name for need in value])
+    return list(distinct_type)
+    

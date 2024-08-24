@@ -4,46 +4,155 @@
 {% load custom_filters %}
 {% block title %}Generate Report{% endblock title %}
 {% block content %}
-<div>
-    <h1 class="text-2xl font-bold">{{population_projection.title}}</h1>
-    
-    {% if population_projection.description %}
-      <p class="mt-2">{{population_projection.description}}</p>
-    {% endif %}
-    <p class="mt-2">Projecting from {{base_years.0}} to {{projection_years.last}}</p>
-  </div>
-    
-    <div class="">
-      Area Type: {{ population_projection.area_type }}
-      <!--Generate report button-->
-      <a href="{% url 'generate_report' population_projection.slug %}" class="btn btn-primary">Generate Report</a>
-    </div>
+{% load static %}
 
-    </div>
-    <div class="overflow-x-auto mt-8">
-        <table class="table table-lg">
-          <!-- head -->
-          <thead>
-            <tr>
-              <th class="text-lg">Base Year</th>
-              <th class="text-lg">Projecting Year</th>
-              <th class="text-lg">Base Population</th>
-              <th class="text-lg">Projected Population</th>
-              <th class="text-lg">Growth Rate (%)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for i in range %}
-              <tr class="{% cycle 'bg-base-200' '' %}">
-                  <td class="">{{ base_years|index:i }}</td>
-                  <td class="">{{ projection_years|index:i }}</td>
-                  <td class="">{{ base_populations|index:i }}</td>
-                  <td class="">{{ projected_populations|index:i }}</td>
-                  <td class="">{{ growth_rate }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-    </div>
-{% endblock %}
+<!--Save and download report-->
+<div class="flex justify-center">
+    <button id="saveAndDownloadReport" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">
+        <i class="fas fa-save"></i>
+        Save and download report
+    </button>
+</div>
+ <!-- Container -->
+ <div class="container mx-auto p-6">
+  <!-- Header Section -->
+  <header class="mb-6">
+      <h1 class="text-3xl font-bold text-center mb-4">Population Projection Report</h1>
+      <p class="text-center text-gray-700">A detailed analysis of population projections based on the latest data.</p>
+  </header>
+
+  <!-- Population Projection Summary -->
+  <section class="mb-6">
+      <h2 class="text-xl font-semibold mb-1">Projection Summary</h2>
+      <p>{{ overview }}</p>
+  </section>
+
+  <!-- Data Table Section -->
+  <section class="mb-6">
+      <h2 class="text-xl font-semibold mb-2">Detailed Data</h2>
+      <p>{{population_projection_data}}</p>
+      <div class="overflow-x-auto">
+          {{ df|safe }}
+      </div>
+  </section>
+
+  <section class="mb-6">
+    <h2 class="text-xl font-semibold mb-2">Analysis</h2>
+    <p>{{population_projection_analysis}}</p>
+  </section>
+
+
+
+
+
+  <!-- Image Section -->
+  <section class=" mb-6">
+      <h2 class="text-xl font-semibold mb-4">Visual Representations</h2>
+      <p>{{image_paragraph}}</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Population Projection Image -->
+          <div >
+              <h3 class="text-lg font-medium mb-2">Population Projection</h3>
+              <img src="{% static 'plot_img/population_projection.png' %}" alt="Population Projection Image" class="w-full h-auto rounded-lg">
+
+              <!--figure-->
+              <p class="text-center text-gray-700 mt-2">Figure 1.0</p>
+          </div>
+
+          <!-- Bar Chart Image -->
+          <div>
+              <h3 class="text-lg font-medium mb-2">Projection Bar Chart</h3>
+              <img src="{% static 'plot_img/population_projection_bar.png' %}" alt="Projection Bar Chart Image" class="w-full h-auto rounded-lg">
+              <!--figure-->
+              <p class="text-center text-gray-700 mt-2">Figure 1.1</p>
+              
+          </div>
+      </div>
+  </section>
+
+  <!--conclusion-->
+  <section class="mb-6">
+      <h2 class="text-xl font-semibold mb-2">Conclusion</h2>
+      <p>{{ conclusion }}</p>
+  </section>
+
+
+  <!--Needs Assessment Section -->
+  <section class="mb-6">
+      <h2 class="text-xl font-semibold mb-1">Needs Assessment</h2>
+      <p class="mb-4">{{ needs_assessment }}</p>
+
+      {% if facility_needs %}
+      <!---table-->
+      <h1 class="text-lg font-semibold mb-2">Facility Needs</h1>
+      <p>{{facility_needs}}</p>
+      <p>Facility needs based on the population projection data.</p>
+      <div class="mt-4">{{df_facility_needs|safe}}</div>
+        {% endif %}
+
+        {% if personnel_needs %}
+      <!--personnel needs-->
+      <h1 class="text-lg font-semibold mb-2">Personnel Needs</h1>
+      <p>{{personnel_needs}}</p>
+      <p>Personnel needs based on the population projection data.</p>
+      <div class="mt-4">{{df_personnel_needs|safe}}</div>
+        {% endif %}
+
+        {% if classroom_needs %}
+      <!--classroom needs-->
+      <h1 class="text-lg font-semibold mb-2">Classroom Needs</h1>
+      <p>{{classroom_needs}}</p>
+      <p>Classroom needs based on the population projection data.</p>
+      <div class="mt-4">{{df_classroom_needs|safe}}</div>
+        {% endif %}
+
+        {% if dual_desk_needs %}
+
+      <!--dual desk needs-->
+      <h1 class="text-lg font-semibold mb-2">Dual Desk Needs</h1>
+      <p>{{dual_desk_needs}}</p>
+      <p>Dual desk needs based on the population projection data.</p>
+      <div class="mt-4">{{df_dual_desk_needs|safe}}</div>
+        {% endif %}
+
+        {% if water_needs %}
+      <!--water needs-->
+      <h1 class="text-lg font-semibold mb-2">Water Needs</h1>
+      <p>{{water_needs}}</p>
+      <p>Water needs based on the population projection data.</p>
+      <div class="mt-4">{{df_water_needs|safe}}</div>
+        {% endif %}
+
+        {% if skip_container_needs %}
+      <!--skip container needs-->
+      <h1 class="text-lg font-semibold mb-2">Skip Container Needs</h1>
+      <p>{{skip_container_needs}}</p>
+      <p>Skip container needs based on the population projection data.</p>
+      <div class="mt-4">{{df_skip_container_needs|safe}}</div>
+        {% endif %}
+
+  </section>
+
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-600 mt-6">
+      <p>&copy; {{ current_year }} Population Projection Report. All rights reserved.</p>
+  </footer>
+</div>
+<script>
+    document.getElementById('saveAndDownloadReport').addEventListener('click', function(e) 
+    {   
+        //save and download report as pdf
+        window.print();
+        
+        
+    });
+    
+   
+
+    
+</script>
+{% endblock content %}
+
+
 

@@ -10,47 +10,56 @@
 
 {% block content %}
 <div class="flex justify-center items-center min-h-screen py-16 bg-gray-100">
-    <div class="md:w-[28rem] w-[24rem] mx-auto mt-10 shadow-xl rounded-lg p-8 bg-white">
-        <h1 class="text-3xl font-semibold text-center mb-8 text-gray-800">
+    <div class="md:w-[28rem] w-[22rem] mx-auto mt-10 shadow-xl rounded-lg p-8 bg-white">
+        <h1 class="text-3xl font-semibold text-center mb-5 text-gray-800">
             {% trans "Sign In" %}
         </h1>
         
         {% if not SOCIALACCOUNT_ONLY %}
             <p class="text-center text-gray-600 mb-6">
                 {% blocktranslate %}
-                    If you have not created an account yet, then <a href="{{ signup_url }}" class="text-blue-600 hover:underline">sign up</a> first.
+                    Haven't created an account yet, then <a href="{{ signup_url }}" class="text-blue-600 hover:underline">sign up</a> first.
                 {% endblocktranslate %}
             </p>
 
             <form class="space-y-6" method="post" action="{% url 'account_login' %}">
                 {% csrf_token %}
                 {% if form.errors %}
-                    <div role="alert" id="error" class="alert alert-error flex items-center bg-red-100 text-red-700 p-4 rounded-lg">
-                        <i class="fas fa-exclamation-circle mr-2"></i>
-                        <span>{{ form.errors }}</span>
+                    <div class="mb-4">
+                        {% for field, errors in form.errors.items %}
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md relative" role="alert">
+                                <ul class="mt-1 list-item">
+                                    {% for error in errors %}
+                                        <li class="text-sm">{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endfor %}
                     </div>
                 {% endif %}
+
 
                 <div class="space-y-4">
                     <div class="flex flex-col">
                         <label for="{{ form.username.id_login }}" class="mb-2 text-gray-700">Email <i class="fas fa-envelope ml-1"></i></label>
-                        {% render_field form.login class="input input-bordered p-2 rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 px-4 " placeholder="Enter your email" %}
+                        {% render_field form.login class="input input-bordered p-2 rounded-lg border-gray-300 px-4 " placeholder="Enter your email" %}
                     </div>
 
                     <div class="flex flex-col">
                         <label for="{{ form.username.id_password }}" class="mb-2 text-gray-700">Password <i class="fas fa-lock ml-1"></i></label>
-                        {% render_field form.password class="input input-bordered p-2 px-4 rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500" placeholder="Enter your password" %}
+                        {% render_field form.password class="input input-bordered p-2 px-4 rounded-lg border-gray-300 " placeholder="Enter your password" %}
                     </div>
 
                     <div class="flex items-center">
-                        {% render_field form.remember class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" %}
+                        {% render_field form.remember class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 " %}
                         <label for="{{ form.username.id_remember }}" class="ml-2 block text-gray-700">{{ form.remember.label }}</label>
                     </div>
                 </div>
 
                 <div class="flex justify-center mt-8">
-                    <button type="submit" class="w-full btn btn-primary py-2 text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md">
-                        <i class="fas fa-sign-in-alt mr-2"></i> {% trans "Sign In" %}
+                    <button type="submit" class="w-full btn py-2 text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md">
+                        <i class="fas fa-sign-in-alt mr-2"></i> 
+                        Sign In
                     </button>
                 </div>
 
@@ -70,7 +79,7 @@
         {% if SOCIALACCOUNT_ENABLED %}
             <div class="divider">OR</div>
             <a href="{% provider_login_url 'google'%}" type="button" class="btn btn-icon hover:bg-red-500 w-full flex items-center justify-center py-2 rounded-lg shadow-md bg-red-600 text-white">
-                <i class="fab fa-google mr-3"></i> Continue with Google
+                <i class="fab fa-google mr-3 text-lg"></i> Continue with Google
             </a>
         {% endif %}
 

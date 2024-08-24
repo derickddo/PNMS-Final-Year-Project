@@ -1,46 +1,156 @@
+{% load custom_filters %}
 <!-- Map Prediction Page -->
 <div class="container mx-auto px-6" id="map_prediction">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <div class="text-left">
             <h1 class="text-xl font-bold text-gray-800">{{ map_prediction }}</h1>
-            <p class="text-gray-600">Health facility map prediction for {{ population_projection.content_object.name }} ({{ population_projection.area_type }}).</p>
+            <p class="text-gray-600 mt-2">Health facility map prediction for {{ population_projection.content_object.name }} ({{ population_projection.area_type }}).</p>
         </div>
         <button id="delete" class="btn btn-link flex items-center text-red-600">
             <i class="fas fa-trash-alt mr-2"></i> Delete
         </button>
     </div>
 
-    <!-- Area Information Section -->
-    <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
-        <h2 class="text-xl font-bold text-gray-700 mb-2">Area Information</h2>
-        <p class="text-sm text-gray-500 mb-4">Details about the area, its type, and the year of assessment.</p>
-        <div class="flex justify-between">
-            <div class="flex items-center">
-                <i class="fas fa-map-marker-alt text-red-500 text-2xl"></i>
-                <span class="ml-3 text-lg font-semibold text-gray-800">{{ population_projection.content_object.name }}</span>
+    <div class="grid grid-col-1 md:grid-cols-2 gap-4 mb-8">
+        <!-- Area Information Section -->
+        <div class="bg-yellow-100 shadow-lg rounded-lg p-6 ">
+            <h2 class="text-xl font-bold text-gray-800 mb-2">Area Information</h2>
+            <p class="text-sm text-gray-600 mb-4">Details about the area, its type, and the year of assessment.</p>
+            <div class="flex justify-between items-start">
+                <div class="flex items-center">
+                    <i class="fas fa-map-marker-alt text-red-500 text-2xl"></i>
+                    <span class="ml-3 text-lg font-semibold text-gray-900">{{ population_projection.content_object.name }}</span>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-700 flex items-center">
+                        <i class="fas fa-chart-area text-green-600 mr-2"></i>
+                        <span>{{ population_projection.area_type|title }}</span>
+                    </div>
+                    <div class="text-sm text-gray-700 flex items-center mt-1">
+                        <i class="fas fa-calendar-alt text-blue-600 mr-2"></i>
+                        <span>{{ base_year }} - {{ projecting_year }}</span>
+                    </div>
+                </div>
             </div>
-            <div class="text-right">
-                <div class="text-sm text-gray-500">
-                    <i class="fas fa-chart-area mr-2 text-green-500"></i>
-                    <span>{{ population_projection.area_type|title }}</span>
-                </div>
-                <div class="text-sm text-gray-500">
-                    <i class="fas fa-calendar-alt mr-2 text-blue-500"></i>
-                    <span>{{ base_year }} - {{projecting_year}}</span>
-                </div>
+
+            <!--where facility was placed-->
+            <div class="flex items-start gap-4 mt-4">
+                <i class="fas fa-map text-blue-600 text-2xl"></i>
+                <span class="text-gray-700 text-sm">click on  view facilities to see where the facilities were placed on the map</span>
+                <!--scroll btn to facility map-->
+                
+            </div>
+            <div class="float-right mt-2">
+                <button class="btn btn-primary btn-sm" onclick="document.getElementById('facility-coordinates').scrollIntoView({behavior: 'smooth'})">
+                    <i class="fas fa-map-marked-alt mr-2"></i>
+                    View Facilities</button>
+            </div>
+
+            
+        </div>
+    
+        <!-- Needs Assessment Info -->
+        <div class="bg-green-100 shadow-lg rounded-lg p-6">
+            <h2 class="text-xl font-bold text-gray-700 mb-2">Needs Assessment Information</h2>
+            <p class="text-sm text-gray-500 mb-4">Overview of the needs assessment for the area.</p>
+            <div class="">
+                <div class="">
+                    <div class="flex items-center gap-4">
+                        <span class="font-medium text-green-900">
+                            <i class="fas fa-hands-helping text-green-700 mr-2"></i>
+                            Needs:
+                        </span>
+                        <div class="flex gap-2">
+                            {% if facility_needs %}
+                            <span class="badge badge-primary">{{facility_needs.0.needs_type|title}}</span>
+                            {% endif %}
+
+                            {% if personnel_needs %}
+                            <span class="badge badge-primary">{{personnel_needs.0.needs_type|title}}</span>
+                            {% endif %}
+
+                            {% if classroom_needs %}
+                            <span class="badge badge-primary">classroom</span>
+                            {% endif %}
+
+                            {% if dual_desk_needs %}
+                            <span class="badge badge-primary">dual desk</span>
+                            {% endif %}
+
+                            {% if water_needs %}
+                            <span class="badge badge-primary">water</span>
+                            {% endif %}
+
+                            {% if skip_container_needs %}
+                            <span class="badge badge-primary">{{skip_container_needs.0.needs_type|title}}</span>
+                            {% endif %}
+
+                            {% if toilet_needs %}
+                            <span class="badge badge-primary">{{toilet_needs.0.needs_type|title}}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 mt-2">
+                        <span class="font-medium text-green-900">
+                            <i class="fas fa-list text-yellow-600 mr-2"></i>
+                            Total Needs:
+                        </span>
+                        <span class="text-green-800">{{needs_assessment.needs.all|length}}</span>
+                    </div>
+                    <div class="flex items-center gap-4 mt-2">
+                        <span class="font-medium text-green-900">
+                            <i class="fas fa-calendar text-gray-600 mr-2"></i>
+                            Year:
+                        </span>
+                        <span class="text-green-800">{{needs_assessment.needs.all.0.content_object.year}} - {{needs_assessment.population_projection.projections.all.last.projecting_year}}</span>
+                    </div>
+                    <div class="flex items-center gap-4 mt-2 w-full">
+                        <span class="font-medium text-green-900">
+                            <i class="fas fa-users text-green-600 mr-2"></i>
+                            Projected Population:
+                        </span>
+                        <span class="text-green-800">{{needs_assessment.needs.all.0.content_object.population|floatformat:"0"}}</span>
+                    </div>
+                </div>   
+
             </div>
         </div>
-
-        
-        
     </div>
+    
+
     
 
     <!-- Health Facilities Information Section -->
     <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
         <h2 class="text-xl font-bold text-gray-700 mb-2">Health Facilities Information</h2>
         <p class="text-sm text-gray-500 mb-4">Overview of required, available, and surplus health facilities.</p>
+
+        <!--number of required for each facility-->
+        <div class="flex items-center gap-4 mb-4">
+            <span class="font-medium text-gray-700">
+                <i class="fas fa-hands-helping text-green-600 mr-2"></i>
+                Total Facilities:
+            </span>
+            <span class="text-gray-700">{{ facility_needs|length }}</span>
+        </div>
+
+        <!--categories-->
+        <div class="flex items-center gap-4 mb-4">
+            <span class="font-medium text-gray-700">
+                <i class="fas fa-list text-yellow-600 mr-2"></i>
+                Categories:
+            </span>
+            <div class="flex gap-2">
+                {% for need in facility_needs|get_distinct_needs_type_from_needs %}
+                <span class="badge badge-primary">{{ need|title }}</span>
+                {% endfor %}
+
+                
+            </div>
+        </div>
+
+        <!-- Facility Table -->
         <div id="facility-table" class="overflow-x-auto">
             <table class="table table-zebra w-full">
                 <thead>
@@ -57,7 +167,7 @@
                 </thead>
                 <tbody>
                     {% for need in facility_needs %}
-                    <tr class="{% if forloop.counter > 5 %}hidden{% endif %} need-row">
+                    <tr class="">
                         <td>{{ need.content_object.type_name }}</td>
                         <td>{{ need.content_object.year }}</td>
                         <td>{{ need.content_object.population|floatformat:"0" }}</td>
@@ -71,13 +181,10 @@
                 </tbody>
             </table>
         </div>
-        <div class="text-center mt-4">
-            <button id="show-more" class="btn btn-outline btn-primary">Show More</button>
-        </div>
     </div>
 
     <!-- Facility Coordinates Section -->
-    <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+    <div id="facility-coordinates" class="bg-white shadow-lg rounded-lg p-6 mb-8">
         <h2 class="text-xl font-bold text-gray-700 mb-2">Facility Coordinates</h2>
         <p class="text-sm text-gray-500 mb-4">Coordinates for the health facilities mapped based on needs assessment.</p>
         <div id="alertBox" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg shadow-md flex items-center mb-6">
@@ -398,25 +505,11 @@
         .then((willDelete) => {
             if (willDelete) {
                 let url = '{% url "get_map_prediction" map_prediction.slug %}';
-                fetch(url, {
-                    method: 'DELETE',
-                    
-                })
-                .then(response => response.json())
-                .then(data => {
-                    history.pushState({}, null, data.url);
-                    document.getElementById('main').innerHTML = data.template
-                    // sweet alert
-                    swal({
-                        title: "Map Prediction Deleted!",
-                        text: "Map prediction deleted successfully!",
+                htmx.ajax('DELETE', url, '#main').then(function(response) {
+                    swal("Poof! Your map prediction has been deleted!", {
                         icon: "success",
-                        button: "OK",
                     });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while deleting the map prediction.');
+                    history.pushState({}, '', '{% url "dashboard" %}');
                 });
             }
         });

@@ -11,7 +11,7 @@
         <ul>
           <li><a href="#populationProjection">Population Projection</a></li> 
           <li><a href="#needsAssessment">Needs Assessment</a></li> 
-          <li><a href="#">Map Prediction</a></li>
+          <li><a href="#mapPrediction">Map Prediction</a></li>
         </ul>
       </div>
     </div>
@@ -20,46 +20,64 @@
     <div id="populationProjection" class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3 h-fit">
       {% for population_projection in population_projections %}
           <!--Graph card-->
-          <div class="card-bordered shadow-lg card relative card-item">
-              <div class="dropdown dropdown-end absolute right-3 top-3">
-                  <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md">
-                      <i class="fa-solid fas fa-ellipsis-h"></i>
-                  </div>
-                  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                      <li>
-                          <a class="edit" hx-trigger="click" hx-target="#modal-content" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" hx-get="{% url 'crud' %}?mode=update&id={{ population_projection.pk }}">
-                            <i class="fas fa-edit"></i>
-                            Edit</a>
-                      </li>
-                      <li>
-                          <a class="deleteBtn" href="{% url 'delete_population_projection' population_projection.pk %}">
-                            <i class="fas fa-trash-alt"></i>
-                            Delete</a>
-                      </li>
-                  </ul>
-              </div>
-              <div class="card-body p-5">
-                  <h2 class="card-title text-lg">{{ population_projection.title|truncatewords:3 }}</h2>
-                  {% if population_projection.description %}
-                      <p class="mb-2">{{ population_projection.description|truncatewords:5 }}</p>
-                  {% else %}
-                      <p class="mb-1 text-sm">Population Projection from {{ population_projection.projections.all.0.base_year }} to {{ population_projection.projections.all.last.projecting_year|truncatewords:0 }}</p>
-                  {% endif %}
-                  <div>
-                      {% with projections=population_projection.projections.all %}
-                          {% with base_years=projections|get_base_years projected_population=projections|get_projected_population %}
-                              <canvas class="populationProjectionChart" data-labels='{{ base_years }}' class="w-full" height="200" data-values='{{ projected_population }}'></canvas>
-                          {% endwith %}
-                      {% endwith %}
-                  </div>
-                  <button href="{% url 'population_projection' population_projection.slug %}" hx-get="{% url 'population_projection' population_projection.slug %}" class="btn btn-primary" hx-push-url="true" hx-target="#main" hx-swap="innerHTML">View Projection</button>
-              </div>
+          <!-- Card Container -->
+          <div class="card relative border border-blue-300 rounded-lg shadow-lg bg-white">
+            <!-- Dropdown Menu -->
+            <div class="dropdown dropdown-end absolute right-3 top-3">
+                <div tabindex="0" role="button" class="py-1 px-2 hover:bg-gray-200 rounded-md">
+                    <i class="fa-solid fa-ellipsis-h text-gray-700"></i>
+                </div>
+                <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-white rounded-md w-52">
+                    <li>
+                        <a class="edit flex items-center gap-2" hx-trigger="click" hx-target="#modal-content" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" hx-get="{% url 'crud' %}?mode=update&id={{ population_projection.pk }}">
+                            <i class="fas fa-edit text-blue-500"></i>
+                            Edit
+                        </a>
+                    </li>
+                    <li>
+                        <a class="deleteBtn flex items-center gap-2 text-red-500" href="{% url 'delete_population_projection' population_projection.pk %}">
+                            <i class="fas fa-trash-alt text-red-500"></i>
+                            Delete
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-5">
+                <!-- Title -->
+                <h2 class="text-lg font-bold text-gray-800 mb-2">{{ population_projection.title|truncatewords:3 }}</h2>
+                
+                <!-- Description -->
+                {% if population_projection.description %}
+                    <p class="text-gray-600 mb-2">{{ population_projection.description|truncatewords:5 }}</p>
+                {% else %}
+                    <p class="text-sm text-gray-500 mb-2">Population Projection from {{ population_projection.projections.all.0.base_year }} to {{ population_projection.projections.all.last.projecting_year|truncatewords:0 }}</p>
+                {% endif %}
+                
+                <!-- Chart -->
+                <div class="mb-4">
+                    {% with projections=population_projection.projections.all %}
+                        {% with base_years=projections|get_base_years projected_population=projections|get_projected_population %}
+                            <canvas class="populationProjectionChart w-full" height="200" data-labels='{{ base_years }}' data-values='{{ projected_population }}'></canvas>
+                        {% endwith %}
+                    {% endwith %}
+                </div>
+                
+                <!-- View Projection Button -->
+                <div>
+                    <a href="{% url 'population_projection' population_projection.slug %}" class="btn btn-primary w-full text-center">
+                        <i class="fa-solid fa-eye"></i> View Projection
+                    </a>
+                </div>
+            </div>
           </div>
+
       {% endfor %}
-  </div>
+    </div>
   
 
-      {% else %}
+    {% else %}
       <div class="flex justify-center items-center h-[20rem] flex-col">
         <!--Oops!-->
         <p class="text-center flex items-center gap-2 mb-4">
@@ -72,128 +90,97 @@
     {% endif %}
 
     <!--Needs Assessment-->
-    <div class="mt-[4rem]" id="needsAssessment">
+    <div class="mt-[3rem]" id="needsAssessment">
       <h2 class="text-xl font-bold mt-8">Needs Assessment</h2>
       <p class="mt-2 w-[30rem]">Recently created need assessments</p>
 
       
       {% if needs_assessments %}
-      <div class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3 h-fit">
+      <div class="grid grid-cols-1 gap-4 mt-8 md:grid-cols-2 lg:grid-cols-3 h-fit">
         
         {% for need in needs_assessments %}
         <!-- Card Container -->
-          <div class="card-bordered shadow-lg relative rounded-lg overflow-hidden">
-            <!-- Card Image with Overlay -->
-            <div class="relative">
-              <img src="{% static 'img/need.jpg' %}" alt="needs assessment" class="w-full h-40 object-cover">
-              <div class="absolute inset-0 bg-black bg-opacity-70 flex p-6 gap-3">
-                <!--Needs assessment icon-->
-                <i class="fa-solid fa-clipboard-list text-white text-4xl"></i>
-                <div>
-                  <h2 class="text-white text-lg font-bold z-10 tracking-widest">Needs Assessment for {{ need.population_projection|title|truncatewords:1 }}</h2>
-                  <div class="flex items-center gap-2 mt-2">
-                    <i class="fa-solid fa-calendar-days text-blue-500"></i>
-                    <span class="text-white">{{ need.created_at|date:"F d, Y" }}</span>
+        <div class="card rounded-lg shadow-lg border-2 border-blue-300 bg-blue-50">
+          <!-- Card Body -->
+          <div class="p-6">
+              <!-- Header with Title and Actions -->
+              <div class="flex justify-between items-start mb-2">
+                  <h2 class="text-xl font-bold text-blue-800">Need Assessment for  ...</h2>
+                  <div class="dropdown dropdown-end relative">
+                      <div tabindex="0" role="button" class="py-1 px-2 hover:bg-blue-100 rounded-md">
+                          <i class="fa-solid fa-ellipsis-h text-blue-600"></i>
+                      </div>
+                      <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-white rounded-md w-40">
+                          <li>
+                              <a class="edit flex items-center gap-2" hx-trigger="click" hx-target="#modal-content" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" hx-get="{% url 'manage_need_assessment' need.slug %}">
+                                  <i class="fas fa-edit text-blue-500"></i>
+                                  Edit
+                              </a>
+                          </li>
+                          <li>
+                              <a class="deleteNeedsAssessmentBtn flex items-center gap-2 text-red-500" href="{% url 'delete_needs_assessment' need.slug %}">
+                                  <i class="fas fa-trash-alt"></i>
+                                  Delete
+                              </a>
+                          </li>
+                      </ul>
                   </div>
-
-                  <div class="flex items-center gap-2 mt-2">
-                    <i class="fa-solid fa-user text-blue-500"></i>
-                    <span class="link text-blue-500">{{ request.user }}</span>
-                  </div>
-                </div>
               </div>
-            </div>
-
-            <!-- Card Body -->
-            <div class="p-5">
-              <div class="flex justify-between items-start">
-                <div>
-                  <p class="text-gray-500 text-sm">Assessed need within the {{ need.needs.all.0.sector }} sector for {{ need.population_projection|title|truncatewords:2}}</p>
-                </div>
-                <div class="dropdown dropdown-end relative">
-                  <div tabindex="0" role="button" class="py-1 px-2 hover:bg-gray-200 rounded-md">
-                    <i class="fa-solid fas fa-ellipsis-h"></i>
-                  </div>
-                  <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-white rounded-box w-52">
-                    <li>
-                      <a class="edit" hx-trigger="click" hx-target="#modal-content" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" hx-get="{% url 'manage_need_assessment' need.slug %}">
-                        <i class="fas fa-edit"></i>
-                        Edit</a>
-                    </li>
-                    <li>
-                      <a class="deleteNeedsAssessmentBtn" href="{% url 'delete_needs_assessment' need.slug  %}" class="">
-                        <i class="fas fa-trash-alt"></i>
-                        Delete
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
+              
+              <!-- Description -->
+              <p class="text-gray-700 text-sm mb-4">Assessed need within the {{ need.needs.all.0.sector }} sector for {{ need.population_projection|title|truncatewords:2 }}</p>
+              
               <!-- Categories Badge for Needs Type -->
-              <div class="flex items-center gap-1 mt-2">
-                <span>
-                  <i class="fa-solid fa-tags"></i>
-                  <span class="font-medium">Needs:</span>
-                </span>
-                <div class="flex gap-2">
-                  {% for needs_type in need.needs.all|get_needs_type %}
-                  <span class="badge badge-primary {% if forloop.counter > 2 %}hidden{% endif %}">{{ needs_type|truncatewords:1 }}</span>
-                  {% if forloop.counter == 2 %}
-                  {% if need.needs.all|get_needs_type|length|subtract:2 > 0 %}
-                    <span class="badge badge-primary">+{{ need.needs.all|get_needs_type|length|subtract:2 }}  
-                    </span>
-                  {% endif %}
-                  {% endif %}
-                  {% endfor %}
-                </div>
+              <div class="flex items-center gap-2 mb-4">
+                  <span class="text-sm text-gray-700 flex items-center gap-1">
+                      <i class="fa-solid fa-tags text-blue-600"></i>
+                      <span class="font-medium">Needs:</span>
+                  </span>
+                  <div class="flex gap-1 flex-wrap">
+                      {% for needs_type in need.needs.all|get_needs_type %}
+                      <span class="badge bg-blue-500 text-white text-xs {% if forloop.counter > 2 %}hidden{% endif %}">{{ needs_type|truncatewords:1 }}</span>
+                      {% if forloop.counter == 2 and need.needs.all|get_needs_type|length|subtract:2 > 0 %}
+                      <span class="badge bg-blue-500 text-white text-xs">+{{ need.needs.all|get_needs_type|length|subtract:2 }}</span>
+                      {% endif %}
+                      {% endfor %}
+                  </div>
               </div>
-
+              
               <!-- Details -->
-              <div class="grid grid-cols-1 gap-y-2 mt-2">
-                <div class="flex gap-2 items-center">
-                  <i class="fa-solid fa-calendar-days text-blue-500"></i>
-                  <span class="font-medium">Year:</span>
-                  <span>{{ need.population_projection.projections.all.0.base_year }} - {{ need.population_projection.projections.last.projecting_year }}</span>
-                </div>
-
-                <div class="flex gap-2 items-center">
-                  <i class="fa-solid fa-map-marked-alt text-blue-500"></i>
-                  <span class="font-medium">Area:</span>
-                  <span>{{ need.population_projection.content_object.name|title }}</span>
-                </div>
-
-                <!-- <div class="flex gap-2 items-center">
-                  <i class="fa-solid fa-users text-blue-500"></i>
-                  <span class="font-medium">Base Population:</span>
-                  <span>{{ need.population_projection.projections.all.0.base_population }}</span>
-                </div>
-
-                <div class="flex gap-2 items-center">
-                  <i class="fa-solid fa-person-arrow-up-from-line text-blue-500"></i>
-                  <span class="font-medium">Projected Population:</span>
-                  <span>{{ need.population_projection.projections.last.projected_population }}</span>
-                </div> -->
-
-                <div class="flex gap-2 items-center">
-                  <i class="fa-solid fa-map-marked-alt text-blue-500"></i>
-                  <span class="font-medium">Area Type:</span>
-                  <span>{{ need.population_projection.area_type|title }}</span>
-                </div>
-
-                <div class="flex gap-2 items-center">
-                  <i class="fa-solid fa-map-marked-alt text-blue-500"></i>
-                  <span class="font-medium">Sector:</span>
-                  <span>{{ need.needs.all.0.sector|title }}</span>
-                </div>
+              <div class="space-y-2 text-gray-700 text-sm mb-4">
+                  <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-calendar-days text-blue-600"></i>
+                      <span class="font-medium">Year:</span>
+                      <span>{{ need.population_projection.projections.all.0.base_year }} - {{ need.population_projection.projections.last.projecting_year }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                      <!--location icon-->
+                      <i class="fa-solid fa-map text-blue-600"></i>
+                      <span class="font-medium">Area:</span>
+                      <span>{{ need.population_projection.content_object.name|title }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-map-marked-alt text-blue-600"></i>
+                      <span class="font-medium">Area Type:</span>
+                      <span>{{ need.population_projection.area_type|title }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-users text-blue-600"></i>
+                      <span class="font-medium">Sector:</span>
+                      <span>{{ need.needs.all.0.sector|title }}</span>
+                  </div>
               </div>
-
+              
               <!-- View More Button -->
-              <div class="mt-4">
-                <button hx-get="{% url 'manage_need_assessment' need.slug %}" hx-target="#main" hx-swap="innerHTML" hx-push-url="true" href="{% url 'manage_need_assessment' need.slug %}" class="btn btn-primary w-full">View more</button>
+              <div>
+                  <button hx-get="{% url 'manage_need_assessment' need.slug %}" hx-target="#main" hx-swap="innerHTML" hx-push-url="true" href="{% url 'manage_need_assessment' need.slug %}" class="btn btn-primary w-full flex items-center justify-center gap-2">
+                      <i class="fa-solid fa-eye"></i>
+                      View more
+                  </button>
               </div>
-            </div>
           </div>
+        </div>
+
 
         {% endfor %}
 
@@ -213,70 +200,94 @@
           
     </div>
 
-    <!--Map Prediction-->
-    <div class="mt-[4rem]">
-      <h2 class="text-2xl font-bold text-gray-800">Map Prediction</h2>
-      <p class="mt-2 text-gray-600 w-[30rem]">Predicted population distribution on the map</p>
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {% for map_prediction in map_predictions %}
-          <div class="card card-bordered shadow-lg rounded-lg overflow-hidden relative">
-              <div class="relative">
-                  <img src="{{ map_prediction.image.url }}" alt="{{ map_prediction.title }}" class="w-full h-48 object-contain">
-                  <div class="dropdown dropdown-end absolute right-2 top-2 z-10">
-                      <div tabindex="0" role="button" class="text-white bg-black bg-opacity-50 p-1 rounded-full hover:bg-opacity-75">
-                          <i class="fa-solid fas fa-ellipsis-h"></i>
+    <!-- Map Prediction Section -->
+    <div class="mt-16">
+      <h2 class="text-xl font-bold text-gray-800">Map Prediction</h2>
+      <p class="mt-2 text-gray-600 max-w-xl">Predicted population distribution on the map.</p>
+
+      {% if map_predictions %}
+          <div id="mapPrediction" class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {% for map_prediction in map_predictions %}
+                <!-- Card Container -->
+
+                <div class="card rounded-lg shadow-lg border-2 border-blue-300 bg-blue-50 overflow-hidden relative">
+                  <!-- Card Image with Dropdown -->
+                  <div class="relative">
+                      <img src="{{ map_prediction.image.url }}" alt="{{ map_prediction.title }}" class="w-full h-40 object-cover">
+                      <div class="dropdown dropdown-end absolute right-2 top-2">
+                          <label tabindex="0" class="btn btn-sm btn-circle btn-ghost text-white bg-blue-600 bg-opacity-50 hover:bg-opacity-75">
+                              <i class="fa-solid fa-ellipsis-h"></i>
+                          </label>
+                          <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-white rounded-md w-52">
+                              <li>
+                                  <a class="deleteBtn flex items-center gap-2 text-red-500" href="{% url 'get_map_prediction' map_prediction.slug %}">
+                                      <i class="fas fa-trash-alt text-red-500"></i>
+                                      Delete
+                                  </a>
+                              </li>
+                          </ul>
                       </div>
-                      <ul tabindex="0" class="dropdown-content z-20 menu p-2 shadow bg-white rounded-lg w-52">
-                          <li>
-                              <a class="edit flex items-center" hx-trigger="click" hx-target="#modal-content" hx-on="htmx:afterOnLoad:my_modal_3.showModal()" hx-get="{% url 'crud' %}?mode=update&id={{ map_prediction.pk }}">
-                                  <i class="fas fa-edit mr-2"></i> Edit
-                              </a>
-                          </li>
-                          <li>
-                              <a class="deleteBtn flex items-center" href="">
-                                  <i class="fas fa-trash-alt mr-2"></i> Delete
-                              </a>
-                          </li>
-                      </ul>
-                  </div>
-              </div>
-              <div class="card-body p-5 bg-white">
-                  <h2 class="card-title text-lg font-bold text-gray-800">{{ map_prediction|truncatewords:4 }}</h2>
-                  {% if map_prediction.description %}
-                      <p class="text-gray-600 mb-2">{{ map_prediction.description|truncatewords:5 }}</p>
-                  {% else %}
-                      <p class="text-sm text-gray-500 mb-2">Predicted population distribution on the map</p>
-                  {% endif %}
-                  <div class="flex items-center gap-2">
-                      <i class="fa-solid fa-calendar-days text-blue-500"></i>
-                      <span class="text-gray-500">{{ map_prediction.created_at|date:"F d, Y" }}</span>
                   </div>
 
-                  <!--Area-->
-                  <div class="flex items-center gap-2 mt-1">
-                      <i class="fa-solid fa-map-marked-alt text-blue-500"></i>
-                      <span class="text-gray-500">Area:</span>
-                      <span class="text-gray-800">{{map_prediction.needs_assessment.population_projection.content_object.name|title }}</span>
-                  </div>
+                  <!-- Card Body -->
+                  <div class="p-5 bg-white">
+                      <h2 class="text-lg font-bold text-blue-800 mb-2">{{ map_prediction|truncatewords:4 }}</h2>
+                      {% if map_prediction.description %}
+                          <p class="text-gray-600 mb-2">{{ map_prediction.description|truncatewords:5 }}</p>
+                      {% else %}
+                          <p class="text-sm text-gray-500 mb-2">Predicted health facilities on the map.</p>
+                      {% endif %}
 
-                  <!--facility Placed-->
-                  <div class="flex items-center gap-2 mt-1">
-                      <i class="fa-solid fa-map-marked-alt text-blue-500"></i>
-                      <span class="text-gray-500">Facility Placed:</span>
-                      <!--badge-->
-                     {% for facility in map_prediction.facility_coordinates_and_area_name.all %}
-                      <span class="badge badge-primary">{{ facility.facility_name|truncatewords:1 }}</span>
-                      {% endfor %}
+                      <!-- Details -->
+                      <div class="space-y-2">
+                          <div class="flex items-center gap-2 text-gray-600">
+                              <i class="fa-solid fa-calendar-days text-blue-500"></i>
+                              <span>{{ map_prediction.created_at|date:"F d, Y" }}</span>
+                          </div>
+
+                          <div class="flex items-center gap-2 text-gray-600">
+                              <i class="fa-solid fa-map-marked-alt text-blue-500"></i>
+                              <span class="font-medium">Area:</span>
+                              <span class="text-gray-800">{{ map_prediction.needs_assessment.population_projection.content_object.name|title }}</span>
+                          </div>
+
+                          <div class="flex items-center gap-2 text-gray-600">
+                              <i class="fa-solid fa-map-marked-alt text-blue-500"></i>
+                              <span class="font-medium">Facility Placed:</span>
+                              <div class="flex gap-1 flex-wrap">
+                                  {% for facility in map_prediction.facility_coordinates_and_area_name.all %}
+                                  <span class="badge bg-blue-500 text-white text-xs">{{ facility.facility_name|truncatewords:1 }}</span>
+                                  {% endfor %}
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- View Prediction Button -->
+                      <div class="mt-4">
+                          <button class="btn btn-primary w-full flex items-center justify-center gap-2" hx-get="{% url 'get_map_prediction' map_prediction.slug %}" hx-push-url="true" hx-target="#main" hx-swap="innerHTML">
+                              <i class="fa-solid fa-map-marked-alt"></i>
+                              View Prediction
+                          </button>
+                      </div>
                   </div>
-                  <button class="btn btn-primary w-full mt-2" hx-get="{% url 'get_map_prediction' map_prediction.slug %}" hx-push-url="true" hx-target="#main" hx-swap="innerHTML">
-                    <i class="fa-solid fa-map-marked-alt"></i>
-                      View Prediction
-                  </button>
-              </div>
+                </div>
+
+
+              {% endfor %}
           </div>
-          {% endfor %}
-      </div>
-  </div>
+      {% else %}
+          <div class="flex justify-center items-center h-80 flex-col">
+              <p class="text-center flex items-center gap-2 mb-4">
+                  <i class="fa-solid fa-exclamation-circle text-4xl text-red-500"></i> Oops! No map prediction found.
+              </p>
+              <button hx-trigger="click" hx-push-url="{% url 'map_prediction' %}" hx-get="{% url 'map_prediction' %}" hx-target="#main" hx-on="htmx:afterOnLoad:handleSectorSelection" hx-swap="innerHTML" class="btn btn-primary">
+                  + New Prediction
+              </button>
+          </div>
+      {% endif %}
+    </div>
+
+
 </div>
 <script type="module">
   import { dashboardChart } from "{% static 'js/export_chart.js' %}"
@@ -296,6 +307,11 @@
       .then((willDelete) => {
         if (willDelete) {
           htmx.ajax('DELETE', url, '#main')
+          .then((response)=>{
+            swal("Poof! Your projection has been deleted!", {
+              icon: "success",
+            });
+          })
         }
       })
           
@@ -325,4 +341,166 @@
       })
     })
   }
+
+    // handle search
+    let searchInput = document.getElementById('searchInput');
+
+    searchInput.addEventListener('click', (e) => {
+    // Open the modal
+    let modal = document.querySelector('#my_modal_3');
+    modal.close()
+    modal.showModal()
+    modal.querySelector('#form-header').textContent = 'Search';
+    
+    let content = document.querySelector('#modal-content');
+    content.innerHTML = `
+        <form method="get" action="" id="searchForm">
+            <input type="text" name="q" id="searchField" class="input input-bordered w-full mt-4" placeholder="Search">
+        </form>
+        <!--Search Result-->
+        <div id="searchResult" class="mt-4">
+            <p class="text-center text-gray-500">Search results will appear here...</p>
+        </div>
+    `;
+
+    let searchField = document.getElementById('searchField');
+    let searchResult = document.getElementById('searchResult');
+
+    // Debounce function to limit the rate of search queries
+    let debounceTimeout;
+    searchField.addEventListener('input', function() {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            performSearch(this.value);
+        }, 300);
+    });
+
+    function performSearch(query) {
+    if (query.length > 2) {
+        searchResult.innerHTML = `<p class="text-center text-gray-500">Searching...</p>`;
+
+        fetch(`/search/?q=${encodeURIComponent(query)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                let populationProjections = data.population_projections || [];
+                let needsAssessments = data.needs_assessments || [];
+                let mapPredictions = data.map_predictions || [];
+                console.log(needsAssessments)
+                console.log(mapPredictions)
+                console.log(populationProjections)
+
+                searchResult.innerHTML = '';
+
+                if (populationProjections.length > 0 || needsAssessments.length > 0 || mapPredictions.length > 0) {
+                    if (populationProjections.length > 0) {
+                        appendResults('Population Projections', populationProjections, 'title');
+                    }
+                    if (needsAssessments.length > 0) {
+                        appendResults('Needs Assessments', needsAssessments);
+                    }
+                    if (mapPredictions.length > 0) {
+                        appendResults('Map Predictions', mapPredictions);
+                    }
+                } else {
+                    searchResult.innerHTML = `<p class="text-center text-gray-500">No results found.</p>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching search results:', error);
+                searchResult.innerHTML = `<p class="text-center text-red-500">An error occurred. Please try again.</p>`;
+            });
+    } else {
+        searchResult.innerHTML = `<p class="text-center text-gray-500">Please enter at least 3 characters to search.</p>`;
+    }
+}
+
+function appendResults(title, results) {
+    // Create a section for each category of results
+    let section = document.createElement('div');
+    section.classList.add('mt-6', 'shadow-md', 'rounded-lg', 'p-4', 'bg-white');
+
+    // Add the title
+    let sectionTitle = document.createElement('h3');
+    sectionTitle.classList.add('font-bold', 'text-lg', 'mb-4', 'text-gray-800', 'border-b', 'pb-2');
+    sectionTitle.textContent = title;
+    section.appendChild(sectionTitle);
+
+    // Add the list of results
+    let list = document.createElement('ul');
+    list.classList.add('space-y-4');
+    results.forEach(result => {
+        let listItem = document.createElement('li');
+        listItem.classList.add('group', 'relative', 'transition', 'duration-200', 'transform', 'hover:scale-[1.02]', 'hover:bg-gray-50', 'p-3', 'rounded-lg', 'hover:shadow-lg');
+
+        let link = document.createElement('a');
+        link.classList.add('cursor-pointer')
+      
+        if(title === 'Population Projections'){
+          link.textContent = result.title;
+          link.setAttribute('hx-get', '/population-projection/'+result.slug)
+          link.setAttribute('hx-target', '#main')
+          link.setAttribute('hx-push-url', 'true')
+          link.addEventListener('click', ()=>{
+            htmx.ajax('GET', link.getAttribute('hx-get'), '#main')
+            modal.close()
+          })
+        }
+        else if (title === 'Needs Assessments'){
+          link.textContent = 'Needs Assessment for ' + result.population_projection__title
+          link.setAttribute('hx-get', '/needs-assessment/'+result.slug)
+          link.setAttribute('hx-target', '#main')
+          link.setAttribute('hx-push-url', 'true')
+          link.addEventListener('click', ()=>{
+            htmx.ajax('GET', link.getAttribute('hx-get'), '#main')
+            modal.close()
+          })
+        }  
+        else if (title === 'Map Predictions'){
+          let temp = result.needs_assessment__population_projection__title
+          link.textContent = 'Map Prediction for ' + temp.split(' ')[3] + ' ' + temp.split(' ')[4]
+          
+          link.setAttribute('hx-get', '/map-prediction/'+result.slug)
+          link.setAttribute('hx-target', '#main')
+          link.setAttribute('hx-push-url', 'true')
+          link.addEventListener('click', ()=>{
+            htmx.ajax('GET', link.getAttribute('hx-get'), '#main')
+            history.pushState('','','/map-prediction/'+result.slug)
+            modal.close()
+          })
+        }
+        link.classList.add('text-blue-600', 'hover:underline', 'block', 'group-hover:text-blue-700');
+        listItem.appendChild(link);
+
+        let snippet = document.createElement('p');
+        snippet.classList.add('text-sm', 'text-gray-600', 'mt-1', 'group-hover:text-gray-800');
+        snippet.textContent = result.snippet;  // Assume the results have a 'snippet' field
+        listItem.appendChild(snippet);
+
+        // Add an arrow icon on hover
+        let arrowIcon = document.createElement('i');
+        arrowIcon.classList.add('fas', 'fa-chevron-right', 'absolute', 'right-4', 'top-1/2', 'transform', '-translate-y-1/2', 'text-gray-400', 'opacity-0', 'group-hover:opacity-100', 'group-hover:text-blue-600');
+        listItem.appendChild(arrowIcon);
+
+        list.appendChild(listItem);
+    });
+
+    section.appendChild(list);
+    searchResult.appendChild(section);
+}
+
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && modal.open) {
+            modal.close();
+        }
+    });
+
+    
+});
+
 </script>

@@ -1,82 +1,50 @@
 {% load socialaccount %}
-<div class="navbar  bg-transparent  bg-base-100 backdrop-blur-md  sticky top-0 z-50 w-full lg:w-[calc(100%-16rem)] shadow-md lg:ml-64 h-[4.5rem] px-4">
-    <div class="flex-1 block md:hidden">
+<div class="navbar bg-transparent bg-base-100 backdrop-blur-md sticky  top-0 z-50 w-full lg:w-[calc(100%-16rem)] shadow-md lg:ml-64 h-[4.5rem] px-4">
+  <div class="flex-1 block md:hidden">
       <a hx-get="{% url 'home' %}" hx-target="#main-content" hx-push-url="true" class="btn btn-ghost text-xl font-bold">PRMS</a>
-    </div>
-    <div class="breadcrumbs text-sm flex-1">
-      <ul>
-        <li>
-          <a>
-            <i class="fa-solid fa-house text-gray-700"></i>
-            Home
-          </a>
-        </li>
-        <li>
-          <a>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              class="h-4 w-4 stroke-current">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
-            </svg>
-            Documents
-          </a>
-        </li>
-        <li>
-          <span class="inline-flex items-center gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              class="h-4 w-4 stroke-current">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
-            Needs Assessment
-          </span>
-        </li>
-      </ul>
-    </div>
-    <div class="">
-      <div class="form-control">
-        <input type="text" placeholder="Search" class="input input-bordered input-md w-24 md:w-[20rem] hidden lg:block" />
+  </div>
+
+  <!-- Welcome message -->
+  <div class="flex-1 hidden md:block">
+      <h2 class="text-xl font-semibold">
+        <!--wave emoji-->
+        <span class="wave">👋</span>
+        Welcome, {{ request.user.first_name|title }}!</h2>
+        
+  </div>
+
+  <div>
+      <div class="form-control mr-4">
+          <input id="searchInput" type="text" placeholder="Search" class="input input-bordered  input-md w-24 md:w-[20rem] hidden lg:block" />
       </div>
       <div class="dropdown dropdown-end">
-        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-          <div class="w-10 rounded-full">
-            {% get_social_accounts user as account %}
-            {% if account %}
-            <img class="rounded-circle" width=30 height=30 src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="">
-
-            {% else %}
-            <img class="rounded-circle" width="40" height="40" src="{{ user.avatar.url }}" alt="">
-            {% endif %}
+          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+              <div class="w-10 rounded-full">
+                  {% get_social_accounts user as account %}
+                  {% if account %}
+                      <img class="rounded-circle" width=50 height=50 src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="">
+                  {% else %}
+                      <img class="rounded-circle" width="50" height="50" src="{{ user.avatar.url }}" alt="">
+                  {% endif %}
+              </div>
           </div>
-        </div>
-        <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-          <li>
-            <a class="justify-between">
-              Profile
-              <span class="badge">New</span>
-            </a>
-          </li>
-          <li><a>Settings</a></li>
-          <li><a href="{% url 'account_logout' %}">Logout</a></li>
-        </ul>
+          <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+              <li>
+                  <a class="justify-between" hx-get="{% url 'profile' user.username %}" hx-target="#main" hx-push-url="true">
+                      Profile
+                      <span class="badge">New</span>
+                  </a>
+              </li>
+              <li><a>Settings</a></li>
+              <li><a href="{% url 'account_logout' %}">Logout</a></li>
+          </ul>
       </div>
       <div class="md:hidden">
-        <button id="menuButton" class="btn btn-square btn-ghost">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-          </svg>
-      </button>
-    </div>
-    </div>
+          <button id="menuButton" class="btn btn-square btn-ghost">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+              </svg>
+          </button>
+      </div>
+  </div>
 </div>

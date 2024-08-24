@@ -1,0 +1,58 @@
+<!-- Profile Page Container -->
+<div class="container mx-auto p-6 max-w-4xl">
+
+    <!-- Profile Header -->
+    <div class="flex items-center space-x-4 mb-6">
+        <!-- Profile Picture -->
+        <div class="w-24 h-24 relative">
+            <img src="{{ user.avatar.url }}" alt="Profile Picture" class="w-full h-full object-cover rounded-full border-2 border-blue-300">
+            <label for="profile-picture-upload" class="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-2 cursor-pointer hover:bg-blue-600">
+                <i class="fa-solid fa-camera"></i>
+                <input id="profile-picture-upload" type="file" class="hidden" accept="image/*">
+            </label>
+        </div>
+        <!-- Profile Details -->
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">{{ user.first_name }} {{ user.last_name }}</h1>
+            <p class="text-gray-600">{{ user.email }}</p>
+        </div>
+    </div>
+
+    <!-- Profile Information Form -->
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Update Profile Information</h2>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Full Name -->
+            <div class="mb-4">
+                <label for="full-name" class="block text-gray-700 font-medium mb-1">Full Name</label>
+                <input type="text" id="full-name" name="full_name" value="{{ user.first_name }} {{ user.last_name }}" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+            </div>
+            
+            <!-- Email -->
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 font-medium mb-1">Email Address</label>
+                <input type="email" id="email" name="email" value="{{ user.email }}" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+            </div>
+            
+            <!-- Password -->
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 font-medium mb-1">New Password</label>
+                <input type="password" id="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                <p class="text-gray-500 text-sm mt-1">Leave blank if you do not want to change your password.</p>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-6">
+                <label for="confirm-password" class="block text-gray-700 font-medium mb-1">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm_password" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary w-full py-2 px-4 rounded-md text-white">
+                <i class="fa-solid fa-save"></i> Save Changes
+            </button>
+        </form>
+    </div>
+</div>

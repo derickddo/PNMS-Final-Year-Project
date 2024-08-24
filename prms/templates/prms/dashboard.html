@@ -14,11 +14,7 @@
 
   <!--Main-->
   <main id="main" class="md:ml-64 py-8">
-    <!--alert-->
-    <div id="alert" class="alert alert-error z-50 absolute top-3 w-[23rem] right-3 justify-between hidden">
-      <span id="alert-message">hello</span>
-      <button id="alert-close" class="btn btn-sm btn-circle btn-ghost">✕</button>
-    </div>
+    
     {% if child_template %}
       {{ child_template }}
       {% else %}
@@ -36,7 +32,9 @@
         <form method="dialog">
           <button id="close-modal" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
         </form>
-        <h3 id="form-header" class="font-bold text-lg"></h3>
+        <h3 id="form-header" class="font-bold text-lg">
+          Create Population Projection
+        </h3>
         <div id="modal-content">
             
         </div> 

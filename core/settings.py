@@ -214,7 +214,21 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_EMAIL_VERIFICATION = False
+ACCOUNT_EMAIL_VERIFICATION = True
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+# sender email
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
 
 LOGIN_REDIRECT_URL = 'dashboard' # Add the LOGIN_REDIRECT_URL variable
 LOGOUT_REDIRECT_URL = 'account_login' # Add the LOGIN_REDIRECT_URL variable
+
+
+# Email backend
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # Replace with your Gmail email
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # Replace with your Gmail password

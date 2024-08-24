@@ -21,6 +21,16 @@ global-land-mask = "*"
 shapely = "*"
 rtree = "*"
 numpy = "*"
+pdfkit = "*"
+weasyprint = "*"
+django-weasyprint = "*"
+openai = "*"
+google-generativeai = "*"
+seaborn = "*"
+matplotlib = "*"
+pandas = "*"
+anthropic = "*"
+ratelimit = "*"
 
 [dev-packages]
 
