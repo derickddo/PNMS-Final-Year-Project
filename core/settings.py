@@ -69,6 +69,8 @@ NPM_BIN_PATH = 'C:/Program Files/nodejs/npm.cmd' # Add the path to the npm binar
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+     # whitenoise
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -78,6 +80,8 @@ MIDDLEWARE = [
     "django_browser_reload.middleware.BrowserReloadMiddleware", # Add the BrowserReloadMiddleware to the middleware
     'django_htmx.middleware.HtmxMiddleware', # Add the HtmxMiddleware to the middleware
     "allauth.account.middleware.AccountMiddleware",
+    
+   
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -175,7 +179,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATIC_URL = 'theme/' # Change the STATIC_URL variable to 'theme/
 
