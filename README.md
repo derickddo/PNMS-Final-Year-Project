@@ -83,15 +83,19 @@ PNMS is a comprehensive platform designed to aid development planners in Ghana w
 
 # User Interface
 **Dashboard**
+
 ![dashboard](static/screenshots/hero.PNG)
 
 **Population Projection**
+
 ![population-projection](static/screenshots/pop.PNG)
 
 **Needs Assessment**
+
 ![needs-assessment](static/screenshots/needs.PNG)
 
 **Map Prediction**
+
 ![map-prediction](static/screenshots/map.PNG)
 
 
