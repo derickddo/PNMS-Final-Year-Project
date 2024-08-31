@@ -68,7 +68,8 @@ modalContent.addEventListener('htmx:afterSettle', (e) => {
     var loading = document.getElementById('loading');
     var hiddenInput = document.getElementById('hidden')
     var selectedAreaType = document.querySelector('input[name="areaType"]:checked');
-    let checkedAreaType = ''
+
+    let AreaType = ''
     console.log(loading)
     
     populateYearSelect(1900, null, baseYear);
@@ -79,14 +80,19 @@ modalContent.addEventListener('htmx:afterSettle', (e) => {
             regionSelectContainer.style.display = 'block';
             districtSelectContainer.style.display = 'none';
             townSelectContainer.style.display = 'none';
+            AreaType = 'region'
         } else if (value === 'district') {
             regionSelectContainer.style.display = 'block';
             districtSelectContainer.style.display = 'block';
             townSelectContainer.style.display = 'none';
+            AreaType = 'district'
         } else if (value === 'town') {
             regionSelectContainer.style.display = 'block';
             districtSelectContainer.style.display = 'block';
             townSelectContainer.style.display = 'block';
+            document.getElementById('growthRateTypeContainer').classList.add('hidden')
+
+            AreaType = 'town'
         }
     }
 
@@ -133,9 +139,12 @@ modalContent.addEventListener('htmx:afterSettle', (e) => {
                     districtSelect.value = districtData
                 }
                 else if (value === 'town') {
+
                     regionSelect.value = regionData
                     districtSelect.value = districtData
                     townSelect.value = townData
+
+                    
                 }
             })
 
@@ -357,7 +366,8 @@ modalContent.addEventListener('htmx:afterSettle', (e) => {
         townDropdownList.addEventListener('click', (e) => {
             if (e.target.tagName === 'LI') {
                 townSelect.value = e.target.textContent;
-                townDropdown.classList.add('hidden');  
+                townDropdown.classList.add('hidden');
+                populateTowns(e.target.textContent);  
             }
         });
         window.onload = populateRegions();
@@ -371,7 +381,7 @@ modalContent.addEventListener('htmx:afterSettle', (e) => {
                     regions.forEach(region => {
                         const li = document.createElement('li');
                         li.textContent = region.name;
-                        li.className = 'p-2 hover:bg-base-200 cursor-pointer';
+                        li.className = 'py-3 px-4 rounded-md hover:bg-gray-300 cursor-pointer';
                         regionDropdownList.appendChild(li);
                     });
                 });
@@ -386,7 +396,7 @@ modalContent.addEventListener('htmx:afterSettle', (e) => {
                     districts.forEach(district => {
                         const li = document.createElement('li');
                         li.textContent = district.name
-                        li.className = 'p-2 hover:bg-base-200 cursor-pointer';
+                        li.className = 'py-3 px-4 rounded-md hover:bg-gray-300 cursor-pointer';
                         districtDropdownList.appendChild(li);
                     });
                 });
@@ -394,14 +404,17 @@ modalContent.addEventListener('htmx:afterSettle', (e) => {
 
         function populateTowns(district) {
             townDropdownList.innerHTML = '';
-            if (towns[district]) {
-                towns[district].forEach(town => {
-                    const li = document.createElement('li');
-                    li.textContent = town;
-                    li.className = 'p-2 hover:bg-base-200 cursor-pointer';
-                    townDropdownList.appendChild(li);
+            fetch('http://127.0.0.1:8000/towns?district=' + district)
+                .then(response => response.json())
+                .then(data => {
+                    const towns = data.towns;
+                    towns.forEach(town => {
+                        const li = document.createElement('li');
+                        li.textContent = town.name;
+                        li.className = 'py-3 px-4 rounded-md hover:bg-gray-300 cursor-pointer';
+                        townDropdownList.appendChild(li);
+                    });
                 });
-            }
         }
 
         document.addEventListener('click', (event) => {
@@ -420,12 +433,37 @@ modalContent.addEventListener('htmx:afterSettle', (e) => {
         // handle form submission
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            projectButton.innerHTML = `<span id="loading" class="loading loading-spinner loading-md text-gray-600"></span>`
-            projectButton.disabled = true;
+
+            // if areaType is region, district or town, check if the region, district and town fields are not empty
+            if (selectedAreaType.value === 'region' && regionSelect.value.trim() === '') {
+                // make the regionSelect input field required
+                regionSelect.required = true;
+
+                return;
+                
+            }
+            if (selectedAreaType.value === 'district' && districtSelect.value.trim() === '') {
+                // make regionSelect and districtSelect input fields required
+                regionSelect.required = true;
+                districtSelect.required = true;
+                return;
+            }
+            if (selectedAreaType.value === 'town' && townSelect.value.trim() === '') {
+                // make regionSelect, districtSelect and townSelect input fields required
+                regionSelect.required = true;
+                districtSelect.required = true;
+                townSelect.required = true;
+                return;
+            }
+
+            projectButton.innerHTML = `
+            <span id="loading" class="loading loading-spinner loading-md text-gray-white"></span>
+            <span class="ml-2">projecting...</span>
+            `
             let data = {
                 title: title.value,
                 description: description.value,
-                areaType: selectedAreaType.value,
+                areaType: AreaType,
                 region: regionSelect.value,
                 district: districtSelect.value,
                 town: townSelect.value,

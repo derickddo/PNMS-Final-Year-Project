@@ -4,6 +4,7 @@
                 <tr>
                     <th>Facility</th>
                     <th>Required</th>
+                    <th>New Need</th>
                     <th>Availble</th>
                     <th>Year</th>
                 </tr>
@@ -13,6 +14,11 @@
                 <tr>
                     <td>{{facility.content_object.type_name}}</td>
                     <td>{{facility.content_object.required}}</td>
+                    {% if facility.content_object.new_need %}
+                    <td>{{facility.content_object.new_need}}</td>
+                    {% else %}
+                    <td>-</td>
+                    {% endif %}
                     <td>{{facility.content_object.available}}</td>
                     <td>{{facility.content_object.year}}</td>
                 </tr>

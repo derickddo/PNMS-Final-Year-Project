@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 {% load static %}
 {% load custom_filters %}
 {% if needs_assessment %}
@@ -178,20 +179,11 @@
                 <h3 class="font-bold text-xl mt-4">{{ facility_needs.0.needs_type|title }} Needs Assessment</h3>
                 <p class="mt-2 text-gray-600 dark:text-white">Facility needs assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</p>
 
-                <div class="card card-bordered p-5 rounded-md mt-2 relative shadow-lg">
+                <div class="card card-bordered p-5 rounded-md mt-2 relative shadow-lg border border-gray-300">
                     <!-- Edit and Delete buttons -->
                     <h3 class="font-bold text-lg">Facility Needs Assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</h3>
                     <p class="text-gray-600 mt-2">This is a facility needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
                     
-                    
-                    
-
-                    <span class="block md:hidden mt-2">
-                        <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#facility_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
-                            <i class="fas fa-eye text-blue-500 mr-2"></i>
-                            View More
-                        </a>
-                    </span>
 
                     <div class="dropdown dropdown-end absolute right-3 top-3">
                         <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md cursor-pointer">
@@ -302,12 +294,7 @@
                                     </div>
                                 </div>
                     
-                                <span>
-                                    <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#facility_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
-                                        <i class="fas fa-eye text-blue-500 mr-2"></i>
-                                        View Details
-                                    </a>
-                                </span>
+                                
                             </div>
                     
                             <div>
@@ -419,17 +406,10 @@
                 <h3 class="font-bold text-xl mt-4">{{ personnel_needs.0.needs_type|title }} Needs Assessment</h3>
                 <p class="mt-2 text-gray-600 dark:text-white">Personnel needs assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</p>
 
-                <div class="card card-bordered p-5 rounded-md mt-4 relative shadow-lg">
+                <div class="card  p-5 rounded-md mt-4 relative shadow-lg border border-gray-300">
                     <!-- Edit and Delete buttons -->
                     <h3 class="font-bold text-xl">Personnel Needs Assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</h3>
-                    <p class="text-gray-600 dark:text-white">This is a personnel needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
-
-                    <span class="block md:hidden mt-2">
-                        <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#personnel_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
-                            <i class="fas fa-eye text-blue-500 mr-2"></i>
-                            View More
-                        </a>
-                    </span>
+                    <p class="text-gray-600 dark:text-white mt-2">This is a personnel needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
 
                     <div class="dropdown dropdown-end absolute right-3 top-3">
                         <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md cursor-pointer">
@@ -539,12 +519,7 @@
                                     </div>
                                 </div>
                     
-                                <span>
-                                    <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#personnel_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
-                                        <i class="fas fa-eye text-blue-500 mr-2"></i>
-                                        View Details
-                                    </a>
-                                </span>
+                                
                             </div>
                     
                             <div>
@@ -655,16 +630,11 @@
                  <h3 class="font-bold text-xl mt-4">{{ classroom_needs.0.needs_type|title }} Needs Assessment</h3>
                  <p class="mt-2 text-gray-600 dark:text-white">Classroom needs assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</p>
  
-                 <div class="card card-bordered p-5 rounded-md mt-4 relative shadow-lg">
+                 <div class="card card-bordered p-5 rounded-md mt-4 relative shadow-lg border border-gray-300">
                      <!-- Edit and Delete buttons -->
                      <h3 class="font-bold text-xl">Classroom Needs Assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</h3>
-                     <p class="text-gray-600 dark:text-white">This is a classroom needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
-                     <span class="block md:hidden mt-2">
-                         <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#classroom_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
-                             <i class="fas fa-eye text-blue-500 mr-2"></i>
-                             View More
-                         </a>
-                     </span>
+                     <p class="text-gray-600 dark:text-white mt-2">This is a classroom needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
+                     
  
                      <div class="dropdown dropdown-end absolute right-3 top-3">
                          <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md cursor-pointer">
@@ -774,12 +744,7 @@
                                      </div>
                                  </div>
                      
-                                 <span>
-                                     <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#classroom_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
-                                         <i class="fas fa-eye text-blue-500 mr-2"></i>
-                                         View Details
-                                     </a>
-                                 </span>
+                                
                              </div>
                      
                              <div>
@@ -892,16 +857,11 @@
                 <h3 class="font-bold text-xl mt-4">{{ dual_desk_needs.0.needs_type|title }} Needs Assessment</h3>
                 <p class="mt-2 text-gray-600 dark:text-white">Dual desk needs assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</p>
 
-                <div class="card card-bordered p-5 rounded-md mt-4 relative shadow-lg">
+                <div class="card card-bordered p-5 rounded-md mt-4 relative shadow-lg border border-gray-300">
                     <!-- Edit and Delete buttons -->
                     <h3 class="font-bold text-xl">Dual desk Needs Assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</h3>
-                    <p class="text-gray-600 dark:text-white">This is a dual desk needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
-                    <span class="block md:hidden mt-2">
-                        <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#dual_desk_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
-                            <i class="fas fa-eye text-blue-500 mr-2"></i>
-                            View More
-                        </a>
-                    </span>
+                    <p class="text-gray-600 dark:text-white mt-2">This is a dual desk needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
+                    
 
                     <div class="dropdown dropdown-end absolute right-3 top-3">
                         <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md cursor-pointer">
@@ -1128,17 +1088,12 @@
                 <h3 class="font-bold text-xl mt-4">{{ water_needs.0.needs_type|title }} Needs Assessment</h3>
                 <p class="mt-2 text-gray-600 dark:text-white ">Water needs assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</p>
 
-                <div class="card card-bordered p-5 rounded-md mt-4 relative shadow-lg">
+                <div class="card card-bordered p-5 rounded-md mt-4 relative shadow-lg border border-gray-300">
                     <!-- Edit and Delete buttons -->
                     <h3 class="font-bold text-xl">Water Needs Assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</h3>
-                    <p class="text-gray-600 dark:text-white">This is a water needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
+                    <p class="text-gray-600 dark:text-white mt-2">This is a water needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
 
-                    <span class="block md:hidden mt-2">
-                        <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#water_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
-                            <i class="fas fa-eye text-blue-500 mr-2"></i>
-                            View More
-                        </a>
-                    </span>
+                
 
                     <div class="dropdown dropdown-end absolute right-3 top-3">
                         <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md cursor-pointer">
@@ -1248,12 +1203,6 @@
                                     </div>
                                 </div>
                     
-                                <span>
-                                    <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#water_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
-                                        <i class="fas fa-eye text-blue-500 mr-2"></i>
-                                        View Details
-                                    </a>
-                                </span>
                             </div>
                     
                             <div>
@@ -1363,17 +1312,11 @@
                 <h3 class="font-bold text-xl mt-4">{{ skip_container_needs.0.needs_type|title }} Needs Assessment</h3>
                 <p class="mt-2 text-gray-600 dark:text-white">Skip container needs assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</p>
 
-                <div class="card card-bordered p-5 rounded-md mt-4 relative shadow-lg">
+                <div class="card card-bordered p-5 rounded-md mt-4 relative shadow- border border-gray-300">
                     <!-- Edit and Delete buttons -->
                     <h3 class="font-bold text-xl">Skip container Needs Assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</h3>
-                    <p class="text-gray-600 dark:text-white">This is a skip container needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
+                    <p class="text-gray-600 dark:text-white mt-2">This is a skip container needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
 
-                    <span class="block md:hidden mt-2">
-                        <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#skip_container_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
-                            <i class="fas fa-eye text-blue-500 mr-2"></i>
-                            View More
-                        </a>
-                    </span>
 
                     <div class="dropdown dropdown-end absolute right-3 top-3">
                         <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md cursor-pointer">
@@ -1483,12 +1426,7 @@
                                     </div>
                                 </div>
                     
-                                <span>
-                                    <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#skip_container_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
-                                        <i class="fas fa-eye text-blue-500 mr-2"></i>
-                                        View Details
-                                    </a>
-                                </span>
+                               
                             </div>
                     
                             <div>
@@ -1599,17 +1537,12 @@
                 <h3 class="font-bold text-xl mt-4">{{ toilet_needs.0.needs_type|title }} Needs Assessment</h3>
                 <p class="mt-2 text-gray-600 dark:text-white">Toilet type needs assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</p>
 
-                <div class="card card-bordered p-5 rounded-md mt-4 relative shadow-lg">
+                <div class="card card-bordered p-5 rounded-md mt-4 relative shadow-lg border border-gray-300">
                     <!-- Edit and Delete buttons -->
                     <h3 class="font-bold text-xl">Toilet type Needs Assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</h3>
-                    <p class="text-gray-600 dark:text-white">This is a toilet type needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
+                    <p class="text-gray-600 dark:text-white mt-2">This is a toilet type needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
 
-                    <span class="block md:hidden mt-2">
-                        <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#toilet_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
-                            <i class="fas fa-eye text-blue-500 mr-2"></i>
-                            View More
-                        </a>
-                    </span>
+                    
 
                     <div class="dropdown dropdown-end absolute right-3 top-3">
                         <div tabindex="0" role="button" class="m-1 py-1 px-2 hover:bg-base-300 rounded-md cursor-pointer">
@@ -1719,12 +1652,7 @@
                                     </div>
                                 </div>
                     
-                                <span>
-                                    <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#toilet_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
-                                        <i class="fas fa-eye text-blue-500 mr-2"></i>
-                                        View Details
-                                    </a>
-                                </span>
+                                
                             </div>
                     
                             <div>
@@ -1836,7 +1764,10 @@
         </div>
 
         <input id="hidden" type="hidden" name="" value="{{needs_assessment.slug}}">  
-        </div>    
+        </div> 
+        
+        <input type="hidden" name="" value="{{ utility_type }}" id="utilityType">
+        <input type="hidden" name="" value="{{ need_type }}" id="needType">
     </div>
 {% else %}
     <div class="mt-8">
@@ -1845,32 +1776,45 @@
 {% endif %}
 
 <script>
-    console.log('needs assessment')
-    var url = "{% url 'manage_need_assessment' needs_assessment.slug %}"
+    var url = "{% url 'get_needs_assessment' needs_assessment.slug %}"
     history.pushState({}, '', url);
-    let utilityType = "{{utility_type}}"
-    console.log(utilityType)
-    if (utilityType ==='water'){
-        // scroll to water needs
-        let waterNeeds = document.querySelector('.water_needs')
-        waterNeeds.scrollIntoView({ behavior: 'smooth' })
+
+    console.log('VALUE: ',document.getElementById('utilityType').value)
+    if (document.getElementById('utilityType').value) {
+        console.log(document.getElementById('utilityType').value)
+        utilityType = document.getElementById('utilityType').value;
+        switch (utilityType) {
+            case 'water':
+                document.querySelector('.water_needs')?.scrollIntoView({ behavior: 'smooth' });
+                break;
+            case 'dual desk':
+                document.querySelector('.dual_desk_needs')?.scrollIntoView({ behavior: 'smooth' });
+                break;
+            case 'classroom':
+                document.querySelector('.classroom_needs')?.scrollIntoView({ behavior: 'smooth' });
+                break;
+            case 'wasteDisposal':
+                document.querySelector('.skip_container_needs')?.scrollIntoView({ behavior: 'smooth' });
+                break;
+            case 'toilet':
+                document.querySelector('.toilet_needs')?.scrollIntoView({ behavior: 'smooth' });
+                break;
+        }
     }
-    if (utilityType ==='dual desk'){
-        // scroll to dual desk needs
-        let dualDeskNeeds = document.querySelector('.dual_desk_needs')
-        dualDeskNeeds.scrollIntoView({ behavior: 'smooth' })
+
+    if (document.getElementById('needType').value){
+        console.log(document.getElementById('needType').value)
+        needType = document.getElementById('needType').value;
+        switch (needType) {
+            case 'facility':
+                document.querySelector('.facility_needs')?.scrollIntoView({ behavior: 'smooth' });
+                break;
+            case 'personnel':
+                document.querySelector('.personnel_needs')?.scrollIntoView({ behavior: 'smooth' });
+                break;
+        }
     }
-    if (utilityType ==='classroom'){
-        // scroll to classroom needs
-        let classroomNeeds = document.querySelector('.classroom_needs')
-        classroomNeeds.scrollIntoView({ behavior: 'smooth' })
-    }
-    if (utilityType ==='wasteDisposal'){
-        // scroll to skip container needs
-        let skipContainerNeeds = document.querySelector('.skip_container_needs')
-        skipContainerNeeds.scrollIntoView({ behavior: 'smooth' })
-    }
-    
+
 
     function handleViewMoreLess(){
       const viewMoreLessButtons = document.querySelectorAll('.view-more-less');
@@ -1897,8 +1841,13 @@
           });
       });
     }
-    let deleteBtns = document.querySelectorAll('.deleteBtn')
-    let editBtns = document.querySelectorAll('.editBtn')
+    
+    if(document.querySelectorAll('.deleteBtn')){
+        var deleteBtns = document.querySelectorAll('.deleteBtn')
+    }
+    if(document.querySelectorAll('.editBtn')){
+        var editBtns = document.querySelectorAll('.editBtn')
+    }
     deleteBtns.forEach(deleteBtn => {
             deleteBtn.addEventListener('click', (e)=> {
             e.preventDefault()
@@ -1918,6 +1867,12 @@
                             target: '#main', 
                             swap: 'innerHTML', 
                             pushUrl: true,
+                        })
+                        .then((response) => {
+                            history.pushState({}, '', "/dashboard");
+                            swal("Poof! Your data has been deleted!", {
+                                icon: "success",
+                            });
                         })
                         
                     }
@@ -1971,12 +1926,24 @@
                         swap: 'innerHTML', 
                         pushUrl: true,
                     })
+                    .then((response) => {
+                        history.pushState({}, '', "/dashboard");
+                        swal("Poof! Your data has been deleted!", {
+                            icon: "success",
+                        });
+                    })
                     
                 }
             });
 
     })
-    let btn_link = document.querySelectorAll('.scroll-link')
+    
+    if(document.getElementById('hidden')){
+        var slug = document.getElementById('hidden').value
+    }
+    if(document.querySelectorAll('.scroll-link')){
+        var btn_link = document.querySelectorAll('.scroll-link')
+    } 
     if (btn_link.length > 0) {
         btn_link.forEach(btn => {
             btn.addEventListener('click', (e) => {

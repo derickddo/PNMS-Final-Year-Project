@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Region, District, Population, PopulationProjection, Projection, User, NeedsAssessment, Needs, FacilityType, PersonnelType, Sector, FurnitureType, MapPrediction, FacilityCoordinatesAndAreaName
+from .models import Region, District, Population, PopulationProjection, Projection, User, NeedsAssessment, Needs, FacilityType, PersonnelType, Sector, FurnitureType, MapPrediction, FacilityCoordinatesAndAreaName, Town
 from django.contrib.contenttypes.admin import GenericTabularInline
 from django.db.models import Q
 from django.contrib import messages
@@ -51,6 +51,7 @@ admin.site.register(Sector)
 admin.site.register(FurnitureType)
 admin.site.register(MapPrediction)
 admin.site.register(FacilityCoordinatesAndAreaName)
+admin.site.register(Town)
     
 
 

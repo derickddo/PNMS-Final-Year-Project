@@ -73,7 +73,7 @@
             </a>
           </li>
           <li>
-            <a hx-get="{% url 'delete_population_projection' population_projection.pk %}" hx-target="#main" hx-swap="innerHTML"
+            <a href="{% url 'delete_population_projection' population_projection.pk %}" hx-target="#main" hx-swap="innerHTML"
                class="deleteBtn flex items-center space-x-2 hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-md">
               <i class="fa-solid fa-trash text-red-600"></i>
               <span>Delete</span>
@@ -518,6 +518,8 @@
 <script type="module">
   import {initializeChart} from "{% static 'js/export_chart.js' %}";
 
+  // scroll to top of the page smoothly
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   initializeChart()
     // change url when the page is loaded by htmx
     
@@ -549,6 +551,8 @@
                   swap: 'innerHTML',
                 })
                 .then(() => {
+                  history.pushState({}, '', '/dashboard');
+
                   // sweet alert
                   swal({
                       title: "Data Deleted",
@@ -637,7 +641,7 @@
     let editBtns = document.querySelectorAll('.editBtn')
     deleteBtns.forEach(deleteBtn => {
       deleteBtn.addEventListener('click', (e)=> {
-              
+            e.preventDefault()
             let parent = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
             console.log(parent)
 

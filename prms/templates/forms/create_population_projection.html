@@ -142,10 +142,10 @@
         {% if id %}
             value="{{ base_population }}"
         {% endif %}
-             type="number" id="baseYearPopulation" name="baseYearPopulation" step="0.01" class="input input-bordered w-full" min="0">
+             type="number" id="baseYearPopulation" name="baseYearPopulation" step="0.01" class="input input-bordered w-full" min="0" placeholder="eg; 2000">
     </div>
     <!--Choose weather the user already has growth rate value-->
-    <div class="form-control mb-4">
+    <div class="form-control mb-4" id="growthRateTypeContainer">
         <label for="growthRateType" class="label font-medium mb-2">Growth Rate Type</label>
         <select id="growthRateType" name="growthRateType" class="select select-bordered w-full">
             <option value="manual">Manual</option>
@@ -161,7 +161,7 @@
         {% if id %}
             value="{{ growth_rate }}"
         {% endif %}
-             type="number" id="growthRate" name="growthRate" step="0.01" class="input input-bordered w-full" min="0" >
+             type="number" id="growthRate" name="growthRate" step="0.01" class="input input-bordered w-full" min="0" placeholder="eg; 0.3" >
     </div>
 
     <span id="tippy">

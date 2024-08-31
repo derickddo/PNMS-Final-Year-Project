@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 {% load custom_filters %}
 <!-- Map Prediction Page -->
 <div class="container mx-auto px-6" id="map_prediction">
@@ -14,7 +15,7 @@
 
     <div class="grid grid-col-1 md:grid-cols-2 gap-4 mb-8">
         <!-- Area Information Section -->
-        <div class="bg-yellow-100 shadow-lg rounded-lg p-6 ">
+        <div class="bg-yellow-100 shadow-lg rounded-lg p-6 border border-yellow-400">
             <h2 class="text-xl font-bold text-gray-800 mb-2">Area Information</h2>
             <p class="text-sm text-gray-600 mb-4">Details about the area, its type, and the year of assessment.</p>
             <div class="flex justify-between items-start">
@@ -51,7 +52,7 @@
         </div>
     
         <!-- Needs Assessment Info -->
-        <div class="bg-green-100 shadow-lg rounded-lg p-6">
+        <div class="bg-green-100 shadow-lg rounded-lg p-6 border border-green-500">
             <h2 class="text-xl font-bold text-gray-700 mb-2">Needs Assessment Information</h2>
             <p class="text-sm text-gray-500 mb-4">Overview of the needs assessment for the area.</p>
             <div class="">
@@ -122,7 +123,7 @@
     
 
     <!-- Health Facilities Information Section -->
-    <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-8 border border-gray-300">
         <h2 class="text-xl font-bold text-gray-700 mb-2">Health Facilities Information</h2>
         <p class="text-sm text-gray-500 mb-4">Overview of required, available, and surplus health facilities.</p>
 
@@ -184,14 +185,19 @@
     </div>
 
     <!-- Facility Coordinates Section -->
-    <div id="facility-coordinates" class="bg-white shadow-lg rounded-lg p-6 mb-8">
+    <div id="facility-coordinates" class="bg-white shadow-lg rounded-lg p-6 mb-8 border border-gray-300">
         <h2 class="text-xl font-bold text-gray-700 mb-2">Facility Coordinates</h2>
         <p class="text-sm text-gray-500 mb-4">Coordinates for the health facilities mapped based on needs assessment.</p>
         <div id="alertBox" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg shadow-md flex items-center mb-6">
             <i class="fas fa-info-circle text-2xl"></i>
             <span class="ml-3">Facilities were placed on the map based on the needs assessment results.</span>
         </div>
-        {% if facility_coordinates %}
+        <!--facility_Coordinate-->
+        <div class="facility_Coordinate">
+
+        </div>
+
+        <!-- {% if facility_coordinates %}
             {% for facility in facility_coordinates %}
             <div id="facility-{{forloop.counter}}"  class="flex justify-between items-center p-4 bg-gray-50 shadow-sm rounded-lg mb-4 facility_Coordinate">
                 <div class="flex items-center space-x-4">
@@ -211,7 +217,7 @@
                 </div>
             </div>
             {% endfor %}
-        {% else %}
+        {% else %} -->
             <p class="text-gray-500">No facility coordinates available</p>
         {% endif %}
     </div>
@@ -225,7 +231,15 @@
             </div>
 
             <!--download map image-->
-            <div class="flex items-center gap-5 mb-4 float-right">
+            <div class="flex mb-4 float-right">
+                <button id="saveMap" class="btn btn-link disabled" disabled>
+                    <i class="fas fa-save mr-2"></i>
+                    Save Map Prediction</button>
+                <!--edit-->
+                <button id="editMap" class="btn btn-link">
+                    <i class="fas fa-edit ml-2"></i>
+                    Edit
+                </button>
                 <button id="downloadMap" class="btn btn-link">
                     <i class="fas fa-download ml-2"></i>
                     Download Map Image
@@ -234,7 +248,7 @@
         </div>
         <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg shadow-md flex items-center w-full mb-4">
             <i class="fas fa-info-circle text-2xl"></i>
-            <span class="ml-3">Double click on a marker to move it to a new location on the map.</span>
+            <span class="ml-3">Double click on a marker and drag to move it to a new location on the map.</span>
         </div>
 
         <div id="map" class="h-96"></div>
@@ -246,7 +260,7 @@
             <i class="fas fa-info-circle text-2xl"></i>
             <span class="ml-3">Click on save map prediction to save map prediction after moving a maker on the map</span>
         </div>
-        <button id="saveMap" class="btn btn-primary disabled" disabled>Save Map Prediction</button>
+        
     </div>  
 
 </div>
@@ -256,7 +270,10 @@
     
     // scroll to top of the page
     window.scrollTo(0, 0);
-
+    let saveMap = document.getElementById('saveMap');
+    let markers = []
+    let editMap = document.getElementById('editMap');
+    let facilityCoordinateDetails = document.querySelector('.facility_Coordinate');
     
 
     let facilityCoordinates = [];
@@ -270,8 +287,9 @@
     // Function to create markers and handle double-click events
     function createMarker() {
         "{% for facility in facility_coordinates %}"
-            var marker = L.marker(["{{ facility.lattitude }}", "{{ facility.longitude }}"]).addTo(map);
-            marker.bindPopup("<b>{{ facility.facility_name }}</b><br>Type: {{ facility.facility_type }}<br>Coordinates: Lon: {{ facility.longitude }}, Lat: {{ facility.lattitude }}<br>Area: {{ facility.area_name }}").openPopup();
+            var marker = L.marker(["{{ facility.lattitude }}", "{{ facility.longitude }}"], {draggable: true }).addTo(map);
+            marker.bindPopup(`<b>{{ facility.facility_name }}</b><br>
+            Maker ID: ${marker._leaflet_id}<br>Coordinates: Lon: {{ facility.longitude }}, Lat: {{ facility.lattitude }}<br>Area: {{ facility.area_name }}`).openPopup();
 
             // update facility coordinates
             facilityCoordinates.push({
@@ -282,155 +300,298 @@
                 areaName: "{{ facility.area_name }}"
             });
 
-            // Handle right-click event to move the marker
-            marker.on('contextmenu', function(e) {
-                // open context menu
-                var contextMenu = L.popup()
-                            .setLatLng(e.latlng)
-                            .setContent(`
-                                <div class="flex flex-col gap-2">
-                                    <button id="move" class="btn btn-primary">Move</button>
-                                    <button class="btn btn-danger">Delete</button>
-                                </div>
-                            `)
-                            .openOn(map); 
+            // update facility coordinates and area display
+            var facilityDetailElement = document.createElement('div');
+            facilityDetailElement.classList.add('flex', 'justify-between', 'items-center', 'p-4', 'bg-gray-50', 'shadow-sm', 'rounded-lg', 'mb-4', 'border', 'border-gray-300');
+            facilityDetailElement.id = marker._leaflet_id;
+
+            facilityDetailElement.innerHTML = `
                 
-                // make marker draggable when move button is clicked
-                document.getElementById('move').addEventListener('click', function() {
-                    marker.dragging.enable();
-                    contextMenu.remove();
-                });
+                    <div class="">  
+                        <div>  
+                            <i class="fas fa-map-marker-alt text-red-500 mr-2"></i>
+                            <span class="font-semibold text-gray-700">{{facility.facility_name}}</span>
+                        </div>
+                        <!--Maker id-->
+                        <p class="text-sm text-gray-500 mt-1 marker-id">
+                            <i class="fas fa-id-badge mr-2 text-blue-500"></i>
+                            Marker ID: ${marker._leaflet_id}</p>
+                    
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-gray-500">
+                            <i class="fas fa-map-pin mr-2 text-blue-500"></i>  
+                            <span class="facilityCoordinate">Lat: {{ facility.lattitude }}, Lon: {{ facility.longitude }}</span>
+                        </div>
+                        <div class="text-sm text-gray-500">
+                            <i class="fas fa-chart-area mr-2 text-green-500"></i>
+                            <span class="facilityArea">{{ facility.area_name }}</span>
+                        </div>
+                    </div>
+             
+            `;
+            facilityCoordinateDetails.appendChild(facilityDetailElement);                
 
-                // make un-draggable when maker is moved and is still
-                marker.on('dragend', function() {
-                    marker.dragging.disable();
+            markers.push(marker);
 
-                    // update the coordinates in the popup
-                    let newCoordinates = marker.getLatLng();
+            markers.forEach(marker => {
+                marker.on('dragend', function(e) {
+                        console.log(e)
+                        var updatedLatLng = e.target.getLatLng();
+                        let lat = updatedLatLng.lat;
+                        let lon = updatedLatLng.lng;
 
-                        // make a request and get the area name of the new coordinates to nominatim api
-                        let url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${newCoordinates.lat}&lon=${newCoordinates.lng}&zoom=18&addressdetails=1`;
+                        let popupContent = `<div class="flex justify-center items-center"><div class="loading loading-sm"></div></div>`;
+                        marker.getPopup().setContent(popupContent).openOn(map); 
+                        
+                        // Perform reverse geocoding to get the new area name (replace with your reverse geocoding logic)
+                        let url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
+
                         fetch(url)
-                        .then(response => {
-                            return response.json();
-                        })
-                        .then(data => {
-                            
-                            let areaName = data.address.village || data.address.town || data.address.city || data.address.county || data.address.state;
-                            
-                            marker.bindPopup("<b>{{ facility.facility_name }}</b><br>Coordinates: Lon: " + newCoordinates.lng + ", Lat: " + newCoordinates.lat + "<br>Area: " + areaName).openPopup();
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data)
+                                let areaName =  data.display_name
 
-                            // update respective facility coordinates on the page
-                            let facilityCoordinatesLength = document.querySelectorAll('.facility_Coordinate').length;
-                            console.log(facilityCoordinatesLength);
-                            for (let i = 0; i < facilityCoordinatesLength; i++) {
-                                let facilityCoordinate = document.querySelectorAll('.facility_Coordinate')[i];
+                                // Update facilityCoordinatesAreaName array
+                                facilityCoordinates.forEach(facility => {
+                                    if (facility.id === marker._leaflet_id) {
+                                        console.log(facility, facility.id, marker._leaflet_id)
+                                        facility.lat = updatedLatLng.lat;
+                                        facility.lon = updatedLatLng.lng;
+                                        facility.areaName = areaName;
 
+                                        // Update facility coordinates and area display
+                                        let facilityDetailElement = document.getElementById(marker._leaflet_id);
+                                        console.log(facilityDetailElement)
 
-                                
-                                if(facilityCoordinate.id === `facility-${i+1}`) {
-                                    
+                                        
 
-                                    // update the coordinates and area name
-                                    facilityCoordinate.querySelector('.facilityCoordinate').textContent = `Lon: ${newCoordinates.lng}, Lat: ${newCoordinates.lat}`;
-                                    facilityCoordinate.querySelector('.name').textContent = areaName;
+                                        let facilityCoordElem = facilityDetailElement.querySelector('.facilityCoordinate');
+                                        let facilityAreaElem = facilityDetailElement.querySelector('.facilityArea');
+                                        console.log(facilityCoordElem, facilityAreaElem)
+                                        // spinner
+                                        facilityAreaElem.innerHTML = `
+                                        <div class="flex justify-center items-center">
+                                            <div class="loading loading-sm"></div>
+                                        </div>`;
 
-                                    // update the facilityCoordinates array
-                                    for (let j = 0; j < facilityCoordinates.length; j++) {
-                                        if (facilityCoordinates[j].id == marker._leaflet_id) {
-                                            facilityCoordinates[j].lon = newCoordinates.lng;
-                                            facilityCoordinates[j].lat = newCoordinates.lat;
-                                            facilityCoordinates[j].areaName = areaName;
+                                        facilityCoordElem.innerHTML = `
+                                            <div class="flex justify-center items-center">
+                                                <div class="loading loading-sm"></div>
+                                            </div>
+                                        `
+                                        
+                                        if (facilityCoordElem) {
+                                            facilityCoordElem.textContent = `Lat: ${updatedLatLng.lat}, Lon: ${updatedLatLng.lng}`;
                                         }
+                                        if (facilityAreaElem) {
+                                            facilityAreaElem.textContent = areaName;
+                                        }
+
                                     }
+                                });
 
+                               
 
-                                    
-                                    // enable save btn
-                                    document.getElementById('saveMap').disabled = false;
-
-                                    // sweet alert
-                                    swal({
-                                        title: "Coordinates Updated!",
-                                        text: "Click save to update the coordinates",
-                                        icon: "success",
-                                        button: "OK",
-                                    });
-
-                                }
-                            }
-
-
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-
-
+                                // Optionally, update the popup content with the new area name
+                                marker.getPopup().setContent(`<b>{{ facility.facility_name }}</b><br>Latitude: ${updatedLatLng.lat}<br>Longitude: ${updatedLatLng.lng}<br>
+                                Area: ${areaName}<br>Marker ID: ${marker._leaflet_id}`).openPopup();
                                 
-                });
-            });
+                                saveMap.disabled = false;
+                                
+                                
+                            }).catch(error => {
+                                console.error('Error fetching area name:', error);
+                            });
+
+
+
+                    })
+            })
+
         "{% endfor %}"
 
         
 
     }
 
+
    
 
     // Create markers on the map
     createMarker();
+
+    // Handle edit map button
+    editMap.addEventListener('click', function() {
+        swal({
+            title: "Edit Number of facilities on Map",
+            text: "You can now edit the number of facilities on the map",
+            icon: "info",
+            buttons: ["Cancel", "Edit"],
+        }).
+        then((willEdit) => {
+            if (willEdit) {
+                swal({
+                    title: 'Edit Map',
+                    text: 'Enter the number of facilities you want to place on the map',
+                    content: {
+                        element: 'input',
+                        attributes: {
+                            placeholder: 'Number of facilities',
+                            type: 'number',
+                            min: 1,
+                            max: 10
+                        }
+                    },
+                    buttons: {
+                        cancel: 'Cancel',
+                        confirm: {
+                            text: 'Edit',
+                            value: 'edit',
+                        }
+                    }
+                })
+                .then((value) => {
+                    if (value) {
+                        let max = 10
+                        let min = 1
+                        
+                        if (value < min || value > max) {
+                            swal({
+                                title: 'Invalid Number',
+                                text: `Please enter a number between ${min} and ${max}`,
+                                icon: 'error'
+                            });
+                            return;
+                        }
+                        
+                        
+                            // Remove existing markers
+                            markers.forEach(marker => {
+                                map.removeLayer(marker);
+                            });
+                            markers = [];
+
+                            // Remove existing facility coordinates
+                            facilityCoordinates = [];
+
+                            // Create new markers
+                            for (let i = 0; i < value; i++) {
+                                let marker = L.marker([0, 0], {draggable: true}).addTo(map);
+                                markers.push(marker);
+                            }
+
+                            // Update facility coordinates
+                            markers.forEach(marker => {
+                                marker.on('dragend', function(e) {
+                                    var updatedLatLng = e.target.getLatLng();
+                                    let lat = updatedLatLng.lat;
+                                    let lon = updatedLatLng.lng;
+
+                                    let popupContent = `<div class="flex justify-center items-center"><div class="loading loading-sm"></div></div>`;
+                                    marker.getPopup().setContent(popupContent).openOn(map); 
+                                    
+                                    // Perform reverse geocoding to get the new area name (replace with your reverse geocoding logic)
+                                    let url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
+
+                                    fetch(url)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log(data)
+                                            let areaName =  data.display_name
+
+                                            // Update facilityCoordinatesAreaName array
+                                            facilityCoordinates.forEach(facility => {
+                                                if (facility.id === marker._leaflet_id) {
+                                                    console.log(facility, facility.id, marker._leaflet_id)
+                                                    facility.lat = updatedLatLng.lat;
+                                                    facility.lon = updatedLatLng.lng;
+                                                    facility.areaName = areaName;
+
+                                                    // Update facility coordinates and area display
+                                                    let facilityDetailElement = document.getElementById(marker._leaflet_id);
+                                                    console.log(facilityDetailElement)
+                                                    
+                                                    let facilityCoordElem = facilityDetailElement.querySelector('.facilityCoordinate');
+                                                    let facilityAreaElem = facilityDetailElement.querySelector('.facilityArea');
+
+                                                    // spinner
+                                                    facilityAreaElem.innerHTML = `
+                                                    <div class="flex justify-center items-center">
+                                                        <div class="loading loading-sm"></div>
+                                                    </div>`;
+                                                    facilityCoordElem.innerHTML = `
+                                                        <div class="flex justify-center items-center">
+                                                            <div class="loading loading-sm"></div>
+                                                        </div>
+                                                    `
+
+                                                    if (facilityCoordElem) {
+                                                        facilityCoordElem.textContent = `Lat: ${updatedLatLng.lat}, Lon: ${updatedLatLng.lng}`;
+                                                    }
+                                                    if (facilityAreaElem) {
+                                                        facilityAreaElem.textContent = areaName;
+                                                    }
+
+                                                    
+                                                }
+                                            });
+
+                                            
+
+                                            // Optionally, update the popup content with the new area name
+                                            marker.getPopup().setContent(`<b>{{ facility.facility_name }}</b><br>Latitude: ${updatedLatLng.lat}<br>Longitude: ${updatedLatLng.lng}<br>
+                                            Area: ${areaName}`).openPopup();
+
+                                        }).catch(error => {
+                                            console.error('Error fetching area name:', error);
+                                        });
+                                })
+                            })
+                        
+                    }
+                });
+            }
+        });
+    });
 
 
     
 
   
 
-    // Add Leaflet-Geoman controls
-    // map.pm.addControls({
-    //     position: 'topleft',
-    //     drawMarker: true,
-    //     drawPolygon: true,
-    //     drawPolyline: true,
-    //     drawCircle: true,
-    //     drawCircleMarker: true,
-    //     editMode: true,
-    //     dragMode: true,
-    //     cutPolygon: true,
-    //     removalMode: true
-    // });
-
-    // Handle "Show More" and "Show less" button for the facility table
-    document.getElementById('show-more').addEventListener('click', function() {
-        var rows = document.querySelectorAll('.need-row');
-        
-        // check if innerText of the button is "Show More"
-        if (this.innerText === 'Show More') {
-            rows.forEach(row => {
-                row.classList.remove('hidden');
-            });
-            this.innerText = 'Show Less';
-        } else {
-            rows.forEach((row, index) => {
-                if (index > 4) {
-                    row.classList.add('hidden');
-                }
-            });
-            this.innerText = 'Show More';
-        }
-        
-
-
+    //Add Leaflet-Geoman controls
+    map.pm.addControls({
+        position: 'topleft',
+        drawMarker: true,
+        drawPolygon: true,
+        drawPolyline: true,
+        drawCircle: true,
+        drawCircleMarker: true,
+        editMode: true,
+        dragMode: true,
+        cutPolygon: true,
+        removalMode: true
     });
+
+    
     
 
     // handle save button
-    document.getElementById('saveMap').addEventListener('click', function() {
-        this.innerHTML = `
-            <span class="loading loading-spinner loading-md"></span>
-            saving...
+    saveMap.addEventListener('click', function() {
+        // show  modal
+        document.getElementById('modal-content').innerHTML = `
+            <div class="flex items-center gap-4">
+                <i class="fas fa-spinner fa-spin text-blue-500 text-2xl"></i>
+                <span>Saving map prediction...</span>
+            </div>
         `;
-        this.disabled = true;
+        document.getElementById('form-header').innerHTML = `
+        <p class="text-lg font-bold text-gray-800 text-center">saving ...</p>
+        `;
+
+        my_modal_3.showModal();
 
         html2canvasPro(map.getContainer(), {
             useCORS: true,
@@ -470,8 +631,7 @@
                     alert('An error occurred while saving the map.');
                 })
                 .finally(() => {
-                    this.innerHTML = 'Save Map Prediction';
-                    this.disabled = false;
+                    my_modal_3.close();
                 });
             }, 'image/png', 1);
         }.bind(this));
@@ -515,23 +675,4 @@
         });
     });
 
-    // handle show more button
-    document.getElementById('show-more').addEventListener('click', function() {
-        var rows = document.querySelectorAll('.need-row');
-        
-        // check if innerText of the button is "Show More"
-        if (this.innerText === 'Show More') {
-            rows.forEach(row => {
-                row.classList.remove('hidden');
-            });
-            this.innerText = 'Show Less';
-        } else {
-            rows.forEach((row, index) => {
-                if (index > 4) {
-                    row.classList.add('hidden');
-                }
-            });
-            this.innerText = 'Show More';
-        }
-   })
 </script>

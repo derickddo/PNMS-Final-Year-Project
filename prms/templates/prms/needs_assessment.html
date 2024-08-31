@@ -30,7 +30,7 @@
                                 {% endif %} 
                             {% endif %}
                                 
-                            value="{{ projected_population.slug }}">{{ projected_population }} </option>
+                            value="{{ projected_population.pk }}">{{ projected_population }} </option>
                             {% empty %}
                             <option value="" disabled selected>No population projection available</option>
                         
@@ -45,7 +45,10 @@
                     <div id="loading" class="animate-pulse mt-4 Skeleton">
                         <div class="h-8 bg-gray-300 rounded w-full"></div>
                         <p class="italic">
-                            <div class="h-[10rem] bg-gray-300 rounded w-full mt-1"></div>
+                            <div class="h-[10rem] bg-gray-300 rounded w-full mt-1">
+                                <!--spinner-->
+                                <div class="spinner spinner-primary"></div>
+                            </div>
                         </p>
                     </div>
                 </div>
@@ -89,7 +92,7 @@
                                     {% endif %} 
                                 {% endif %}
                                     
-                                value="{{ projected_population.slug }}">
+                                value="{{ projected_population.pk }}">
                                 <p>{{ projected_population }}</p>
                              </option>
                                 {% empty %}
@@ -948,7 +951,7 @@
                 <!--Info about education type for [pre-school, primary, jhs]-->
                 <div id="educationTypeDetails" class="mt-4">
                     <div class=" h-[18rem] overflow-y-auto">
-                        <h2 class="text-2xl font-bold mb-4">Education Type Details</h2>
+                        <h2 class="text-xl font-bold mb-4">Education Type Details</h2>
                         <!--Pre-School-->
                         <div id="pre-school" class="form-control">
                             <label class="">
@@ -1551,90 +1554,90 @@
     
     main()
     if (true){
-    let area = document.getElementById('area')
-    let areaDropdown = document.getElementById('areaDropdown')
-    let areaTypes = document.querySelectorAll('input[name="areaType"]')
-    let projectedPopulationSelect = document.getElementById('projectedPopulationSelect')
-    var populationSlug = document.getElementById('projectedPopulationSelect');
+        let area = document.getElementById('area')
+        let areaDropdown = document.getElementById('areaDropdown')
+        let areaTypes = document.querySelectorAll('input[name="areaType"]')
+        let projectedPopulationSelect = document.getElementById('projectedPopulationSelect')
+        var populationSlug = document.getElementById('projectedPopulationSelect');
 
-    // listen for changes in the projected population select and make a htmx request to get the population details
-    if(projectedPopulationSelect){
-        projectedPopulationSelect.addEventListener('change', function() {
-            var populationSlug = this.value;
-            var url = `/get-population-projection-details/${populationSlug}`
-            htmx.ajax('GET', url, {target: document.getElementById('population-details')});
-        });
-    }
-
-    // make default request to get the population details
-    if (populationSlug){
-        var url = `/get-population-projection-details/${populationSlug.value}`
-        htmx.ajax('GET', url, {target: document.getElementById('population-details')});
-    }
-
-    // listen to radio button changes and make a request to get the area dropdown
-    if(areaTypes){
-        areaTypes.forEach((radio) => {
-            radio.addEventListener('change', function() {
-                var areaType = this.value;
-                var url = `/get-areas/${areaType}`
-                htmx.ajax('GET', url, {target: document.getElementById('areaDropdown')});
-
-                document.getElementById('area').placeholder = `Select ${areaType}`;
+        // listen for changes in the projected population select and make a htmx request to get the population details
+        if(projectedPopulationSelect){
+            projectedPopulationSelect.addEventListener('change', function() {
+                var populationSlug = this.value;
+                var url = `/get-population-projection-details/${populationSlug}`
+                htmx.ajax('GET', url, {target: document.getElementById('population-details')});
             });
-        });
-    }
-    // listen to the area input field focus and remove hidden class from the dropdown
+        }
 
-    
+        // make default request to get the population details
+        if (populationSlug){
+            var url = `/get-population-projection-details/${populationSlug.value}`
+            htmx.ajax('GET', url, {target: document.getElementById('population-details')});
+        }
 
-    // listen to dropdown item click and set the value of the input field
-    if (areaDropdown){
-        areaDropdown.addEventListener('click', function(e) {
-            if (e.target.tagName === 'LI') {
-                area.value = e.target.textContent;
-                areaDropdown.classList.add('hidden');
-            }
-        });
-    }
+        // listen to radio button changes and make a request to get the area dropdown
+        if(areaTypes){
+            areaTypes.forEach((radio) => {
+                radio.addEventListener('change', function() {
+                    var areaType = this.value;
+                    var url = `/get-areas/${areaType}`
+                    htmx.ajax('GET', url, {target: document.getElementById('areaDropdown')});
 
-    // hide the dropdown when the user clicks outside the dropdown and the input field
-    if(area){
-        document.addEventListener('click', function(e) {
-            if (!document.getElementById('area').contains(e.target) && !document.getElementById('areaDropdown').contains(e.target)) {
-                document.getElementById('areaDropdown').classList.add('hidden');
-            }
-        });
-    }
+                    document.getElementById('area').placeholder = `Select ${areaType}`;
+                });
+            });
+        }
+        // listen to the area input field focus and remove hidden class from the dropdown
 
-    // filter area dropdown by the input field value
-    
-    if (area){
-        area.addEventListener('input', function() {
-            var input = this.value.toLowerCase();
-            var dropdownItems = document.getElementById('areaDropdown').querySelectorAll('li');
-            dropdownItems.forEach((item) => {
-                if (item.textContent.toLowerCase().includes(input)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
+        
+
+        // listen to dropdown item click and set the value of the input field
+        if (areaDropdown){
+            areaDropdown.addEventListener('click', function(e) {
+                if (e.target.tagName === 'LI') {
+                    area.value = e.target.textContent;
+                    areaDropdown.classList.add('hidden');
                 }
             });
-        });
+        }
 
-        area.addEventListener('focus', function() {
-            if (areaDropdown){
-                areaDropdown.classList.remove('hidden');
-            }
-        });
+        // hide the dropdown when the user clicks outside the dropdown and the input field
+        if(area){
+            document.addEventListener('click', function(e) {
+                if (!document.getElementById('area').contains(e.target) && !document.getElementById('areaDropdown').contains(e.target)) {
+                    document.getElementById('areaDropdown').classList.add('hidden');
+                }
+            });
+        }
+
+        // filter area dropdown by the input field value
+        
+        if (area){
+            area.addEventListener('input', function() {
+                var input = this.value.toLowerCase();
+                var dropdownItems = document.getElementById('areaDropdown').querySelectorAll('li');
+                dropdownItems.forEach((item) => {
+                    if (item.textContent.toLowerCase().includes(input)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+
+            area.addEventListener('focus', function() {
+                if (areaDropdown){
+                    areaDropdown.classList.remove('hidden');
+                }
+            });
+        }
+
+
+        // select region as default area type
+        if (document.querySelector('input[value="region"]')){
+            document.querySelector('input[value="region"]').click();
+        }
     }
-
-
-    // select region as default area type
-    if (document.querySelector('input[value="region"]')){
-        document.querySelector('input[value="region"]').click();
-    }
-}
     
  
 

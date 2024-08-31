@@ -1,0 +1,211 @@
+{% load custom_filters %}
+    <div class="educationEnrollment">
+        <div class="bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3" role="alert">
+            <div class="flex">
+                <div class="py-1">
+                <svg class="fill-current h-6 w-6 text-blue-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9 12h2v2H9v-2zm0-8h2v6H9V4zm0 12a8 8 0 110-16 8 8 0 010 16z"/></svg>
+                </div>
+                <div>
+                <p class="font-bold">Info</p>
+                <p class="text-sm">Since you're assessing needs in the the education sector, there is a need to project population for education enrollment.</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mt-4">
+            <!--Base year selection-->
+            <div class="form-control mb-4">
+                <label class="label">
+                    <span class="label-text">Select Base Year</span>
+                </label>
+                <select 
+                {% if base_year %}
+                    disabled
+                {% endif %}
+
+                name="base_year" id="baseYearSelect" class="select select-bordered w-full">
+                    {% for i in 1|generate_base_years %}:
+                        
+                        <option 
+                        {% if base_year %}
+                            {% if base_year == year %}
+                                selected
+                            {% endif %}
+                        {% endif %}
+                            value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!--Projection year selection-->
+            <div class="form-control mb-4">
+                <label class="label">
+                    <span class="label-text">Select Projection Year</span>
+                </label>
+                <select 
+                {% if projection_year %}
+                    disabled
+                {% endif %}
+                name="projection_year" id="projectionYearSelect" class="select select-bordered w-full">
+                    {% for i in 1|generate_projecting_years %}
+                        <option 
+                        {% if projection_year %}
+                            {% if projection_year == year %}
+                                selected
+                            {% endif %}
+                        {% endif %}
+                            value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        </div>
+
+        <!--Area type radio buttons ['region', 'district', 'town']-->
+
+        <div class="form-control mb-4">
+            <label class="label">
+                <span class="label-text">Select Area Type</span>
+            </label>
+            <div class="flex flex-col space-y-5">
+                <label class="flex items-center space-x-2">
+                    <input type="radio" name="areaType" value="region" class="radio radio-primary" 
+                    {% if area_type %}
+                        {% if area_type == 'region' %}
+                            checked
+                        {% endif %}
+                    {% endif %}
+                    />
+                    <span class="label-text">Region</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="radio" name="areaType" value="district" class="radio radio-primary" 
+                    {% if area_type %}
+                        {% if area_type == 'district' %}
+                            checked
+                        {% endif %}
+                    {% endif %}
+                    />
+                    <span class="label-text">District</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="radio" name="areaType" value="town" class="radio radio-primary" 
+                    {% if area_type %}
+                        {% if area_type == 'town' %}
+                            checked
+                        {% endif %}
+                    {% endif %}
+                    />
+                    <span class="label-text">Town</span>
+                </label>
+            </div>
+        </div>
+
+        <!--Area Search and selection-->
+        <div class="form-control mb-4 relative">
+            <label class="label">
+                <span class="label-text">Select Area</span>
+            </label>
+            <input 
+            type="text" name="area" id="area" class="input input-bordered w-full" 
+            />
+            <!--Dropdown of area-->
+            <div id="areaDropdown" class="mt-2 bg-base-100 border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto hidden z-50 absolute top-full left-0 w-full">
+                
+            </div>
+        </div>
+
+        
+        
+        <div class="grid grid-cols-2 gap-4">
+            <!--Base Population-->
+            <div class="form-control mb-4">
+                <label class="label">
+                    <span class="label-text">Base Population</span>
+                </label>
+                <input 
+                {% if base_population %}
+                    disabled
+                {% endif %}
+                type="number" name="base_population" id="basePopulation" class="input input-bordered w-full" placeholder="Enter base population"
+                min="1"
+                {% if base_population %}
+                    value="{{ base_population }}"
+                {% endif %}
+                />
+            </div>
+
+            <!--Growth rate-->
+            <div class="form-control mb-4">
+                <label class="label">
+                    <span class="label-text">Growth Rate (%)</span>
+                </label>
+                <input 
+                {% if growth_rate %}
+                    disabled
+                {% endif %}
+                type="number" name="growth_rate" id="growthRate" class="input input-bordered w-full" placeholder="Enter growth rate" min="0" step="any"
+                
+                {% if growth_rate %}
+                    value="{{ growth_rate }}"
+                {% endif %}
+                />
+            </div>
+        </div>
+    </div>
+    <script>
+        let area = document.getElementById('area')
+        let areaDropdown = document.getElementById('areaDropdown')
+        let areaTypes = document.querySelectorAll('input[name="areaType"]')
+        
+        // listen to dropdown item click and set the value of the input field
+        if (areaDropdown){
+            areaDropdown.addEventListener('click', function(e) {
+                if (e.target.tagName === 'LI') {
+                    area.value = e.target.textContent;
+                    areaDropdown.classList.add('hidden');
+                }
+            });
+        }
+
+        area.addEventListener('focus', function() {
+            if (areaDropdown){
+                areaDropdown.classList.remove('hidden');
+            }
+        });
+        // hide the dropdown when the user clicks outside the dropdown and the input field
+        if(area){
+            document.addEventListener('click', function(e) {
+                if (!document.getElementById('area').contains(e.target) && !document.getElementById('areaDropdown').contains(e.target)) {
+                    document.getElementById('areaDropdown').classList.add('hidden');
+                }
+            });
+        }
+
+        // filter area dropdown by the input field value
+        
+        if (area){
+            area.addEventListener('input', function() {
+                var input = this.value.toLowerCase();
+                var dropdownItems = document.getElementById('areaDropdown').querySelectorAll('li');
+                dropdownItems.forEach((item) => {
+                    if (item.textContent.toLowerCase().includes(input)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+
+            area.addEventListener('focus', function() {
+                if (areaDropdown){
+                    areaDropdown.classList.remove('hidden');
+                }
+            });
+        }
+
+
+        // select region as default area type
+        if (document.querySelector('input[value="region"]')){
+            document.querySelector('input[value="region"]').click();
+        }
+    </script>

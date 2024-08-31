@@ -1,10 +1,23 @@
+<!DOCTYPE html>
 {% extends "base.html" %} 
 {% load static %}
 {% block content %}
 <!-- Main navigation container -->
-<nav class="bg-gradient-to-r from-blue-500 to-teal-500 text-white p-4">
+<nav class="bg-gradient-to-r from-blue-900 to-blue-950 text-white py-4 px-4 md:px-[10%]">
   <div class="container mx-auto flex justify-between items-center">
-      <a href="#" class="text-lg font-bold">PRMS</a>
+    <a id="logo" href="#" 
+    hx-get="{% url 'home' %}" 
+    hx-push-url="true" 
+    hx-target="#main-content" 
+    class="flex flex-col items-center"
+    aria-label="Homepage ">
+         <img width="70" height="80"
+             src="{% static 'img/logo.png' %}" 
+             alt="Company Logo" 
+             class=""
+         />
+         <span class="text-white text-xl font-bold">PNMS</span>
+     </a>
       <div class="flex md:hidden">
           <button id="menu-button" class="btn btn-square btn-ghost">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
@@ -14,7 +27,15 @@
           <a href="#" class="btn btn-ghost btn-sm rounded-btn">Home</a>
           <a href="#" class="btn btn-ghost btn-sm rounded-btn">About</a>
           <a href="#" class="btn btn-ghost btn-sm rounded-btn">Services</a>
-          <a href="{% url 'account_login' %}" class="btn btn-outline  btn-primary btn-md rounded-btn text-white">Sign up</a>
+          <a href="{% url 'account_login' %}"
+              type="button"
+              data-twe-ripple-init
+              data-twe-ripple-color="light"
+              class="bg-white text-blue-500 px-6 py-2 rounded-full font-semibold shadow-lg hover:bg-gray-100">
+              <i class="fas fa-arrow-right"></i>
+              Sign up
+          </a>
+        
       </div>
   </div>
 </nav>
@@ -29,7 +50,7 @@
       <a href="#" class="btn btn-ghost btn-sm py-2.5 rounded-btn transition duration-200 hover:bg-gray-700 hover:text-white text-left">Home</a>
       <a href="#" class="btn btn-ghost btn-sm rounded-btn">About</a>
       <a href="#" class="btn btn-ghost btn-sm rounded-btn">Services</a>
-      <a href="{% url 'account_login' %}" class="btn  btn-outline rounded-btn text-white">Sign up</a>
+      
   </nav>
 </div>
 
@@ -47,14 +68,18 @@
 <!-- Main navigation container ends -->
 
 <!--Hero Section-->
-<section class=" bg-gradient-to-r from-blue-500 to-teal-500 text-white md:h-[40rem] ">
-  <div class="container mx-auto px-[10%] py-12 lg:py-20">
+<section class="relative bg-gradient-to-r from-blue-900 to-blue-950 text-white md:h-[40rem]">
+  <div class="container mx-auto px-[10%] py-4 lg:py-4">
     <div class="flex flex-col items-center justify-center text-center">
-      <h1 class="text-2xl font-bold  dark:text-white lg:text-5xl">
-        Welcome to PNMS 
+      <h1 class="text-2xl font-bold dark:text-white lg:text-[2.6rem]" style="line-height: 4rem;">
+        Population Projection, Needs Assessment, <br>
+        and Map Prediction System
       </h1>
-      <p class="mt-4 text-lg dark:text-white lg:text-xl">
-         Experience seamless management and insightful analytics with our cutting-edge solutions.</p>
+      <p class="mt-4 leading-8 dark:text-white md:text-[1.1rem] text-gray-400">
+        A tool to assist development planners to 
+        project population,
+        <br>
+         asses needs and predict maps.
       </p>
       <div class="mt-8">
         <a href="{% url 'account_login' %}"
@@ -62,28 +87,37 @@
           data-twe-ripple-init
           data-twe-ripple-color="light"
           class="bg-white text-blue-500 px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-gray-100">
+          <i class="fas fa-arrow-right"></i>
           Get Started
-      </a>
+        </a>
       </div>
 
-      <!--Hero image-->
-      <div class="mt-12">
+      <!-- Hero image with an overlapping effect -->
+      <div class="relative mt-12">
         <img
           src="{% static 'img/hero.PNG' %}"
           alt="Hero Image"
           class="w-full h-auto shadow-lg rounded-lg"
+          style="z-index: 10; position: relative;"
         />
+       
       </div>
     </div>
   </div>
 </section>
+ <!-- SVG Curve Background -->
+ <div class="absolute inset-0 top-auto w-full h-[50%] -z-10 transform translate-y-[20%]">
+  <img src="{% static 'img/curveNegative.svg' %}" alt="Curve Background" class="w-full h-auto bg-gradient-to-r from-blue-900 to-blue-950" />
+</div>
+
+
 <!--Hero Section ends-->
 
 
 
 <!--Feature details-->
 <section class="bg-white dark:bg-neutral-800">
-  <div class="container mx-auto px-[10%] py-[4rem]">
+  <div class="container mx-auto px-[10%] py-[4rem] mt-[6rem]">
     <div class="flex flex-col items-center justify-center text-center mt-20">
       <h2 class="text-3xl font-bold text-black dark:text-white lg:text-4xl">
         Feature Details

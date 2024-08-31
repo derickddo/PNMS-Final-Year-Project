@@ -536,7 +536,7 @@ export const main = () => {
                                     skeleton.remove();
                                 }
 
-                                personnelNumbers.appendChild(inputField);
+                                personnelNumbers.prepend(inputField);
                             } 
                             else {
                                 const existingInputField = document.getElementById(inputFieldId);
@@ -557,7 +557,7 @@ export const main = () => {
                                         <div class="h-10 bg-gray-300 rounded w-full"></div>
                                     `;
                                     
-                                    personnelNumbers.appendChild(skeleton);
+                                    personnelNumbers.prepend(skeleton);
                                 }
                         }
 
@@ -1182,6 +1182,8 @@ export const main = () => {
                 }
                 let data = ''
 
+                console.log(facilityNumbers)
+
                 // check if health type is facility or personnel
                 if (sectorSelectionValue === 'health'){
                     if (healthTypeValue === 'facility'){
@@ -1202,7 +1204,7 @@ export const main = () => {
                         }
                     }
                     console.log(data)
-                    htmx.ajax('POST', '/needs-assessment/',  {
+                    htmx.ajax('POST', '/create-needs-assessment/',  {
                         target: '#main',
                         swap: 'innerHTML',
                         values: data,

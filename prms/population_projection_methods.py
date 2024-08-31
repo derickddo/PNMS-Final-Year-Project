@@ -83,14 +83,16 @@ def calculate_facilities_required(population,facility_numbers,year, standards=fa
         for facility_type, available in facility_numbers.items():
             standard = standards[str(facility_type).lower()]
             required_facilities = int(population / standard)
-            new_need = int(required_facilities) - int(available)
+            temp = int(available) - int(required_facilities) 
             suplus = None
+            new_need = None
             
-            # check if new need is negative
-            if new_need > 0:
-                suplus = new_need
+            # check if new need is positive then there is suplus
+            if temp > 0:
+                suplus = temp
             else:
-                  new_need = None
+                # check if new need is negative then there is no suplus and there is new need
+                new_need = abs(temp)
             
             results.append({
                 'year':year,
@@ -111,14 +113,17 @@ def calculate_personnel_required(population, personnel_numbers, year, standards=
         for personnel_type, available in personnel_numbers.items():
             standard = standards[str(personnel_type).lower()]
             required_personnel = int(population / standard)
-            new_need = int(required_personnel) - int(available)
+            temp =  int(available) - int(required_personnel)
             suplus = None
+            new_need = None
             
-            # check if new need is negative
-            if new_need > 0:
-                suplus = new_need
+            # check if new need is positive then there is suplus
+            if temp > 0:
+                suplus = temp
             else:
-                new_need = None
+                # check if new need is negative then there is no suplus and there is new need
+                # convert to positive
+                new_need = abs(temp)
             
             results.append({
                 'year':year,
@@ -139,14 +144,17 @@ def calculate_classrooms_required(population, classroom_numbers, year, standards
         for classroom_type, available in dict(classroom_numbers).items():
             standard = standards[classroom_type.lower()]
             required_classrooms = int(population / standard)
-            new_need = int(required_classrooms) - int(available)
+            temp = int(available) - int(required_classrooms)
             suplus = None
+            new_need = None
             
-            # check if new need is negative
-            if new_need > 0:
-                suplus = new_need
+            # check if temp is positive then there is suplus
+            if temp > 0:
+                suplus = temp
             else:
-                new_need = None
+                # check if temp is negative then there is no suplus and there is new need
+                new_need = abs(temp)
+            
             
             results.append({
                 'year':year,
@@ -167,15 +175,17 @@ def calculate_dual_desks_required(population, dual_desk_numbers, year, standards
         for dual_desk_type, available in dual_desk_numbers.items():
             standard = standards[dual_desk_type.lower()]
             required_desks = int(population / standard)
-            new_need = int(required_desks) - int(available)
-            suplus = int(available) - int(required_desks)
+            temp = int(available) - int(required_desks)
+            suplus = None
+            new_need = None
 
-            if new_need < 0:
-                new_need = None
+            # check if temp is positive then there is suplus
+            if temp > 0:
+                suplus = temp
+            else:
+                # check if temp is negative then there is no suplus and there is new need
+                new_need = abs(temp)
 
-            if suplus < 0:
-                suplus = None
-            
             
             results.append({
                 'year':year,
@@ -196,14 +206,16 @@ def calculate_water_sources_required(population, water_source_numbers, year, sta
         for water_source_type, available in water_source_numbers.items():
             standard = standards[water_source_type.lower()]
             required_sources = int(population / standard)
-            new_need = int(required_sources) - int(available)
-            suplus = int(available) - int(required_sources)
+            temp = int(available) - int(required_sources)
+            suplus = None
+            new_need = None
 
-            if new_need < 0:
-                new_need = None
-
-            if suplus < 0:
-                suplus = None
+            # check if temp is positive then there is suplus
+            if temp > 0:
+                suplus = temp
+            else:
+                # check if temp is negative then there is no suplus and there is new need
+                new_need = abs(temp)
             
             
             results.append({
@@ -224,14 +236,16 @@ def calculate_toilets_required(population, toilet_numbers, year, standards=toile
         for toilet_type, available in toilet_numbers.items():
             standard = standards[toilet_type.lower()]
             required_toilets = int(population / standard)
-            new_need = int(required_toilets) - int(available)
-            suplus = int(available) - int(required_toilets)
+            temp = int(available) - int(required_toilets) 
+            suplus = None
+            new_need = None
 
-            if new_need < 0:
-                new_need = None
-
-            if suplus < 0:
-                suplus = None
+            # check if temp is positive then there is suplus
+            if temp > 0:
+                suplus = temp
+            else:
+                # check if temp is negative then there is no suplus and there is new need
+                new_need = abs(temp)
             
             
             results.append({
@@ -252,14 +266,16 @@ def calculate_skip_containers_required(population, skip_container_numbers, year,
         for skip_container_type, available in skip_container_numbers.items():
             standard = standards[skip_container_type.lower()]
             required_skip_containers = int(population / standard)
-            new_need = int(required_skip_containers) - int(available)
-            suplus = int(available) - int(required_skip_containers)
+            temp = int(available) - int(required_skip_containers)
+            suplus = None
+            new_need = None
 
-            if new_need < 0:
-                new_need = None
-
-            if suplus < 0:
-                suplus = None
+            # check if temp is positive then there is suplus
+            if temp > 0:
+                suplus = temp
+            else:
+                # check if temp is negative then there is no suplus and there is new need
+                new_need = abs(temp)
             
             
             results.append({

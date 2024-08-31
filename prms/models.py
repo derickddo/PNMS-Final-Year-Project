@@ -62,6 +62,17 @@ class District(models.Model):
     class Meta:
         db_table = 'district'
 
+class Town(models.Model):
+    name = models.CharField(max_length=100)
+    district = models.ForeignKey(District, on_delete=models.CASCADE)
+    map_url = models.URLField()
+    related_model = GenericRelation('PopulationProjection', related_query_name='town')
+
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        db_table = 'town'
     
     
 
@@ -284,17 +295,17 @@ class Projection(models.Model):
         db_table = 'projection'
 
 
-class Report(models.Model):
-    title = models.CharField(max_length=50)
-    report_file = models.FileField(upload_to='reports/')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True) 
-    slug = models.SlugField(unique=True, default=None)
+# class Report(models.Model):
+#     title = models.CharField(max_length=50)
+#     report_file = models.FileField(upload_to='reports/')
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     created_at = models.DateTimeField(auto_now_add=True) 
+#     slug = models.SlugField(unique=True, default=None)
 
-    def __str__(self):
-        return self.title
+#     def __str__(self):
+#         return self.title
     
-    class Meta:
-        db_table = 'report'
+#     class Meta:
+#         db_table = 'report'
 
 

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponse
-from .models import Region, District, PopulationProjection, Projection, Population, Needs, NeedsAssessment, FacilityType, PersonnelType, Sector, FurnitureType, MapPrediction, FacilityCoordinatesAndAreaName
+from .models import Region, District, PopulationProjection, Projection, Population, Needs, NeedsAssessment, FacilityType, PersonnelType, Sector, FurnitureType, MapPrediction, FacilityCoordinatesAndAreaName, Town
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .population_projection_methods import calculate_projections, calculate_growth_rate, calculate_facilities_required, facility_standards, personnel_standards, calculate_personnel_required, calculate_classrooms_required, classroom_standards, calculate_dual_desks_required, dual_desk_standards, calculate_water_sources_required, water_source_standards, calculate_toilets_required, toilet_standards, calculate_skip_containers_required, skip_container_standards
@@ -29,6 +29,7 @@ import time
 import os
 import matplotlib
 from ratelimit import limits, RateLimitException
+import requests
 
 
 
@@ -141,6 +142,13 @@ def get_districts(request):
     print(districts)
     return JsonResponse({'districts': list(districts.values())})
 
+# get towns from an api
+def get_towns(request):
+    region = request.GET.get('region')
+    district = request.GET.get('district')
+    
+    #
+
 # calculate growth rate
 def generate_unique_slug(model, base_slug):
     unique_slug = base_slug
@@ -194,7 +202,9 @@ def create_or_update_population_projection(request):
     growth_rate_type = data.get('growthRateType', None)
     slug = slugify(data['slug'])
     projection_id = data.get('id', None)  # To identify if it's an update
-    print(data)
+    
+    population_projection = None
+    print(area_type)
     # Calculate growth rate if it's set to auto
     growth_rate = get_growth_rate(
                                 area_type=area_type,  growth_rate_type=growth_rate_type, 
@@ -210,7 +220,7 @@ def create_or_update_population_projection(request):
 
     # if the request is a POST request, create a new population projection
     if request.method == 'POST':
-        slug = generate_unique_slug(PopulationProjection, slug)
+        new_slug = generate_unique_slug(PopulationProjection, slug)
         if area_type == 'region': # for region
             region = Region.objects.get(name=data['region'])
             population_projection = PopulationProjection.objects.create(
@@ -218,7 +228,7 @@ def create_or_update_population_projection(request):
                 description=description,
                 area_type=area_type,
                 title=title,
-                slug=slug,
+                slug=new_slug,
                 user=request.user,
                 content_object=region,
                 object_id=region.pk,
@@ -231,12 +241,34 @@ def create_or_update_population_projection(request):
                 description=description,
                 area_type=area_type,
                 title=title,
-                slug=slug,
+                slug=new_slug,
                 user=request.user,
                 content_object=district,
                 object_id=district.pk,
                 content_type=ContentType.objects.get_for_model(district)
             )
+        else:
+            # for town
+            town, created = Town.objects.get_or_create(
+                name=data['town'],  
+                district=District.objects.get(name=data['district']), 
+                map_url = '',
+
+            )
+            population_projection = PopulationProjection.objects.create(
+                growth_rate=growth_rate,
+                description=description,
+                area_type=area_type,
+                title=title,
+                slug=new_slug,
+                user=request.user,
+                content_object=town if town else created,
+                object_id=town.pk if town else created.pk,
+                content_type=ContentType.objects.get_for_model(town) if town else ContentType.objects.get_for_model(created)
+            )
+
+           
+            
     # if the request is a PUT request, update the population projection
     elif request.method == 'PUT': 
         print(projection_id)
@@ -248,6 +280,7 @@ def create_or_update_population_projection(request):
         population_projection.save()
         population_projection.projections.clear() # clear all projections before adding new ones
 
+    print(population_projection)
     # Create projections
     for result in projection_results:
         projection = Projection.objects.create(
@@ -280,11 +313,11 @@ def create_or_update_population_projection(request):
 
     return render(request, 'prms/population_projection.html', context)
 
-import requests
-import time
-import time
+# import requests
+# import time
+# import time
 
-def get_geojson_from_nominatim(area_name):
+# def get_geojson_from_nominatim(area_name):
     url = 'https://nominatim.openstreetmap.org/search'
     params = {
         'q': area_name,
@@ -359,8 +392,8 @@ def get_population_projection(request, slug):
     return render(request, 'prms/dashboard.html', {'child_template': child_template})
 
 
-def get_population_projection_details(request, slug):
-    population_projection = PopulationProjection.objects.get(slug=slug)
+def get_population_projection_details(request, pk):
+    population_projection = PopulationProjection.objects.get(pk=pk, user=request.user)
     projections = population_projection.projections.all()
     area_type = population_projection.area_type
     area = population_projection.content_object.name
@@ -390,6 +423,17 @@ def get_population_projection_details(request, slug):
 # get needs assessment for a population projection
 def get_needs_assessment_for_population_projection(request, slug):
     sector = request.GET.get('sector', None)
+    facility_needs = None
+    personnel_needs = None
+    classroom_needs = None
+    water_needs = None
+    skip_container_needs = None
+    toilet_needs = None
+    dual_desk_needs = None
+
+    # needs for sector found
+    needs_for_sector = None
+
     if sector is not None:
         population_projection = PopulationProjection.objects.get(slug=slug, user=request.user)
         try:
@@ -398,22 +442,22 @@ def get_needs_assessment_for_population_projection(request, slug):
         except Sector.DoesNotExist:
             return render(request, 'partials/health_sector.html', {'population_projection':population_projection, 'sector':sector})
         needs_assessment = NeedsAssessment.objects.filter(population_projection=population_projection).first()
+        if needs_assessment:
+            facility_needs = needs_assessment.needs.filter(needs_type='facility', sector=sector)
+            personnel_needs = needs_assessment.needs.filter(needs_type='personnel', sector=sector)
         
-        facility_needs = needs_assessment.needs.filter(needs_type='facility', sector=sector)
-        personnel_needs = needs_assessment.needs.filter(needs_type='personnel', sector=sector)
-    
-        classroom_needs = needs_assessment.needs.filter(needs_type='classroom', sector=sector)
-        dual_desk_needs = needs_assessment.needs.filter(needs_type='dual desk', sector=sector)
+            classroom_needs = needs_assessment.needs.filter(needs_type='classroom', sector=sector)
+            dual_desk_needs = needs_assessment.needs.filter(needs_type='dual desk', sector=sector)
 
-        water_needs = needs_assessment.needs.filter(needs_type='water source', sector=sector)
-        
+            water_needs = needs_assessment.needs.filter(needs_type='water source', sector=sector)
+            
 
-        skip_container_needs = needs_assessment.needs.filter(needs_type='skip container', sector=sector)
+            skip_container_needs = needs_assessment.needs.filter(needs_type='skip container', sector=sector)
 
-        toilet_needs = needs_assessment.needs.filter(needs_type='toilet', sector=sector)
+            toilet_needs = needs_assessment.needs.filter(needs_type='toilet', sector=sector)
 
-        # needs for sector found
-        needs_for_sector = needs_assessment.needs.filter(sector=sector)
+            # needs for sector found
+            needs_for_sector = needs_assessment.needs.filter(sector=sector)
 
         context = {
             'population_projection':population_projection,
@@ -951,162 +995,111 @@ def get_population_projection_form(request):
 
 
 # create needs assessment view
+@csrf_exempt
 @verified_email_required
 @login_required(login_url='account_login')
 def create_needs_assesment(request):
-    population_projections = PopulationProjection.objects.all()
     required_facilities = []
     required_personnels = []
-    if request.method == 'POST':
-        data = request.body.decode('utf-8')
-        data = urllib.parse.parse_qs(data)
-        data = {key: value[0] for key, value in data.items()}
-        sector = data.get('sector', None)
-        projection_slug = data.get('projectedPopulation', None)
-        need_type = data.get('type', None)
-        facility_numbers = data.get('facilityNumbers', None)
-        personnel_numbers = data.get('personnelNumbers', None)
-        facility_numbers = json.loads(facility_numbers) if facility_numbers else None
-        personnel_numbers = json.loads(personnel_numbers) if personnel_numbers else None
-        needs_assessment_slug = ''
-       
+    
+    data = request.body.decode('utf-8')
+    data = urllib.parse.parse_qs(data)
+    data = {key: value[0] for key, value in data.items()}
+    sector = data.get('sector', None)
+    projection_pk = data.get('projectedPopulation', None)
+    need_type = data.get('type', None)
+    facility_numbers = data.get('facilityNumbers', None)
+    personnel_numbers = data.get('personnelNumbers', None)
+    facility_numbers = json.loads(facility_numbers) if facility_numbers else None
+    personnel_numbers = json.loads(personnel_numbers) if personnel_numbers else None
+    needs_assessment = None
+    
+    
 
-        population_projection = PopulationProjection.objects.filter(slug=projection_slug, user=request.user, is_education_enrollment=False).first()
+    population_projection = PopulationProjection.objects.get(pk=projection_pk)
+    print(f"POP: {population_projection} projection_slug: {projection_pk}")
 
-        projections = population_projection.projections.all()
-        projection_years = projections.values_list('projecting_year', flat=True).order_by('projecting_year')
-        base_years = projections.values_list('base_year', flat=True).order_by('base_year')
-        base_populations = projections.values_list('base_population', flat=True).order_by('base_population')
-        projected_populations = projections.values_list('projected_population', flat=True).order_by('projected_population')
+    projections = population_projection.projections.all()
+    projection_years = projections.values_list('projecting_year', flat=True).order_by('projecting_year')
+    base_years = projections.values_list('base_year', flat=True).order_by('base_year')
+    base_populations = projections.values_list('base_population', flat=True).order_by('base_population')
+    projected_populations = projections.values_list('projected_population', flat=True).order_by('projected_population')
 
-        populations = []
-        for i in range(len(projection_years)):
-            populations.append(
-                {
-                    'year':base_years[i],
-                    'population':base_populations[i]
-                }
-            )
+    populations = []
+    for i in range(len(projection_years)):
         populations.append(
             {
-                'year':projection_years.last(),
-                'population':projected_populations.last()
+                'year':base_years[i],
+                'population':base_populations[i]
             }
         )
+    populations.append(
+        {
+            'year':projection_years.last(),
+            'population':projected_populations.last()
+        }
+    )
 
 
-        
-        # check if sector is health
-        if sector == 'health':
-            if need_type == 'facility':
-                # check if there is an existing needs_assessment for this particular projection
-                needs_assessment = NeedsAssessment.objects.filter(population_projection=population_projection).first()
-                
-                try:
-                    sector = Sector.objects.get(name=sector)
-                except Sector.DoesNotExist:
-                    sector = Sector.objects.create(name=sector, description='Health sector', slug=slugify(sector))
+    
+    # check if sector is health
+    if sector == 'health':
+        if need_type == 'facility':
+            # check if there is an existing needs_assessment for this particular projection
+            needs_assessment = NeedsAssessment.objects.filter(population_projection=population_projection).first()
+            
+            try:
+                sector = Sector.objects.get(name=sector)
+            except Sector.DoesNotExist:
+                sector = Sector.objects.create(name=sector, description='Health sector', slug=slugify(sector))
 
-                # check if there is an existing needs_assessment
-                if needs_assessment:
-                    # calculate the number of personnel required for each year and population
-                    for population in populations:
-                        print(population['year'], population['population'])
-                        results = calculate_facilities_required(
-                            population=population['population'],
-                            facility_numbers=facility_numbers,
-                            year = population['year'],
-                            standards=facility_standards
-                        )
-                        required_facilities.append(results)
-                    
-                    formatted_results = []
-                    for i in required_facilities:
-                        for j in i:
-                            formatted_results.append(j)
-
-                    facility_needs = needs_assessment.needs.filter(needs_type='facility')
-                    
-                    # check if there are existing needs
-                    if facility_needs:
-                        # delete and create new ones
-                        facility_needs.delete()
-                        for i in formatted_results:
-                            facility = FacilityType.objects.create(
-                                year = i['year'],
-                                type_name = i['facility_type'],
-                                required = i['required'],
-                                standard = i['standard'],
-                                new_need = i['new_need'],
-                                suplus = i['suplus'],
-                                available = i['available'],
-                                population = i['population']
-                            )
-                            need = Needs.objects.create(
-                                needs_type = 'facility',
-                                object_id = facility.pk,
-                                content_type = ContentType.objects.get_for_model(facility),
-                                content_object = facility,
-                                sector = sector
-                            )
-                            needs_assessment.needs.add(need)
-                        needs_assessment.save()
-
-                    # create new needs
-                    else:
-                        #save into database
-                        for i in required_facilities:
-                            for j in i:
-                                facility = FacilityType.objects.create(
-                                    year = j['year'],
-                                    type_name = j['facility_type'],
-                                    required = j['required'],
-                                    standard = j['standard'],
-                                    new_need = j['new_need'],
-                                    suplus = j['suplus'],
-                                    available = j['available'],
-                                    population = j['population']
-                                )
-                                need = Needs.objects.create(
-                                    needs_type = 'facility',
-                                    object_id = facility.pk,
-                                    content_type = ContentType.objects.get_for_model(facility),
-                                    content_object = facility,
-                                    sector = sector
-                                )
-                                needs_assessment.needs.add(need)
-                        needs_assessment.save()
-                        needs_assessment_slug = needs_assessment.slug
-                # create a new needs assessment
-                else:
-                    # create a new needs assessment
-                    slug = slugify(f'{sector}-{population_projection.area_type}-{population_projection.content_object.name}')
-                    slug = generate_unique_slug(NeedsAssessment, slug)
-
-                    # check if sector exists
-                    try:
-                        sector = Sector.objects.get(name=sector)
-                    except Sector.DoesNotExist:
-                        sector = Sector.objects.create(name=sector, description='Health sector', slug=slugify(sector))
-                    
-                    # create a new needs assessment
-                    needs_assessment = NeedsAssessment.objects.create(
-                        population_projection = population_projection,
-                        slug = slug
+            # check if there is an existing needs_assessment
+            if needs_assessment:
+                # calculate the number of personnel required for each year and population
+                for population in populations:
+                    print(population['year'], population['population'])
+                    results = calculate_facilities_required(
+                        population=population['population'],
+                        facility_numbers=facility_numbers,
+                        year = population['year'],
+                        standards=facility_standards
                     )
+                    required_facilities.append(results)
+                
+                formatted_results = []
+                for i in required_facilities:
+                    for j in i:
+                        formatted_results.append(j)
 
-                    # calculate the number of personnel required for each year and population
-                    for population in populations:
-                        print(population['year'], population['population'])
-                        results = calculate_facilities_required(
-                            population=population['population'],
-                            facility_numbers=facility_numbers,
-                            year = population['year'],
-                            standards=facility_standards
+                facility_needs = needs_assessment.needs.filter(needs_type='facility')
+                
+                # check if there are existing needs
+                if facility_needs:
+                    # delete and create new ones
+                    facility_needs.delete()
+                    for i in formatted_results:
+                        facility = FacilityType.objects.create(
+                            year = i['year'],
+                            type_name = i['facility_type'],
+                            required = i['required'],
+                            standard = i['standard'],
+                            new_need = i['new_need'],
+                            suplus = i['suplus'],
+                            available = i['available'],
+                            population = i['population']
                         )
-                        required_facilities.append(results)
-                    print(required_facilities)
+                        need = Needs.objects.create(
+                            needs_type = 'facility',
+                            object_id = facility.pk,
+                            content_type = ContentType.objects.get_for_model(facility),
+                            content_object = facility,
+                            sector = sector
+                        )
+                        needs_assessment.needs.add(need)
+                    needs_assessment.save()
 
+                # create new needs
+                else:
                     #save into database
                     for i in required_facilities:
                         for j in i:
@@ -1120,7 +1113,6 @@ def create_needs_assesment(request):
                                 available = j['available'],
                                 population = j['population']
                             )
-                            # create a new need
                             need = Needs.objects.create(
                                 needs_type = 'facility',
                                 object_id = facility.pk,
@@ -1128,115 +1120,121 @@ def create_needs_assesment(request):
                                 content_object = facility,
                                 sector = sector
                             )
-                            print(need)
                             needs_assessment.needs.add(need)
-                          
                     needs_assessment.save()
-                    needs_assessment_slug = needs_assessment.slug
-                
-            # check if need type is personnel
-            elif need_type == 'personnel':
-                # check if there is an existing needs_assessment for this particular projection
-                needs_assessment = NeedsAssessment.objects.get(population_projection=population_projection)
-                
+                    
+            # create a new needs assessment
+            else:
+                # create a new needs assessment
+                slug = slugify(f'{sector}-{population_projection.area_type}-{population_projection.content_object.name}')
+                slug = generate_unique_slug(NeedsAssessment, slug)
+
+                # check if sector exists
                 try:
                     sector = Sector.objects.get(name=sector)
                 except Sector.DoesNotExist:
                     sector = Sector.objects.create(name=sector, description='Health sector', slug=slugify(sector))
+                
+                # create a new needs assessment
+                needs_assessment = NeedsAssessment.objects.create(
+                    population_projection = population_projection,
+                    slug = slug
+                )
 
-                # check if there is an existing needs_assessment
-                if needs_assessment:
-                    # calculate the number of personnel required for each year and population
-                    for population in populations:
-                        print(population['year'], population['population'])
-                        results = calculate_personnel_required(
-                            population=population['population'],
-                            personnel_numbers=personnel_numbers,
-                            year = population['year'],
-                            standards=personnel_standards
-                        )
-                        required_personnels.append(results)
-                    
-                    formatted_results = []
-                    for i in required_personnels:
-                        for j in i:
-                            formatted_results.append(j)
-                    
-                    # 
-                    personnel_needs = needs_assessment.needs.filter(needs_type='personnel')
-                    if personnel_needs:
-                        # delete and create new one
-                        need.delete()
-                        for i in formatted_results:
-                            personnel = PersonnelType.objects.create(
-                                year = i['year'],
-                                type_name = i['personnel_type'],
-                                required = i['required'],
-                                standard = i['standard'],
-                                new_need = i['new_need'],
-                                suplus = i['suplus'],
-                                available = i['available'],
-                                population = i['population']
-                            )
-                            need = Needs.objects.create(
-                                needs_type = 'personnel',
-                                object_id = personnel.pk,
-                                content_type = ContentType.objects.get_for_model(personnel),
-                                content_object = personnel,
-                                sector = sector
-                            )
-                            needs_assessment.needs.add(need)
-                        needs_assessment.save()
-                            
-                    else:
-                        #save into database
-                        for i in required_personnels:
-                            for j in i:
-                                personnel = PersonnelType.objects.create(
-                                    year = j['year'],
-                                    type_name = j['personnel_type'],
-                                    required = j['required'],
-                                    standard = j['standard'],
-                                    new_need = j['new_need'],
-                                    suplus = j['suplus'],
-                                    available = j['available'],
-                                    population = j['population']
-                                )
-                                need = Needs.objects.create(
-                                    needs_type = 'personnel',
-                                    object_id = personnel.pk,
-                                    content_type = ContentType.objects.get_for_model(personnel),
-                                    content_object = personnel,
-                                    sector = sector
-                                )
-                                needs_assessment.needs.add(need)
-                        needs_assessment.save()
-                        needs_assessment_slug = needs_assessment.slug
-                else:
-                    # create a new needs assessment
-                    slug = slugify(f'{sector}-{population_projection.area_type}-{population_projection.content_object.name}')
-                    slug = generate_unique_slug(NeedsAssessment, slug)
-
-                    try:
-                        sector = Sector.objects.get(name=sector)
-                    except Sector.DoesNotExist:
-                        sector = Sector.objects.create(name=sector, description='Health sector', slug=slugify(sector))
-
-                    needs_assessment = NeedsAssessment.objects.create(
-                        population_projection = population_projection,
-                        slug = slug
+                # calculate the number of personnel required for each year and population
+                for population in populations:
+                    print(population['year'], population['population'])
+                    results = calculate_facilities_required(
+                        population=population['population'],
+                        facility_numbers=facility_numbers,
+                        year = population['year'],
+                        standards=facility_standards
                     )
-                    # calculate the number of personnel required for each year and population
-                    for population in populations:
-                        print(population['year'], population['population'])
-                        results = calculate_personnel_required(
-                            population=population['population'],
-                            personnel_numbers=personnel_numbers,
-                            year = population['year'],
-                            standards=personnel_standards
-                        )
-                        required_personnels.append(results)
+                    required_facilities.append(results)
+                print(required_facilities)
 
+                #save into database
+                for i in required_facilities:
+                    for j in i:
+                        facility = FacilityType.objects.create(
+                            year = j['year'],
+                            type_name = j['facility_type'],
+                            required = j['required'],
+                            standard = j['standard'],
+                            new_need = j['new_need'],
+                            suplus = j['suplus'],
+                            available = j['available'],
+                            population = j['population']
+                        )
+                        # create a new need
+                        need = Needs.objects.create(
+                            needs_type = 'facility',
+                            object_id = facility.pk,
+                            content_type = ContentType.objects.get_for_model(facility),
+                            content_object = facility,
+                            sector = sector
+                        )
+                        print(need)
+                        needs_assessment.needs.add(need)
+                        
+                needs_assessment.save()
+                
+            
+        # check if need type is personnel
+        elif need_type == 'personnel':
+            # check if there is an existing needs_assessment for this particular projection
+            needs_assessment = NeedsAssessment.objects.get(population_projection=population_projection)
+            
+            try:
+                sector = Sector.objects.get(name=sector)
+            except Sector.DoesNotExist:
+                sector = Sector.objects.create(name=sector, description='Health sector', slug=slugify(sector))
+
+            # check if there is an existing needs_assessment
+            if needs_assessment:
+                # calculate the number of personnel required for each year and population
+                for population in populations:
+                    print(population['year'], population['population'])
+                    results = calculate_personnel_required(
+                        population=population['population'],
+                        personnel_numbers=personnel_numbers,
+                        year = population['year'],
+                        standards=personnel_standards
+                    )
+                    required_personnels.append(results)
+                
+                formatted_results = []
+                for i in required_personnels:
+                    for j in i:
+                        formatted_results.append(j)
+                
+                # 
+                personnel_needs = needs_assessment.needs.filter(needs_type='personnel')
+                if personnel_needs:
+                    # delete and create new one
+                    personnel_needs.delete()
+                    for i in formatted_results:
+                        personnel = PersonnelType.objects.create(
+                            year = i['year'],
+                            type_name = i['personnel_type'],
+                            required = i['required'],
+                            standard = i['standard'],
+                            new_need = i['new_need'],
+                            suplus = i['suplus'],
+                            available = i['available'],
+                            population = i['population']
+                        )
+                        need = Needs.objects.create(
+                            needs_type = 'personnel',
+                            object_id = personnel.pk,
+                            content_type = ContentType.objects.get_for_model(personnel),
+                            content_object = personnel,
+                            sector = sector
+                        )
+                        needs_assessment.needs.add(need)
+                    needs_assessment.save()
+                        
+                else:
                     #save into database
                     for i in required_personnels:
                         for j in i:
@@ -1256,25 +1254,75 @@ def create_needs_assesment(request):
                                 content_type = ContentType.objects.get_for_model(personnel),
                                 content_object = personnel,
                                 sector = sector
-
                             )
                             needs_assessment.needs.add(need)
-
                     needs_assessment.save()
-                    needs_assessment_slug = needs_assessment.slug
-        
-        else:
-            pass
-        
-        context = get_needs_assessment_context(slug=needs_assessment_slug, request=request)
-        
-        child_template = get_template('prms/get_needs_assessment.html').render(context)
+                    
+            else:
+                # create a new needs assessment
+                slug = slugify(f'{sector}-{population_projection.area_type}-{population_projection.content_object.name}')
+                slug = generate_unique_slug(NeedsAssessment, slug)
 
-        
-            
-        return render(request, 'prms/get_needs_assessment.html', context)
-        
-    return render(request, 'prms/dashboard.html', {'child_template': child_template}) 
+                try:
+                    sector = Sector.objects.get(name=sector)
+                except Sector.DoesNotExist:
+                    sector = Sector.objects.create(name=sector, description='Health sector', slug=slugify(sector))
+
+                needs_assessment = NeedsAssessment.objects.create(
+                    population_projection = population_projection,
+                    slug = slug
+                )
+                # calculate the number of personnel required for each year and population
+                for population in populations:
+                    print(population['year'], population['population'])
+                    results = calculate_personnel_required(
+                        population=population['population'],
+                        personnel_numbers=personnel_numbers,
+                        year = population['year'],
+                        standards=personnel_standards
+                    )
+                    required_personnels.append(results)
+
+                #save into database
+                for i in required_personnels:
+                    for j in i:
+                        personnel = PersonnelType.objects.create(
+                            year = j['year'],
+                            type_name = j['personnel_type'],
+                            required = j['required'],
+                            standard = j['standard'],
+                            new_need = j['new_need'],
+                            suplus = j['suplus'],
+                            available = j['available'],
+                            population = j['population']
+                        )
+                        need = Needs.objects.create(
+                            needs_type = 'personnel',
+                            object_id = personnel.pk,
+                            content_type = ContentType.objects.get_for_model(personnel),
+                            content_object = personnel,
+                            sector = sector
+
+                        )
+                        needs_assessment.needs.add(need)
+
+                needs_assessment.save()
+                
+    
+    else:
+        pass
+    
+
+    context = get_needs_assessment_context(slug=needs_assessment.slug, request=request)
+    context['need_type'] = need_type
+    
+    child_template = get_template('prms/get_needs_assessment.html').render(context)
+
+    
+    # return HttpResponse('success')
+    return render(request, 'prms/get_needs_assessment.html',context)
+    
+    # return render(request, 'prms/dashboard.html', {'child_template': 'child_template'}) 
 
 
 @csrf_exempt
@@ -1299,7 +1347,7 @@ def education_needs_assessment(request):
         dual_desk_numbers = data.get('dualDeskNumbers', None)
         area = data.get('area', None)
         area_type = data.get('areaType', None)
-        population_projection_slug = data.get('populationProjection', None)
+        population_projection_pk = data.get('populationProjection', None)
 
         classroom_numbers = json.loads(classroom_numbers) if classroom_numbers else None
         dual_desk_numbers = json.loads(dual_desk_numbers) if dual_desk_numbers else None
@@ -1307,7 +1355,7 @@ def education_needs_assessment(request):
         required_classrooms= []
         required_dual_desks = []
         try:
-            population_projection = PopulationProjection.objects.filter(slug=population_projection_slug, user=request.user, is_education_enrollment=True).first()
+            population_projection = PopulationProjection.objects.get(pk=population_projection_pk, user=request.user, is_education_enrollment=True)
         except PopulationProjection.DoesNotExist:
             population_projection = None
 
@@ -1385,7 +1433,7 @@ def education_needs_assessment(request):
         
 
         # needs assessment for education
-        needs_assessment_slug = ''
+        needs_assessment = ''
         if education_type == 'classroom':
             # check if there is an existing needs_assessment for this particular projection
             needs_assessment = NeedsAssessment.objects.filter(population_projection=population_projection).first()
@@ -1460,7 +1508,7 @@ def education_needs_assessment(request):
                             )
                             needs_assessment.needs.add(need)
                     needs_assessment.save()
-                    needs_assessment_slug = needs_assessment.slug
+                    
 
             else:
                 # create a new needs assessment
@@ -1508,7 +1556,7 @@ def education_needs_assessment(request):
                         )
                         needs_assessment.needs.add(need)
                 needs_assessment.save()
-                needs_assessment_slug = needs_assessment.slug
+                
 
         elif education_type == 'dual_desk':
             # check if there is an existing needs_assessment for this particular projection
@@ -1584,7 +1632,7 @@ def education_needs_assessment(request):
                                 )
                                 needs_assessment.needs.add(need)
                         needs_assessment.save()
-                        needs_assessment_slug = needs_assessment.slug
+                        
             else:
                 # create a new needs assessment
                 slug = slugify(f'{sector}-{population_projection.area_type}-{population_projection.content_object.name}')
@@ -1631,13 +1679,13 @@ def education_needs_assessment(request):
                         )
                         needs_assessment.needs.add(need)
                 needs_assessment.save()
-                needs_assessment_slug = needs_assessment.slug
+                
         
         need_context = get_needs_assessment_context(request=request, slug=needs_assessment.slug)
         
 
         # append context to needs_context
-        if population_projection_slug:
+        if population_projection_pk:
             return render (request, 'prms/get_needs_assessment.html', need_context)
         else:
             return render(request, 'prms/population_projection.html', context)
@@ -1651,7 +1699,7 @@ def utility_needs_assessment(request):
     data = {key: value[0] for key, value in data.items()}
     sector = data.get('sector', None)
     utility_type = data.get('type', None)
-    population_projection_slug = data.get('populationProjection', None)
+    population_projection_pk= data.get('populationProjection', None)
     water_source_numbers = data.get('waterSourceNumbers', None)
     water_source_numbers = json.loads(water_source_numbers) if water_source_numbers else None
     toilet_numbers = data.get('toiletNumbers', None)
@@ -1662,9 +1710,10 @@ def utility_needs_assessment(request):
     required_water_sources = []
     required_toilets = []
     required_skip_containers = []
+    context = {}
 
     try:
-        population_projection = PopulationProjection.objects.filter(slug=population_projection_slug, user=request.user, is_education_enrollment=False).first()
+        population_projection = PopulationProjection.objects.filter(pk=population_projection_pk, user=request.user, is_education_enrollment=False).first()
     except PopulationProjection.DoesNotExist:
         population_projection = None
 
@@ -2310,7 +2359,7 @@ def delete_needs_assessment(request, slug):
 
     context = {
         'population_projections':population_projections,
-        'needs_assessments':NeedsAssessment.objects.all()
+        'needs_assessments':NeedsAssessment.objects.filter(population_projection__in=population_projections).all()
     }
     return render(request, 'partials/dashboard_main.html', context)
  
@@ -2327,18 +2376,6 @@ def needs_assessment(request, slug=None):
 
     education_enrollment_projections = all_population_projections.filter(is_education_enrollment=True)
 
- 
-
-    #
-    if request.method == 'POST' and slug is None:
-        return create_needs_assesment(request)
-    elif slug is not None:
-        if request.method == 'GET':
-            return get_needs_assessment(request, slug)
-        elif request.method == 'PUT':
-            return update_needs_assessment(request, slug)
-        elif request.method == 'DELETE':
-            return delete_needs_assessment(request, slug)
 
     context = {
         'population_projections':population_projections,
@@ -2401,6 +2438,7 @@ def map_prediction(request):
             map_prediction_slug = generate_unique_slug(MapPrediction, f'map-prediction-{pk}')
             # save map prediction
             needs_assessment = get_object_or_404(NeedsAssessment, pk=pk)
+            facility_needs = needs_assessment.needs.filter(needs_type='facility', sector__name='health')
             map_prediction = MapPrediction.objects.create(
                 needs_assessment = needs_assessment,
                 image = img,
@@ -2417,11 +2455,12 @@ def map_prediction(request):
                     lattitude = i['lat'],
                     longitude = i['lon'],
                     area_name = i['areaName'],
+
                 )
 
                 map_prediction.facility_coordinates_and_area_name.add(facility)
             map_prediction.save()
-            map_prediction_template = get_template('prms/get_map_prediction.html').render({'map_prediction':map_prediction})
+            map_prediction_template = get_template('prms/get_map_prediction.html').render({'map_prediction':map_prediction, 'facility_needs':facility_needs})
 
             url = '/map-prediction/'+map_prediction.slug+'/'
 
@@ -2490,22 +2529,31 @@ def get_needs_assessment_detail(request, pk):
     print(needs_assessment)
     population_projection = needs_assessment.population_projection
     print(population_projection)
-    area_name = str(population_projection.content_object.name).lower()
+    main_area_name = str(population_projection.content_object.name).lower()
     area_type = population_projection.area_type
     # get coordinates bounds of area_name using geopy
-    geo_url = f'https://nominatim.openstreetmap.org/search?format=json&q={area_name} region'
+    geo_url = f'https://nominatim.openstreetmap.org/search?format=json&q={main_area_name} region'
     context = {}
     required_facilities = []
     facility_coordinates = []
     bounds = ""
     APP_ID = "llUkylLlqtIChTjVZtP3"
     API_KEY = "QolF50IlVf_RPFJtNCUd0F-c0nhtHOLSirkhNjlUa4c"
-    here_geo_url = f'https://geocode.search.hereapi.com/v1/geocode?q={area_name}&in=countryCode:GHA&apiKey={API_KEY}'
+    here_geo_url = f'https://geocode.search.hereapi.com/v1/geocode?q={main_area_name}&in=countryCode:GHA&apiKey={API_KEY}'
     geolocator = Nominatim(user_agent="PNSM")
     base_year = population_projection.projections.first().base_year
     projecting_year = population_projection.projections.last().projecting_year
     # get health facility needs 
     facility_needs = needs_assessment.needs.filter(needs_type='facility', sector__name='health')
+    temp_response = None
+    area_name = None
+    region =None
+    district = None
+    town = None
+    area_bounds = None
+    lat = None
+    lon = None
+    bounds = None
 
     if facility_needs:
         try:
@@ -2521,11 +2569,13 @@ def get_needs_assessment_detail(request, pk):
                 lat = temp_response.get('position').get('lat')
                 lon = temp_response.get('position').get('lng')
                 area_name = geolocator.reverse(f'{lat}, {lon}').address
-                print(f'AREA_NAME: {area_name}')
+               
 
                 context['area_coordinates'] = [lat, lon]
-                bounds = temp_response.get('mapView')
-                print(bounds)
+                bounds = temp_response.get('mapView') if temp_response.get('mapView') else None
+                
+
+               
         else:
             messages.error(request,' An error occured')
 
@@ -2536,29 +2586,53 @@ def get_needs_assessment_detail(request, pk):
                 required_facilities.append(
                     {
                         'facility':facility.type_name,
-                        'required':facility.required,
+                        'new_need':facility.new_need,
                     }
                 )
         # Desired minimum distance from the boundary (in degrees)
         min_distance = 0.1
 
         # Calculate the adjusted bounding box
-        min_lat = bounds['south'] + min_distance
-        max_lat = bounds['north'] - min_distance
-        min_lon = bounds['west'] + min_distance
-        max_lon = bounds['east'] - min_distance    
+        
+        min_lat = bounds['south'] if bounds else lat
+        max_lat = bounds['north'] if bounds else lat
+        min_lon = bounds['west'] if bounds else lon
+        max_lon = bounds['east'] if bounds else lon
+
+        area_bounds = {
+            'min_lat':min_lat,
+            'max_lat':max_lat,
+            'min_lon':min_lon,
+            'max_lon':max_lon
+        } 
 
         # Generate random coordinates within the adjusted bounding box
         for i in required_facilities:
-            if i['required'] > 0:
+            if i['new_need'] is not None:
+                # optimize new_need
+
+
                 while True:
                     lat = random.uniform(min_lat, max_lat)
                     lon = random.uniform(min_lon, max_lon)
                     is_land = globe.is_land(lat, lon)
                     if is_land:
                         try:
-                            area_name = geolocator.reverse(f'{lat}, {lon}').address
+                            
+                            url = f"https://nominatim.openstreetmap.org/reverse?format=json&lat={lat}&lon={lon}&zoom=18&addressdetails=1"
+
+                            response = requests.get(url)
+                            response = response.json()
+                            region = response.get('address').get('region')
+                            district = response.get('address').get('state_district')
+                            town = response.get('address').get('town')
+                            area_name = response.get('display_name')
+                            
+                            print('REGION', region)
+                            
+                            
                         except Exception as e:
+                            print(e)
                             messages.error(request, f'Error {e}')
                         
                         facility_coordinates.append(
@@ -2566,10 +2640,13 @@ def get_needs_assessment_detail(request, pk):
                                 'facility':i['facility'],
                                 'lat':lat,
                                 'lon':lon,
-                                'required':i['required'],
-                                'area_name':area_name
+                                'new_need':i['new_need'],
+                                'area_name':area_name,
+                                'region':region,
+                                'district':district
                             }
                         )
+                        
                         break
 
     context['facility_coordinates'] = facility_coordinates
@@ -2586,12 +2663,15 @@ def get_needs_assessment_detail(request, pk):
     facility_needs_template = get_template('partials/facility_needs_template.html').render({'facility_needs':facility_needs})
 
     
-        
+    print(facility_coordinates)
     return JsonResponse({
         'needs_assessment_template':needs_assessment_template,
         'facility_needs_template':facility_needs_template,
         'facility_coordinates':facility_coordinates,
-        'area_coordinates':context['area_coordinates'] if 'area_coordinates' in context else None
+        'area_coordinates':context['area_coordinates'] if 'area_coordinates' in context else None,
+        'area_name':main_area_name,
+        'area_bounds':area_bounds,
+        'area_type': area_type,
     })
 
 

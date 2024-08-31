@@ -1,7 +1,10 @@
+<!DOCTYPE html>
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Dashboard{% endblock title %}
+{% block title %}
+Dashboard
+{% endblock title %}
 
 
 {% block content %}
@@ -13,7 +16,7 @@
   {% include 'partials/sidebar.html' %}
 
   <!--Main-->
-  <main id="main" class="md:ml-64 py-8">
+  <main id="main" class="md:ml-[17rem] py-8 2xl:ml-72">
     
     {% if child_template %}
       {{ child_template }}

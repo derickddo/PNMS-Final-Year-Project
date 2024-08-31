@@ -81,4 +81,10 @@ def subtract(value, arg):
 def get_distinct_needs_type_from_needs(value):
     distinct_type = set([need.content_object.type_name for need in value])
     return list(distinct_type)
-    
+
+@register.filter(name='get_distinct_faciity_type')
+def get_distinct_faciity_type(facility_coordinates_and_area_names):
+    print(f'Facility: {facility_coordinates_and_area_names}')
+    facilities = list(set([facility.facility_name for facility in facility_coordinates_and_area_names]))
+    print(f'Facilities: {facilities}')
+    return facilities

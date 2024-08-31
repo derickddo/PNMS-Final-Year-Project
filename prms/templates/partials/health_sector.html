@@ -21,7 +21,7 @@
                     
 
                     <span class="block md:hidden mt-2">
-                        <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#facility_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                        <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#facility_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                             <i class="fas fa-eye text-blue-500 mr-2"></i>
                             View More
                         </a>
@@ -137,7 +137,7 @@
                                 </div>
                     
                                 <span>
-                                    <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#facility_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                                    <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#facility_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                                         <i class="fas fa-eye text-blue-500 mr-2"></i>
                                         View Details
                                     </a>
@@ -257,7 +257,7 @@
                     <p class="text-gray-600 dark:text-white">This is a personnel needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
 
                     <span class="block md:hidden mt-2">
-                        <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#personnel_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                        <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#personnel_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                             <i class="fas fa-eye text-blue-500 mr-2"></i>
                             View More
                         </a>
@@ -372,7 +372,7 @@
                                 </div>
                     
                                 <span>
-                                    <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#personnel_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                                    <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#personnel_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                                         <i class="fas fa-eye text-blue-500 mr-2"></i>
                                         View Details
                                     </a>
@@ -493,7 +493,7 @@
                     <p class="text-gray-600 dark:text-white">This is a water needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
 
                     <span class="block md:hidden mt-2">
-                        <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#water_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                        <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#water_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                             <i class="fas fa-eye text-blue-500 mr-2"></i>
                             View More
                         </a>
@@ -608,7 +608,7 @@
                                 </div>
                     
                                 <span>
-                                    <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#water_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                                    <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#water_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                                         <i class="fas fa-eye text-blue-500 mr-2"></i>
                                         View Details
                                     </a>
@@ -728,7 +728,7 @@
                     <p class="text-gray-600 dark:text-white">This is a skip container needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
 
                     <span class="block md:hidden mt-2">
-                        <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#skip_container_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                        <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#skip_container_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                             <i class="fas fa-eye text-blue-500 mr-2"></i>
                             View More
                         </a>
@@ -843,7 +843,7 @@
                                 </div>
                     
                                 <span>
-                                    <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#skip_container_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                                    <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#skip_container_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                                         <i class="fas fa-eye text-blue-500 mr-2"></i>
                                         View Details
                                     </a>
@@ -963,7 +963,7 @@
                     <h3 class="font-bold md:text-xl">Classroom Needs Assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</h3>
                     <p class="text-gray-600 dark:text-white">This is a classroom needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
                     <span class="block md:hidden mt-2">
-                        <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#classroom_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                        <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#classroom_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                             <i class="fas fa-eye text-blue-500 mr-2"></i>
                             View More
                         </a>
@@ -1078,7 +1078,7 @@
                                 </div>
                     
                                 <span>
-                                    <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#classroom_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                                    <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#classroom_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                                         <i class="fas fa-eye text-blue-500 mr-2"></i>
                                         View Details
                                     </a>
@@ -1198,7 +1198,7 @@
                     <h3 class="font-bold md:text-xl">Dual desk Needs Assessment for {{ needs_assessment.population_projection.content_object.name }} {{ needs_assessment.population_projection.area_type|title }}</h3>
                     <p class="text-gray-600 dark:text-white">This is a dual desk needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
                     <span class="block md:hidden mt-2">
-                        <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#dual_desk_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                        <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#dual_desk_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                             <i class="fas fa-eye text-blue-500 mr-2"></i>
                             View More
                         </a>
@@ -1313,7 +1313,7 @@
                                 </div>
                     
                                 <span>
-                                    <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#dual_desk_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                                    <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#dual_desk_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                                         <i class="fas fa-eye text-blue-500 mr-2"></i>
                                         View Details
                                     </a>
@@ -1434,7 +1434,7 @@
                     <p class="text-gray-600 dark:text-white">This is a toilet type needs assessment for {{ needs_assessment.population_projection.content_object }} {{ needs_assessment.population_projection.area_type|title }}. It shows the needs of health facilities in the area.</p>
 
                     <span class="block md:hidden mt-2">
-                        <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#toilet_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                        <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#toilet_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                             <i class="fas fa-eye text-blue-500 mr-2"></i>
                             View More
                         </a>
@@ -1549,7 +1549,7 @@
                                 </div>
                     
                                 <span>
-                                    <a href="" hx-get="{% url 'manage_need_assessment' needs_assessment.slug %}#toilet_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
+                                    <a href="" hx-get="{% url 'get_needs_assessment' needs_assessment.slug %}#toilet_needs" hx-push-url="true" hx-target="#main" hx-swap="innerHTML" class="link link-primary hover:underline">
                                         <i class="fas fa-eye text-blue-500 mr-2"></i>
                                         View Details
                                     </a>
