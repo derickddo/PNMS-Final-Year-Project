@@ -81,6 +81,20 @@ PNMS is a comprehensive platform designed to aid development planners in Ghana w
   - `requirements.txt`: List of dependencies.
 
 
+# User Interface
+**Dashboard**
+![dashboard](static/screenshots/hero.PNG)
+
+**Population Projection**
+![population-projection](static/screenshots/pop.PNG)
+
+**Needs Assessment**
+![needs-assessment](static/screenshots/needs.PNG)
+
+**Map Prediction**
+![map-prediction](static/screenshots/map.PNG)
+
+
 
 **Disclaimer**: This project is a part of the final year project requirements for the degree in Computer Science at KNUST.
 
