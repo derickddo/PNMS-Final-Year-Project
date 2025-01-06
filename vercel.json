@@ -2,7 +2,11 @@
     "builds": [{
         "src": "core/wsgi.py",
         "use": "@vercel/python",
-        "config": { "maxLambdaSize": "15mb", "runtime": "python3.11" }
+        "config": { "maxLambdaSize": "15mb", "runtime": "python3.11" },
+        "commands": [
+            "apt-get update && apt-get install -y libpq-dev gcc",
+            "pip install --target . -r requirements.txt"
+          ]
     }],
     "routes": [
         
@@ -11,4 +15,5 @@
             "dest": "core/wsgi.py"
         }
     ]
+    
 }
