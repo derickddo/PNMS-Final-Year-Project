@@ -73,7 +73,7 @@ modalContent.addEventListener('htmx:afterSettle', (e) => {
     console.log(loading)
     
     populateYearSelect(1900, null, baseYear);
-    populateYearSelect(new Date().getFullYear(), new Date().getFullYear() + 50, projectYear);
+    populateYearSelect(new Date().getFullYear() - 24, new Date().getFullYear() + 50, projectYear);
 
     function handleAreaTypeChange(value) {
         if (value === 'region') {

@@ -51,7 +51,9 @@ skip_container_standards = {
 # Description: Population projection methods
 def linear(year, next_year, current_population, growth_rate):
        t = next_year - year
-       return current_population * (1 + (growth_rate * t))
+       # covert growth rate
+       growth_rate = growth_rate / 100
+       return current_population * ((1 + (growth_rate * t)) ** t)
        
 def calculate_projections(base_year, projecting_year, base_population, growth_rate):
         """ Calculate population projections """
@@ -73,8 +75,12 @@ def calculate_projections(base_year, projecting_year, base_population, growth_ra
 
 def calculate_growth_rate(pop_2010, pop_2021) -> float:
         """ Calculate the growth rate """
-        t = 2021 - 2010
-        return  float((int(pop_2021) - int(pop_2010)) / (pop_2010 * t))
+        years_between = 2021 - 2010
+        
+        growth_rate = float(((pop_2021 / pop_2010) ** (1 / years_between) - 1) * 100)
+        print(pop_2021, pop_2010, growth_rate)
+        return growth_rate
+        
 
 def calculate_facilities_required(population,facility_numbers,year, standards=facility_standards):
     

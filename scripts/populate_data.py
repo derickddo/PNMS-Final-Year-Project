@@ -120,7 +120,7 @@ import json
 # with open('data/regions_districts_population.json', 'w') as f:
 #   json.dump(regions_and_districts, f, indent=2)
 
-from pnms.models import Region, District, Population
+from prms.models import Region, District, Population
 from django.contrib.contenttypes.models import ContentType
 
 

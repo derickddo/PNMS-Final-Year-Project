@@ -114,9 +114,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-4 mt-4">
                             <!--Base year selection-->
-                            <div class="form-control mb-4">
+                            <div class="form-control lg:mb-4">
                                 <label class="label">
                                     <span class="label-text">Select Base Year</span>
                                 </label>
@@ -229,7 +229,7 @@
                                 {% if base_population %}
                                     disabled
                                 {% endif %}
-                                type="number" name="base_population" id="basePopulation" class="input input-bordered w-full" placeholder="Enter base population"
+                                type="number" name="base_population" id="basePopulation" class="input input-bordered w-full text-sm lg:text-md" placeholder="Base population"
                                 min="1"
                                 {% if base_population %}
                                     value="{{ base_population }}"
@@ -246,7 +246,7 @@
                                 {% if growth_rate %}
                                     disabled
                                 {% endif %}
-                                type="number" name="growth_rate" id="growthRate" class="input input-bordered w-full" placeholder="Enter growth rate" min="0" step="any"
+                                type="number" name="growth_rate" id="growthRate" class="input input-bordered text-sm lg:text-md w-full" placeholder="Enter growth rate" min="0" step="any"
                                 
                                 {% if growth_rate %}
                                     value="{{ growth_rate }}"
@@ -950,7 +950,7 @@
 
                 <!--Info about education type for [pre-school, primary, jhs]-->
                 <div id="educationTypeDetails" class="mt-4">
-                    <div class=" h-[18rem] overflow-y-auto">
+                    <div class=" h-[25rem] overflow-y-auto">
                         <h2 class="text-xl font-bold mb-4">Education Type Details</h2>
                         <!--Pre-School-->
                         <div id="pre-school" class="form-control">

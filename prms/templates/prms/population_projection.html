@@ -108,31 +108,32 @@
         {{population_projection.area_type|title}}.
     </p>
 
-    <table class="table-auto w-full border-collapse">
-        <!-- Table Header -->
-        <thead class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
-            <tr>
-                <th class="text-sm 2xl:text-lg p-2 border-b dark:border-gray-600">Base Year</th>
-                <th class="text-sm 2xl:text-lg p-2 border-b dark:border-gray-600">Projecting Year</th>
-                <th class="text-sm 2xl:text-lg p-2 border-b dark:border-gray-600">Base Population</th>
-                <th class="text-sm 2xl:text-lg p-2 border-b dark:border-gray-600">Projected Population</th>
-                <th class="text-sm 2xl:text-lg p-2 border-b dark:border-gray-600">Growth Rate (%)</th>
-            </tr>
-        </thead>
-
-        <!-- Table Body -->
-        <tbody class="text-gray-900 dark:text-gray-100">
-            {% for i in range %}
-                <tr class="{% cycle 'bg-gray-50 dark:bg-gray-700' 'bg-white dark:bg-gray-800' %}">
-                    <td class="p-2 border-b dark:border-gray-600 text-sm 2xl:text-lg">{{ base_years|index:i }}</td>
-                    <td class="p-2 border-b dark:border-gray-600 text-sm 2xl:text-lg">{{ projection_years|index:i }}</td>
-                    <td class="p-2 border-b dark:border-gray-600 text-sm 2xl:text-lg">{{ base_populations|index:i }}</td>
-                    <td class="p-2 border-b dark:border-gray-600 text-sm 2xl:text-lg">{{ projected_populations|index:i }}</td>
-                    <td class="p-2 border-b dark:border-gray-600 text-sm 2xl:text-lg">{{ growth_rate|floatformat:2 }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
+    <table class="table w-full border-collapse">
+      <!-- Table Header -->
+      <thead class="bg-base-200 text-base-content">
+          <tr>
+              <th class="p-4 text-left">Base Year</th>
+              <th class="p-4 text-left">Projecting Year</th>
+              <th class="p-4 text-left">Base Population</th>
+              <th class="p-4 text-left">Projected Population</th>
+              <th class="p-4 text-left">Growth Rate (%)</th>
+          </tr>
+      </thead>
+  
+      <!-- Table Body -->
+      <tbody>
+          {% for i in range %}
+          <tr class="{% cycle 'bg-base-100' 'bg-base-200' %}">
+              <td class="p-4">{{ base_years|index:i }}</td>
+              <td class="p-4">{{ projection_years|index:i }}</td>
+              <td class="p-4">{{ base_populations|index:i }}</td>
+              <td class="p-4">{{ projected_populations|index:i }}</td>
+              <td class="p-4">{{ growth_rate|floatformat:2 }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
     </table>
+  
   </div>
 
 

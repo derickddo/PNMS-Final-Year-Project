@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 {% load socialaccount %}
+{% load static %}
 <div class="navbar bg-transparent bg-base-100 backdrop-blur-md sticky  top-0 z-50 w-full lg:w-[calc(100%-16rem)] shadow-md lg:ml-[17rem] h-[4.5rem] px-4">
   <div class="flex-1 block md:hidden">
-      <a hx-get="{% url 'home' %}" hx-target="#main-content" hx-push-url="true" class="btn btn-ghost text-xl font-bold">PNMS</a>
+      <a hx-get="{% url 'home' %}" hx-target="#main-content" hx-push-url="true" class="">
+        <img src="{% static 'img/logo2.png' %}" alt="Logo" class="w-[3rem]" />
+      </a>
   </div>
 
   <!-- Welcome message -->

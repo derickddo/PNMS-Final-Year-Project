@@ -5,47 +5,47 @@
     <a hx-target="#main" hx-swap="innerHTML" hx-push-url="true" hx-get="{% url 'population_projection' population_projection.slug %}" class="text-md font-bold btn-link cursor-pointer"><p class="mt-2 text-yellow-800">Population Projection for {{area}} {{area_type|title}}</p></a>
     <div class="mt-4">
         <div class="flex items-center gap-4">
-            <span class="font-medium text-yellow-900">
+            <span class="font-medium text-yellow-900 text-sm lg:text-base">
                 <i class="fas fa-map-marker-alt text-yellow-700 mr-2"></i>
                 Area Name: 
             </span>
-            <span class="text-yellow-800">{{area}}</span>
+            <span class="text-yellow-800 text-sm lg:text-base">{{area}}</span>
         </div>
         <div class="flex items-center gap-4 mt-2">
-            <span class="font-medium text-yellow-900">
+            <span class="font-medium text-yellow-900 text-sm lg:text-base">
                 <i class="fas fa-map text-yellow-700 mr-2"></i>
                 Area Type:
             </span>
-            <span class="text-yellow-800">{{area_type|title}}</span>
+            <span class="text-yellow-800 text-sm lg:text-base">{{area_type|title}}</span>
         </div>
         <div class="flex items-center gap-4 mt-2">
-            <span class="font-medium text-yellow-900">
+            <span class="font-medium text-yellow-900 text-sm lg:text-base">
                 <i class="fas fa-users text-green-600 mr-2"></i>
                 Projected Population:
             </span>
-            <span class="text-yellow-800">{{projected_population}}</span>
+            <span class="text-yellow-800 text-sm lg:text-base">{{projected_population}}</span>
         </div>
         <div class="flex items-center gap-4 mt-2">
-            <span class="font-medium text-yellow-900">
+            <span class="font-medium text-yellow-900 text-sm lg:text-base">
                 <i class="fas fa-users text-green-600 mr-2"></i>
                 Base Population:
             </span>
-            <span class="text-yellow-800">{{base_population}}</span>
+            <span class="text-yellow-800 text-sm lg:text-base">{{base_population}}</span>
         </div>
         <div class="flex items-center gap-4 mt-2">
-            <span class="font-medium text-yellow-900">
+            <span class="font-medium text-yellow-900 text-sm lg:text-base">
                 <i class="fas fa-calendar text-gray-600 mr-2"></i>
                 Year:
             </span>
-            <span class="text-yellow-800">{{from_year}} - {{to_year}}</span> 
+            <span class="text-yellow-800 text-sm lg:text-base">{{from_year}} - {{to_year}}</span> 
         </div>
         {% if is_education_enrollment %}
         <div class="flex items-center gap-4 mt-2">
-            <span class="font-medium text-yellow-900">
+            <span class="font-medium text-yellow-900 text-sm lg:text-base">
                 <i class="fas fa-graduation-cap text-blue-500 mr-2"></i>
                 Education Enrollment:
             </span>
-            <span class="text-yellow-800">{{is_education_enrollment}}</span>
+            <span class="text-yellow-800 text-sm lg:text-base">{{is_education_enrollment}}</span>
         </div>
         {% endif %}
     </div>

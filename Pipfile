@@ -32,6 +32,7 @@ pandas = "*"
 anthropic = "*"
 ratelimit = "*"
 whitenoise = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
