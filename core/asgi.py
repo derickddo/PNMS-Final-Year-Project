@@ -18,3 +18,4 @@ if DEBUG:
 else:
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings.production')
 application = get_asgi_application()
+app = application
