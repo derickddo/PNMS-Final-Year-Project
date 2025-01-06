@@ -11,8 +11,8 @@ panda = "*"
 python-dotenv = "*"
 django-compressor = "*"
 django-components = "*"
-django-tailwind = {extras = ["reload"], version = "*"}
-django-allauth = {extras = ["socialaccount"], version = "*"}
+django-tailwind = {extras = ["reload"] }
+django-allauth = {extras = ["socialaccount"] }
 pillow = "*"
 django-widget-tweaks = "*"
 pytest = "*"
