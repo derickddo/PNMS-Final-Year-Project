@@ -1,1 +1,1 @@
-web: gunicorn prms.wsgi
+web: gunicorn core.wsgi
