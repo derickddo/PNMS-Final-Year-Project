@@ -2,7 +2,7 @@
     "builds": [{
         "src": "core/wsgi.py",
         "use": "@vercel/python",
-        "config": { "maxLambdaSize": "15mb", "runtime": "python3.11" }  
+        "config": { "maxLambdaSize": "15mb", "runtime": "python3.12" }  
     }],
     "installCommand": "apt-get update && apt-get install -y libpq-dev && pip3.12 install --disable-pip-version-check --target . --upgrade -r /vercel/path0/requirements.txt",
     "buildCommand": "python manage.py collectstatic --noinput && gunicorn your_project_name.wsgi",
