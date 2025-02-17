@@ -29,7 +29,6 @@ django-widget-tweaks==1.5.0; python_version >= '3.8'
 fonttools[woff]==4.55.3; python_version >= '3.8'
 geographiclib==2.0; python_version >= '3.7'
 geopy==2.4.1; python_version >= '3.7'
-global-land-mask==1.0.0
 google-ai-generativelanguage==0.6.10; python_version >= '3.7'
 google-api-core[grpc]==2.24.0; python_version >= '3.7'
 google-api-python-client==2.157.0; python_version >= '3.7'
