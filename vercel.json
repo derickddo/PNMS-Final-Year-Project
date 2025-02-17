@@ -2,7 +2,8 @@
     "builds": [{
         "src": "core/wsgi.py",
         "use": "@vercel/python",
-        "config": { "maxLambdaSize": "15mb", "runtime": "python3.11" }
+        "config": { "maxLambdaSize": "15mb", "runtime": "python3.11" },
+        "command": "pip3.11 install --no-cache-dir --disable-pip-version-check --target . --upgrade -r requirements.txt"
     }],
     "routes": [
         
