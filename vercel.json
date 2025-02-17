@@ -4,6 +4,9 @@
         "use": "@vercel/python",
         "config": { "maxLambdaSize": "15mb", "runtime": "python3.11" }  
     }],
+    "scripts": {
+        "build": "apt-get update && apt-get install -y libpq-dev && pip3.11 install --disable-pip-version-check --target . --upgrade -r /vercel/path0/requirements.txt && python manage.py collectstatic --noinput && gunicorn core.wsgi"
+      },
     "routes": [
         
         {
