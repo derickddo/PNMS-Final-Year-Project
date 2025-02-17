@@ -11,7 +11,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.text import slugify
 import urllib.parse
 import random
-from global_land_mask import globe
+# from global_land_mask import globe # for checking if a point is on land or water - commented because Unable to allocate 890. MiB for an array with shape (933120000,) and data type bool
 from geopy.geocoders import Nominatim
 import random
 # import messages 
@@ -30,7 +30,7 @@ import os
 import matplotlib
 from ratelimit import limits, RateLimitException
 import requests
-
+import numpy as np
 
 
 # Create your views here.
@@ -2524,6 +2524,19 @@ def get_map_prediction(request, slug):
             return render(request, 'prms/dashboard.html',  dashboard_context)
     return render(request, 'prms/dashboard.html', {'child_template': child_template})
 
+# function to check if a point is on land
+def is_on_land(lat, lon):
+    # ... (Your existing code to convert lat/lon to row/col indices) ...
+
+    # Load the compressed mask using memory mapping
+    with np.load("global_land_mask/globe.npz", allow_pickle=True, mmap_mode='r') as data: # mmap_mode='r' for read-only
+        mask = data['mask']  # Access the array (no decompression yet)
+
+        # Access the specific element (this triggers decompression only for that part)
+        on_land = mask[lat, lon]
+
+    return on_land
+
 def get_needs_assessment_detail(request, pk):
     needs_assessment = NeedsAssessment.objects.get(id=pk)
     print(needs_assessment)
@@ -2615,7 +2628,7 @@ def get_needs_assessment_detail(request, pk):
                 while True:
                     lat = random.uniform(min_lat, max_lat)
                     lon = random.uniform(min_lon, max_lon)
-                    is_land = globe.is_land(lat, lon)
+                    is_land = is_on_land(lat, lon)
                     if is_land:
                         try:
                             
