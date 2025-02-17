@@ -1,10 +1,10 @@
 {
     "builds": [
-      { "src": "core/wsgi.py", "use": "@vercel/python" }
+      { "src": "wsgi.py", "use": "@vercel/python" }
     ],
     "functions": {
       "api/**/*.py": { "runtime": "python3.12" }
     },
-    "installCommand": "apt-get update && apt-get install -y libpq-dev && python3.12 -m venv .venv && source .venv/bin/activate && pip install --no-cache-dir -r requirements.txt",
-    "buildCommand": "source .venv/bin/activate && python manage.py collectstatic --noinput && gunicorn your_project_name.wsgi"
+    "installCommand": "apt-get update && apt-get install -y libpq-dev && pip install pipenv && pipenv sync --system",
+    "buildCommand": "python manage.py collectstatic --noinput && gunicorn your_project_name.wsgi"
   }
