@@ -20,14 +20,12 @@ from django.contrib import messages
 # email verification required
 from allauth.account.decorators import verified_email_required
 from openai import OpenAI
-import google.generativeai as genai
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import time
 
 import os
-from ratelimit import limits, RateLimitException
 import requests
 import numpy as np
 
@@ -758,7 +756,7 @@ def generate_report(request, slug):
     image_paragraph = 'The line chart and bar chart below shows the population projection from the base year to the projecting year. The base population is represented by the blue line, while the projected population is represented by the orange line. The bar plot shows the projected population for each projecting year. The population projection is based on the growth rate of the population over the years.'
 
 
-
+    import google.generativeai as genai
     genai.configure(api_key=os.environ["GEMINI_API_KEY"])
     model = genai.GenerativeModel('gemini-1.5-flash')
     
