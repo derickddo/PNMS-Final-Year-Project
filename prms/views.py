@@ -27,7 +27,6 @@ import pandas as pd
 import time
 
 import os
-import matplotlib
 from ratelimit import limits, RateLimitException
 import requests
 import numpy as np
