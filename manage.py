@@ -8,12 +8,8 @@ from core.settings.base import DEBUG
 def main():
     """Run administrative tasks."""
     # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
-    if DEBUG:
-        print('Development mode')
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings.development')
-    else:
-        print('Production mode')
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings.production')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings.production' if not DEBUG else 'core.settings.development')
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

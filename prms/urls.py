@@ -10,7 +10,6 @@ urlpatterns = [
     path('towns/', views.get_towns, name='towns'),
     path('create-population-projection/', views.create_or_update_population_projection, name='create_population_projection'),
     path('population-projection/<str:slug>/', views.get_population_projection, name='population_projection'),
-    # path('generate-report/<str:slug>/', views.generate_report, name='generate_report'),
     path('crud/', views.crud, name='crud'),
 
     path('delete-projection/<int:id>/', views.delete_population_projection, name='delete_population_projection'),
