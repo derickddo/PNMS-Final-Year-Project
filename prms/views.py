@@ -19,9 +19,6 @@ from django.contrib import messages
 
 # email verification required
 from allauth.account.decorators import verified_email_required
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pandas as pd
 import time
 
 import os
@@ -472,21 +469,21 @@ def get_needs_assessment_for_population_projection(request, slug):
 
     return render(request, 'partials/health_sector.html', context)
 
-def generate_plot(data, plot_type, filename, title, x_label, y_label):
-    plt.figure(figsize=(10, 6))
-    if plot_type == 'line':
-        sns.lineplot(data=data, x=x_label, y=y_label, marker='o', label=y_label)
-    elif plot_type == 'bar':
-        sns.barplot(data=data, x=x_label, y=y_label, palette='viridis', hue=y_label)
+# def generate_plot(data, plot_type, filename, title, x_label, y_label):
+#     plt.figure(figsize=(10, 6))
+#     if plot_type == 'line':
+#         sns.lineplot(data=data, x=x_label, y=y_label, marker='o', label=y_label)
+#     elif plot_type == 'bar':
+#         sns.barplot(data=data, x=x_label, y=y_label, palette='viridis', hue=y_label)
     
-    plt.title(title)
-    plt.xlabel(x_label)
-    plt.ylabel(y_label)
-    plt.legend()
-    plt.grid()
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close()
+#     plt.title(title)
+#     plt.xlabel(x_label)
+#     plt.ylabel(y_label)
+#     plt.legend()
+#     plt.grid()
+#     plt.tight_layout()
+#     plt.savefig(filename)
+#     plt.close()
 
 
 
@@ -520,259 +517,259 @@ def generate_report_sections(request, model, sections):
 
 
 # generate report view
-def generate_report(request, slug):
+# def generate_report(request, slug):
 
    
 
-    # matplotlib.use('Agg')
-    # plt.ioff()
+#     # matplotlib.use('Agg')
+#     # plt.ioff()
 
-    population_projection = PopulationProjection.objects.get(slug=slug)
-    projections = population_projection.projections.all().values(
-        'base_year', 'projecting_year', 'base_population', 'projected_population'
-    )
+#     population_projection = PopulationProjection.objects.get(slug=slug)
+#     projections = population_projection.projections.all().values(
+#         'base_year', 'projecting_year', 'base_population', 'projected_population'
+#     )
     
 
 
-    population_projection_contex = {
-        'title': population_projection.title,
-        'description': population_projection.description,
-        'area_type': population_projection.area_type,
-        'area': population_projection.content_object.name,
-        'projections':list(projections),
-        'growth_rate': population_projection.growth_rate
-    }
+#     population_projection_contex = {
+#         'title': population_projection.title,
+#         'description': population_projection.description,
+#         'area_type': population_projection.area_type,
+#         'area': population_projection.content_object.name,
+#         'projections':list(projections),
+#         'growth_rate': population_projection.growth_rate
+#     }
 
-    population_projection_to_plot = {
-        'base_year': [i['base_year'] for i in projections],
-        'projecting_year':[i['projecting_year'] for i in projections],
-        'base_population':[i['base_population'] for i in projections],
-        'projected_population':[i['projected_population'] for i in projections]
-    }
-    df = pd.DataFrame(population_projection_to_plot)
+#     population_projection_to_plot = {
+#         'base_year': [i['base_year'] for i in projections],
+#         'projecting_year':[i['projecting_year'] for i in projections],
+#         'base_population':[i['base_population'] for i in projections],
+#         'projected_population':[i['projected_population'] for i in projections]
+#     }
+#     df = pd.DataFrame(population_projection_to_plot)
 
-    # remove indexes
-    df.reset_index(drop=True, inplace=True)
+#     # remove indexes
+#     df.reset_index(drop=True, inplace=True)
 
-    # change column names
-    df.columns = ['Base Year', 'Projecting Year', 'Base Population', 'Projected Population']
+#     # change column names
+#     df.columns = ['Base Year', 'Projecting Year', 'Base Population', 'Projected Population']
 
 
     
-    # # line chart
-    # generate_plot(data=df, plot_type='line', filename='theme/static/plot_img/population_projection_line.png', title='Population Projection', x_label='Projecting Year', y_label='Projected Population')
+#     # # line chart
+#     # generate_plot(data=df, plot_type='line', filename='theme/static/plot_img/population_projection_line.png', title='Population Projection', x_label='Projecting Year', y_label='Projected Population')
     
 
-    # # bar plot
-    # generate_plot(data=df, plot_type='bar', filename='theme/static/plot_img/population_projection_bar.png', title='Population Projection', x_label='Projecting Year', y_label='Projected Population')
-    needs_assessment = None
-    try:
-        needs_assessment = NeedsAssessment.objects.get(population_projection=population_projection)
-    except NeedsAssessment.DoesNotExist:
-        messages.error(request, 'No needs assessment found for this population projection')
+#     # # bar plot
+#     # generate_plot(data=df, plot_type='bar', filename='theme/static/plot_img/population_projection_bar.png', title='Population Projection', x_label='Projecting Year', y_label='Projected Population')
+#     needs_assessment = None
+#     try:
+#         needs_assessment = NeedsAssessment.objects.get(population_projection=population_projection)
+#     except NeedsAssessment.DoesNotExist:
+#         messages.error(request, 'No needs assessment found for this population projection')
 
-    if needs_assessment:
-        facility_needs = needs_assessment.needs.filter(needs_type='facility').values(
-            'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
-        )
-        personnel_needs = needs_assessment.needs.filter(needs_type='personnel').values(
-            'personnel_type__type_name', 'personnel_type__required', 'personnel_type__standard', 'personnel_type__new_need', 'personnel_type__suplus', 'personnel_type__available', 'personnel_type__population', 'personnel_type__year'
-        )
-        classroom_needs = needs_assessment.needs.filter(needs_type='classroom').values(
-            'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
-        )
-        dual_desk_needs = needs_assessment.needs.filter(needs_type='dual desk').values(
-            'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
-        )
-        water_needs = needs_assessment.needs.filter(needs_type='water source').values(
-            'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
-        )
-        skip_container_needs = needs_assessment.needs.filter(needs_type='skip container').values(
-            'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
-        )
+#     if needs_assessment:
+#         facility_needs = needs_assessment.needs.filter(needs_type='facility').values(
+#             'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
+#         )
+#         personnel_needs = needs_assessment.needs.filter(needs_type='personnel').values(
+#             'personnel_type__type_name', 'personnel_type__required', 'personnel_type__standard', 'personnel_type__new_need', 'personnel_type__suplus', 'personnel_type__available', 'personnel_type__population', 'personnel_type__year'
+#         )
+#         classroom_needs = needs_assessment.needs.filter(needs_type='classroom').values(
+#             'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
+#         )
+#         dual_desk_needs = needs_assessment.needs.filter(needs_type='dual desk').values(
+#             'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
+#         )
+#         water_needs = needs_assessment.needs.filter(needs_type='water source').values(
+#             'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
+#         )
+#         skip_container_needs = needs_assessment.needs.filter(needs_type='skip container').values(
+#             'facility_type__type_name', 'facility_type__required', 'facility_type__standard', 'facility_type__new_need', 'facility_type__suplus', 'facility_type__available', 'facility_type__population', 'facility_type__year'
+#         )
         
-        formatted_facility_needs = []
-        if facility_needs:
-            for need in facility_needs:
-                formatted_facility_needs.append({
-                    'facility_type':need['facility_type__type_name'],
-                    'required':need['facility_type__required'],
-                    'standard':need['facility_type__standard'],
-                    'new need':need['facility_type__new_need'],
-                    'suplus':need['facility_type__suplus'],
-                    'available':need['facility_type__available'],
-                    'population':need['facility_type__population'],
-                    'year':need['facility_type__year']
+#         formatted_facility_needs = []
+#         if facility_needs:
+#             for need in facility_needs:
+#                 formatted_facility_needs.append({
+#                     'facility_type':need['facility_type__type_name'],
+#                     'required':need['facility_type__required'],
+#                     'standard':need['facility_type__standard'],
+#                     'new need':need['facility_type__new_need'],
+#                     'suplus':need['facility_type__suplus'],
+#                     'available':need['facility_type__available'],
+#                     'population':need['facility_type__population'],
+#                     'year':need['facility_type__year']
 
-                })
+#                 })
         
-        formatted_personnel_needs = []
-        if personnel_needs:
-            for need in personnel_needs:
-                formatted_personnel_needs.append({
-                    'personnel_type':need['personnel_type__type_name'],
-                    'required':need['personnel_type__required'],
-                    'standard':need['personnel_type__standard'],
-                    'new need':need['personnel_type__new_need'],
-                    'suplus':need['personnel_type__suplus'],
-                    'available':need['personnel_type__available'],
-                    'population':need['personnel_type__population'],
-                    'year':need['personnel_type__year']
+#         formatted_personnel_needs = []
+#         if personnel_needs:
+#             for need in personnel_needs:
+#                 formatted_personnel_needs.append({
+#                     'personnel_type':need['personnel_type__type_name'],
+#                     'required':need['personnel_type__required'],
+#                     'standard':need['personnel_type__standard'],
+#                     'new need':need['personnel_type__new_need'],
+#                     'suplus':need['personnel_type__suplus'],
+#                     'available':need['personnel_type__available'],
+#                     'population':need['personnel_type__population'],
+#                     'year':need['personnel_type__year']
 
-                })
+#                 })
             
-        formatted_classroom_needs = []
-        if classroom_needs:
-            for need in classroom_needs:
-                formatted_classroom_needs.append({
-                    'facility_type':need['facility_type__type_name'],
-                    'required':need['facility_type__required'],
-                    'standard':need['facility_type__standard'],
-                    'new need':need['facility_type__new_need'],
-                    'suplus':need['facility_type__suplus'],
-                    'available':need['facility_type__available'],
-                    'population':need['facility_type__population'],
-                    'year':need['facility_type__year']
+#         formatted_classroom_needs = []
+#         if classroom_needs:
+#             for need in classroom_needs:
+#                 formatted_classroom_needs.append({
+#                     'facility_type':need['facility_type__type_name'],
+#                     'required':need['facility_type__required'],
+#                     'standard':need['facility_type__standard'],
+#                     'new need':need['facility_type__new_need'],
+#                     'suplus':need['facility_type__suplus'],
+#                     'available':need['facility_type__available'],
+#                     'population':need['facility_type__population'],
+#                     'year':need['facility_type__year']
 
-                })
+#                 })
         
-        formatted_dual_desk_needs = []
-        if dual_desk_needs:
-            for need in dual_desk_needs:
-                formatted_dual_desk_needs.append({
-                    'facility_type':need['facility_type__type_name'],
-                    'required':need['facility_type__required'],
-                    'standard':need['facility_type__standard'],
-                    'new need':need['facility_type__new_need'],
-                    'suplus':need['facility_type__suplus'],
-                    'available':need['facility_type__available'],
-                    'population':need['facility_type__population'],
-                    'year':need['facility_type__year']
+#         formatted_dual_desk_needs = []
+#         if dual_desk_needs:
+#             for need in dual_desk_needs:
+#                 formatted_dual_desk_needs.append({
+#                     'facility_type':need['facility_type__type_name'],
+#                     'required':need['facility_type__required'],
+#                     'standard':need['facility_type__standard'],
+#                     'new need':need['facility_type__new_need'],
+#                     'suplus':need['facility_type__suplus'],
+#                     'available':need['facility_type__available'],
+#                     'population':need['facility_type__population'],
+#                     'year':need['facility_type__year']
 
-                })
+#                 })
         
-        formatted_water_needs = []
-        if water_needs:
-            for need in water_needs:
-                formatted_water_needs.append({
-                    'facility_type':need['facility_type__type_name'],
-                    'required':need['facility_type__required'],
-                    'standard':need['facility_type__standard'],
-                    'new need':need['facility_type__new_need'],
-                    'suplus':need['facility_type__suplus'],
-                    'available':need['facility_type__available'],
-                    'population':need['facility_type__population'],
-                    'year':need['facility_type__year']
+#         formatted_water_needs = []
+#         if water_needs:
+#             for need in water_needs:
+#                 formatted_water_needs.append({
+#                     'facility_type':need['facility_type__type_name'],
+#                     'required':need['facility_type__required'],
+#                     'standard':need['facility_type__standard'],
+#                     'new need':need['facility_type__new_need'],
+#                     'suplus':need['facility_type__suplus'],
+#                     'available':need['facility_type__available'],
+#                     'population':need['facility_type__population'],
+#                     'year':need['facility_type__year']
 
-                })
+#                 })
         
-        formatted_skip_container_needs = []
-        if skip_container_needs:
-            for need in skip_container_needs:
-                formatted_skip_container_needs.append({
-                    'facility_type':need['facility_type__type_name'],
-                    'required':need['facility_type__required'],
-                    'standard':need['facility_type__standard'],
-                    'new need':need['facility_type__new_need'],
-                    'suplus':need['facility_type__suplus'],
-                    'available':need['facility_type__available'],
-                    'population':need['facility_type__population'],
-                    'year':need['facility_type__year']
+#         formatted_skip_container_needs = []
+#         if skip_container_needs:
+#             for need in skip_container_needs:
+#                 formatted_skip_container_needs.append({
+#                     'facility_type':need['facility_type__type_name'],
+#                     'required':need['facility_type__required'],
+#                     'standard':need['facility_type__standard'],
+#                     'new need':need['facility_type__new_need'],
+#                     'suplus':need['facility_type__suplus'],
+#                     'available':need['facility_type__available'],
+#                     'population':need['facility_type__population'],
+#                     'year':need['facility_type__year']
 
-                })
+#                 })
 
-        # dataframes for needs
-        df_facility_needs = pd.DataFrame(formatted_facility_needs)
-        df_personnel_needs = pd.DataFrame(formatted_personnel_needs)
-        df_classroom_needs = pd.DataFrame(formatted_classroom_needs)
-        df_dual_desk_needs = pd.DataFrame(formatted_dual_desk_needs)
-        df_water_needs = pd.DataFrame(formatted_water_needs)
-        df_skip_container_needs = pd.DataFrame(formatted_skip_container_needs)
+#         # dataframes for needs
+#         df_facility_needs = pd.DataFrame(formatted_facility_needs)
+#         df_personnel_needs = pd.DataFrame(formatted_personnel_needs)
+#         df_classroom_needs = pd.DataFrame(formatted_classroom_needs)
+#         df_dual_desk_needs = pd.DataFrame(formatted_dual_desk_needs)
+#         df_water_needs = pd.DataFrame(formatted_water_needs)
+#         df_skip_container_needs = pd.DataFrame(formatted_skip_container_needs)
 
-        needs_assessment_context = {
-            'facility_needs':formatted_facility_needs,
-            'personnel_needs':formatted_personnel_needs,
-            'classroom_needs':formatted_classroom_needs,
-            'dual_desk_needs':formatted_dual_desk_needs,
-            'water_needs':formatted_water_needs,
-            'skip_container_needs':formatted_skip_container_needs
-        }
+#         needs_assessment_context = {
+#             'facility_needs':formatted_facility_needs,
+#             'personnel_needs':formatted_personnel_needs,
+#             'classroom_needs':formatted_classroom_needs,
+#             'dual_desk_needs':formatted_dual_desk_needs,
+#             'water_needs':formatted_water_needs,
+#             'skip_container_needs':formatted_skip_container_needs
+#         }
 
 
-    sections = {
-        'overview': {
-            'context': population_projection_contex,
-            'prompt': "Generate A report's introduction based on the data provided. Do not add any topic just generate the paragraph."
-        },
-        'population_projection_data': {
-            'context': population_projection_contex,
-            'prompt': "Generate A report's population projection data based on the data provided. Do not add any topic just generate the paragraph."
-        },
-        'population_projection_analysis': {
-            'context': population_projection_contex,
-            'prompt': "Generate A report's population projection analysis based on the data provided. Do not add any topic just generate the paragraph."
-        },
-        'conclusion': {
-            'context': population_projection_contex,
-            'prompt': "Generate A report's conclusion based on the data provided. Do not add any topic just generate the paragraph."
-        },
+#     sections = {
+#         'overview': {
+#             'context': population_projection_contex,
+#             'prompt': "Generate A report's introduction based on the data provided. Do not add any topic just generate the paragraph."
+#         },
+#         'population_projection_data': {
+#             'context': population_projection_contex,
+#             'prompt': "Generate A report's population projection data based on the data provided. Do not add any topic just generate the paragraph."
+#         },
+#         'population_projection_analysis': {
+#             'context': population_projection_contex,
+#             'prompt': "Generate A report's population projection analysis based on the data provided. Do not add any topic just generate the paragraph."
+#         },
+#         'conclusion': {
+#             'context': population_projection_contex,
+#             'prompt': "Generate A report's conclusion based on the data provided. Do not add any topic just generate the paragraph."
+#         },
         
-        'needs_assessment_overview': {
-            'context': needs_assessment_context,
-            'prompt': "Generate A report's introduction based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
-        },
-        'facility_needs': {
-            'context': needs_assessment_context,
-            'prompt': "Generate A report's facility needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
-        },
-        'personnel_needs': {
-            'context': needs_assessment_context,
-            'prompt': "Generate A report's personnel needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
-        },
-        'classroom_needs': {
-            'context': needs_assessment_context,
-            'prompt': "Generate A report's classroom needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
-        },
-        'dual_desk_needs': {
-            'context': needs_assessment_context,
-            'prompt': "Generate A report's dual desk needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
-        },
-        'water_needs': {
-            'context': needs_assessment_context,
-            'prompt': "Generate A report's water needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
-        },
-        'skip_container_needs': {
-            'context': needs_assessment_context,
-            'prompt': "Generate A report's skip container needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
-        },
-        'needs_assessment_conclusion': {
-            'context': needs_assessment_context,
-            'prompt': "Generate A report's conclusion based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
-        }
+#         'needs_assessment_overview': {
+#             'context': needs_assessment_context,
+#             'prompt': "Generate A report's introduction based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+#         },
+#         'facility_needs': {
+#             'context': needs_assessment_context,
+#             'prompt': "Generate A report's facility needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+#         },
+#         'personnel_needs': {
+#             'context': needs_assessment_context,
+#             'prompt': "Generate A report's personnel needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+#         },
+#         'classroom_needs': {
+#             'context': needs_assessment_context,
+#             'prompt': "Generate A report's classroom needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+#         },
+#         'dual_desk_needs': {
+#             'context': needs_assessment_context,
+#             'prompt': "Generate A report's dual desk needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+#         },
+#         'water_needs': {
+#             'context': needs_assessment_context,
+#             'prompt': "Generate A report's water needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+#         },
+#         'skip_container_needs': {
+#             'context': needs_assessment_context,
+#             'prompt': "Generate A report's skip container needs based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+#         },
+#         'needs_assessment_conclusion': {
+#             'context': needs_assessment_context,
+#             'prompt': "Generate A report's conclusion based on the data provided. Do not include tables and remove symbols such as '*' and '#'. Do not add any topic just generate the paragraph."
+#         }
 
 
-    }
-    image_paragraph = 'The line chart and bar chart below shows the population projection from the base year to the projecting year. The base population is represented by the blue line, while the projected population is represented by the orange line. The bar plot shows the projected population for each projecting year. The population projection is based on the growth rate of the population over the years.'
+#     }
+#     image_paragraph = 'The line chart and bar chart below shows the population projection from the base year to the projecting year. The base population is represented by the blue line, while the projected population is represented by the orange line. The bar plot shows the projected population for each projecting year. The population projection is based on the growth rate of the population over the years.'
 
 
-    import google.generativeai as genai
-    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-    model = genai.GenerativeModel('gemini-1.5-flash')
+#     import google.generativeai as genai
+#     genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+#     model = genai.GenerativeModel('gemini-1.5-flash')
     
-    report_sections = generate_report_sections(request, model, sections)
-    overview = report_sections['overview']
-    population_projection_data = report_sections['population_projection_data']
-    population_projection_analysis = report_sections['population_projection_analysis']
-    conclusion = report_sections['conclusion']
+#     report_sections = generate_report_sections(request, model, sections)
+#     overview = report_sections['overview']
+#     population_projection_data = report_sections['population_projection_data']
+#     population_projection_analysis = report_sections['population_projection_analysis']
+#     conclusion = report_sections['conclusion']
 
-    needs_assessment_overview = report_sections['needs_assessment_overview']
-    facility_needs = report_sections['facility_needs']
-    personnel_needs = report_sections['personnel_needs']
-    classroom_needs = report_sections['classroom_needs']
-    dual_desk_needs = report_sections['dual_desk_needs']
-    water_needs = report_sections['water_needs']
-    skip_container_needs = report_sections['skip_container_needs']
-    needs_assessment_conclusion = report_sections['needs_assessment_conclusion']
+#     needs_assessment_overview = report_sections['needs_assessment_overview']
+#     facility_needs = report_sections['facility_needs']
+#     personnel_needs = report_sections['personnel_needs']
+#     classroom_needs = report_sections['classroom_needs']
+#     dual_desk_needs = report_sections['dual_desk_needs']
+#     water_needs = report_sections['water_needs']
+#     skip_container_needs = report_sections['skip_container_needs']
+#     needs_assessment_conclusion = report_sections['needs_assessment_conclusion']
 
        
     
