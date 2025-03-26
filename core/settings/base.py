@@ -178,7 +178,6 @@ STATIC_URL = 'theme/' # Change the STATIC_URL variable to 'theme/
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static', 
-    BASE_DIR / 'components'
 ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles' # Add the STATIC_ROOT variable
