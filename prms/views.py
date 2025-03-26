@@ -19,7 +19,6 @@ from django.contrib import messages
 
 # email verification required
 from allauth.account.decorators import verified_email_required
-from openai import OpenAI
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
