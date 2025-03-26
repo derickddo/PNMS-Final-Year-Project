@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG') == 'True'
 
 
-ALLOWED_HOSTS = ['*',]
+ALLOWED_HOSTS = ['*', '.vercel.app']
 
 
 # Application definition
@@ -179,8 +179,6 @@ STATIC_URL = 'theme/' # Change the STATIC_URL variable to 'theme/
 STATICFILES_DIRS = [
     BASE_DIR / 'static', 
 ]
-
-STATIC_ROOT = BASE_DIR / 'staticfiles' # Add the STATIC_ROOT variable
 
 MEDIA_URL = '/media/' # Add the MEDIA_URL variable
 MEDIA_ROOT = BASE_DIR / 'static/media' # Add the MEDIA_ROOT variable
